@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.mapper.OrderConfigMapper">
+
+  <resultMap id="orderConfigResult" type="cn.muye.model.OrderConfig">
+    <result property="id" column="id"/>
+    <result property="order" column="order_key"/>
+    <result property="keyWords" column="key_words"/>
+    <result property="configText" column="config_text"/>
+    <result property="triggerAction" column="trigger_action"/>
+    <result property="comment" column="comment"/>
+  </resultMap>
+
+  <select id="listOrderConfigs" resultMap="orderConfigResult">
+    select key_words
+    from order_config
+  </select>
+
+  <insert id="saveOrderConfig">
+    insert into order_config(
+    id,
+    order_key,
+    key_words,
+    config_text,
+    trigger_action,
+    comment
+    ) values (
+    #{id},
+    #{order},
+    #{keyWords},
+    #{configText},
+    #{triggerAction},
+    #{comment}
+    )
+  </insert>
+
+</mapper>

@@ -1,0 +1,11 @@
+*.iml
+*.class
+.idea/*
+/target/*
+*.json
+*.yml
+*.eslintrc
+*_.java
+*.lst
+target/*
+.idea/*.xml
