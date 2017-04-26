@@ -1,4 +1,6 @@
-package cn.muye.bean;
+package cn.muye.model;
+
+import java.util.Date;
 
 /**
  * Created by Ray.Fu on 2017/4/25.
@@ -12,6 +14,10 @@ public class Document {
     private String content;
 
     private Long categoryId;
+
+    private Date createTime;
+
+    private Date updateTime;
 
     public Long getId() {
         return id;
@@ -43,5 +49,21 @@ public class Document {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }
