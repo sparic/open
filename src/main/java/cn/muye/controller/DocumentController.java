@@ -3,6 +3,7 @@ package cn.muye.controller;
 import cn.muye.bean.AjaxResult;
 import cn.muye.model.Document;
 import cn.muye.service.DocumentService;
+import com.github.pagehelper.PageHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,10 @@ public class DocumentController {
     private DocumentService documentService;
 
     @RequestMapping(value="/", method= RequestMethod.GET)
-    public AjaxResult getDocumentList() {
-        List<Document> list = documentService.listDocuments();
+    public AjaxResult getDocumentList(@RequestParam(value = "page",required = false,defaultValue = "1")Integer page,
+                                      @RequestParam(value = "pageSize",required = false, defaultValue = "5")Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<Document> list = documentService.listDocuments(page);
         return AjaxResult.success(list);
     }
 
@@ -34,15 +37,15 @@ public class DocumentController {
         return AjaxResult.success(document);
     }
 
-    @RequestMapping(value="/{categoryId}", method=RequestMethod.GET)
-    public AjaxResult getDocumentByCategoryId(@RequestParam(value = "categoryId") Long categoryId) {
-        List<Document> documentList = documentService.getByCategoryId(categoryId);
-        return AjaxResult.success(documentList);
+    @RequestMapping(value = "/{id}", method=RequestMethod.GET)
+    public AjaxResult getDocument(@PathVariable Long id) {
+        Document document = documentService.getById(id);
+        return AjaxResult.success(document);
     }
 
-    @RequestMapping(value="/{id}", method=RequestMethod.GET)
-    public AjaxResult getDocumentById(@RequestParam(value = "id") Long id) {
-        Document document = documentService.getById(id);
+    @RequestMapping(value = "/category/{categoryId}", method=RequestMethod.GET)
+    public AjaxResult getByCategoryId(@PathVariable Long categoryId) {
+        Document document = documentService.getByMenuId(categoryId);
         return AjaxResult.success(document);
     }
 
@@ -51,9 +54,10 @@ public class DocumentController {
         Document documentDb = documentService.getById(id);
         documentDb.setTitle(document.getTitle());
         documentDb.setContent(document.getContent());
-        documentDb.setCategoryId(document.getCategoryId());
+        documentDb.setMenuId(document.getMenuId());
         documentDb.setCreateTime(document.getCreateTime());
         documentDb.setUpdateTime(document.getUpdateTime());
+        documentDb.setVersionId(document.getVersionId());
         documentService.updateDocument(documentDb);
         return AjaxResult.success(documentDb);
     }

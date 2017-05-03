@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.mapper.VersionMapper">
+
+  <resultMap id="versionResult" type="cn.muye.model.Version">
+    <result property="id" column="ID"/>
+    <result property="versionCode" column="VERSION_CODE"/>
+    <result property="description" column="DESCRIPTION"/>
+    <result property="createTime" column="CREATE_TIME"/>
+    <result property="updateTime" column="UPDATE_TIME"/>
+    <result property="url" column="URL"/>
+  </resultMap>
+
+  <select id="listVersions" resultMap="versionResult">
+    select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME from D_VERSION
+  </select>
+
+  <select id="getById" resultMap="versionResult">
+    select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME from D_VERSION where ID = #{id}
+  </select>
+
+  <insert id="saveVersion" useGeneratedKeys="true" keyProperty="id">
+    insert into D_VERSION(
+    VERSION_CODE,
+    DESCRIPTION,
+    CREATE_TIME,
+    UPDATE_TIME
+    ) values (
+    #{versionCode},
+    #{description},
+    #{createTime},
+    #{updateTime}
+    )
+  </insert>
+
+  <update id="updateVersion">
+    update D_VERSION set VERSION_CODE = #{versionCode}, DESCRIPTION = #{description}, URL = #{url}, CREATE_TIME = #{createTime}, UPDATE_TIME = #{updateTime} where ID = #{id}
+  </update>
+
+  <delete id="deleteById">
+    delete from D_VERSION where ID = #{id}
+  </delete>
+
+</mapper>

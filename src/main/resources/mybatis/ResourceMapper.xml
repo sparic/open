@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.mapper.ResourceMapper">
+
+    <resultMap id="resourceResult" type="cn.muye.model.Resource">
+        <result property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="size" column="SIZE"/>
+        <result property="extensionName" column="EXTENSION_NAME"/>
+        <result property="sourceName" column="SOURCE_NAME"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
+        <result property="path" column="PATH"/>
+    </resultMap>
+
+    <select id="listResources" resultMap="resourceResult">
+    select ID,NAME,DESCRIPTION,SOURCE_NAME,EXTENSION_NAME,CREATE_TIME,UPDATE_TIME,PATH from D_RESOURCE
+  </select>
+
+    <select id="getById" resultMap="resourceResult">
+    select ID,
+            NAME,
+            DESCRIPTION,
+            SOURCE_NAME,
+            EXTENSION_NAME,
+            SIZE,
+            PATH,
+            CREATE_TIME,
+            UPDATE_TIME
+     from D_RESOURCE where ID = #{id}
+  </select>
+
+    <insert id="saveResource" useGeneratedKeys="true" keyProperty="id">
+    insert into D_RESOURCE(
+      NAME,DESCRIPTION,SOURCE_NAME,EXTENSION_NAME,SIZE,CREATE_TIME,UPDATE_TIME,PATH
+    ) values (
+      #{name},
+      #{description},
+      #{sourceName},
+      #{extensionName},
+      #{size},
+      #{createTime},
+      #{updateTime},
+      #{path}
+    )
+  </insert>
+
+    <!--<delete id="deleteById">-->
+    <!--delete from FILE where ID = #{id}-->
+    <!--</delete>-->
+
+</mapper>

@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * Created by Administrator on 2016/12/7.
  */
-public class Constant {
+public class Constants {
 
     //public static final String FILE_URL = "f://download";
     public static final String FILE_URL = File.separator + "home" + File.separator + "robot" + File.separator + "share" + File.separator + "nfs";
@@ -17,5 +17,7 @@ public class Constant {
     public static final Integer TALK = 3; //愿意交流但无意向
     public static final Integer HATE = 4; //不愿交流，厌恶
 
+    public static final String FILE_DIRECTORY = "e:\\\\download_home";
 
+    public static final String TYPE_SDK = "sdk";
 }

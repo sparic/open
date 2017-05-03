@@ -26,12 +26,12 @@ public class DocumentService {
         documentMapper.updateDocument(document);
     }
 
-    public List<Document> listDocuments() {
-        return documentMapper.listDocuments();
+    public List<Document> listDocuments(int page) {
+        return documentMapper.listDocuments(page);
     }
 
-    public List<Document> getByCategoryId(Long categoryId) {
-        return documentMapper.getByCategoryId(categoryId);
+    public Document getByMenuId(Long menuId) {
+        return documentMapper.getByMenuId(menuId);
     }
 
     public void deleteById(Long id) {
@@ -42,4 +42,7 @@ public class DocumentService {
         return documentMapper.getById(id);
     }
 
+    public List<Document> getByVersionId(Long id) {
+        return documentMapper.getByVersionId(id);
+    }
 }

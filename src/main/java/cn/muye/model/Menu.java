@@ -5,15 +5,13 @@ import java.util.Date;
 /**
  * Created by Ray.Fu on 2017/4/25.
  */
-public class Document {
+public class Menu {
 
     private Long id;
 
-    private String title;
+    private Long parentId;
 
-    private String content;
-
-    private Long menuId;
+    private String name;
 
     private Date createTime;
 
@@ -23,6 +21,14 @@ public class Document {
 
     private Long versionId;
 
+    private Long originId;
+
+    private Boolean isLeaf;
+
+    private String content;
+
+    private String url;
+
     public Long getId() {
         return id;
     }
@@ -31,28 +37,20 @@ public class Document {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
-    public String getContent() {
-        return content;
+    public String getName() {
+        return name;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getCreateTime() {
@@ -85,5 +83,37 @@ public class Document {
 
     public void setVersionId(Long versionId) {
         this.versionId = versionId;
+    }
+
+    public Boolean getIsLeaf() {
+        return isLeaf;
+    }
+
+    public void setIsLeaf(Boolean isLeaf) {
+        this.isLeaf = isLeaf;
+    }
+
+    public Long getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(Long originId) {
+        this.originId = originId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

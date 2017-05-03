@@ -13,11 +13,13 @@ public interface DocumentMapper {
 
     void updateDocument(Document document);
 
-    List<Document> listDocuments();
+    List<Document> listDocuments(int page);
 
-    List<Document> getByCategoryId(Long categoryId);
+    Document getByMenuId(Long categoryId);
 
     void deleteById(Long id);
 
     Document getById(Long id);
+
+    List<Document> getByVersionId(Long id);
 }

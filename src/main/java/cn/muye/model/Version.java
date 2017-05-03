@@ -3,21 +3,20 @@ package cn.muye.model;
 import java.util.Date;
 
 /**
- * Created by Ray.Fu on 2017/4/25.
+ * Created by Ray.Fu on 2017/5/2.
  */
-public class Category {
-
+public class Version {
     private Long id;
 
-    private Long pid;
+    private String versionCode;
 
-    private String name;
-
-    private Long sdkId;
+    private String description;
 
     private Date createTime;
 
     private Date updateTime;
+
+    private String url;
 
     public Long getId() {
         return id;
@@ -27,28 +26,20 @@ public class Category {
         this.id = id;
     }
 
-    public Long getPid() {
-        return pid;
+    public String getVersionCode() {
+        return versionCode;
     }
 
-    public void setPid(Long pid) {
-        this.pid = pid;
+    public void setVersionCode(String versionCode) {
+        this.versionCode = versionCode;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getSdkId() {
-        return sdkId;
-    }
-
-    public void setSdkId(Long sdkId) {
-        this.sdkId = sdkId;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreateTime() {
@@ -65,5 +56,13 @@ public class Category {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

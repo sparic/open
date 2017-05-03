@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
  * User: zhongjiaren
  * Date: 2013-5-17
  * Time: 20:46:20
- * To change this template use File | Settings | File Templates.
+ * To change this template use Resource | Settings | Resource Templates.
  */
 public class IPUtils {
     public static String getIpAddr(HttpServletRequest request) {

@@ -55,14 +55,14 @@ public class PictureController {
                 return AjaxResult.failed("文件为空");
             }
             ApplicationHome home = new ApplicationHome(Application.class);
-            File dest = home.getDir();
-            dest = FileUtils.getFile(dest.getPath()+ File.separator + "picture" +File.separator+file.getOriginalFilename());
+            Resource dest = home.getDir();
+            dest = FileUtils.getFile(dest.getPath()+ Resource.separator + "picture" +Resource.separator+file.getOriginalFilename());
             if(!dest.getParentFile().exists()){
                 dest.getParentFile().mkdirs();
             }
             file.transferTo(dest);
             Picture picture = new Picture();
-            picture.setPicUrl(File.separator + "picture" +File.separator+file.getOriginalFilename());
+            picture.setPicUrl(Resource.separator + "picture" +Resource.separator+file.getOriginalFilename());
             picture.setCreateTime(new Date());
             pictureService.savePicture(picture);
             logger.info("上传成功");
@@ -83,9 +83,9 @@ public class PictureController {
       public void getPicture(@PathVariable("name")String name,HttpServletResponse response){
         try {
             //ApplicationHome home = new ApplicationHome();
-            //File file = home.getDir();
-            //file = FileUtils.getFile("F://download" + File.separator + name + ".jpeg");
-            //File file = new File(File.separator + "media" + File.separator + "robot" + File.separator + "cooky" + File.separator + "nfs" + File.separator + name + ".jpeg");
+            //Resource file = home.getDir();
+            //file = FileUtils.getFile("F://download" + Resource.separator + name + ".jpeg");
+            //Resource file = new Resource(Resource.separator + "media" + Resource.separator + "robot" + Resource.separator + "cooky" + Resource.separator + "nfs" + Resource.separator + name + ".jpeg");
             File file = new File(File.separator + "home" + File.separator + "robot" + File.separator + "share" + File.separator + "nfs" + File.separator + name + ".jpeg");
             if(file.isFile()){
                 FileInputStream inputStream = new FileInputStream(file);
@@ -146,7 +146,7 @@ public class PictureController {
     public AjaxResult getFiles(){
         try {
             //具体地址需修改
-            File dest = new File(Constant.FILE_URL);
+            File dest = new File(Constants.FILE_URL);
             List<FileDTO> files = Lists.newArrayList();
             listFiles(dest, files);
             return AjaxResult.success(files);
@@ -165,7 +165,7 @@ public class PictureController {
     public AjaxResult uploadFile(@RequestParam("fileNames") String[] fileNames){
         if(lock.tryLock()){
             try {
-                File dest = new File(Constant.FILE_URL);
+                File dest = new File(Constants.FILE_URL);
                 int size = fileNames.length;
                 logger.info("本次上传文件个数为"+ size);
                 for (String fileName : fileNames) {

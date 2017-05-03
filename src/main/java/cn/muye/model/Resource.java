@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by Ray.Fu on 2017/4/25.
  */
-public class Sdk {
+public class Resource {
 
     private Long id;
 
@@ -13,9 +13,20 @@ public class Sdk {
 
     private String description;
 
+    //源文件名
+    private String sourceName;
+
+    private Long size;
+
+    private String extensionName;
+
+    //创建时间
     private Date createTime;
 
+    //更新时间
     private Date updateTime;
+
+    private String path;
 
     public Long getId() {
         return id;
@@ -41,6 +52,14 @@ public class Sdk {
         this.description = description;
     }
 
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -56,4 +75,29 @@ public class Sdk {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
+    public String getExtensionName() {
+        return extensionName;
+    }
+
+    public void setExtensionName(String extensionName) {
+        this.extensionName = extensionName;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
 }

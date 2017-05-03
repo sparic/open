@@ -1,19 +1,12 @@
 package cn.muye.service;
 
-import cn.muye.bean.Constant;
-import cn.muye.util.HttpClientUtil;
-import com.google.common.collect.Maps;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2016/12/28.
@@ -40,14 +33,14 @@ public class ScheduleTasks {
 //    public void uploadFileSchedule() {
 //        logger.info("开始定时任务上传");
 //        try {
-//            File dest = new File(Constant.FILE_URL);
-//            File[] files = dest.listFiles();
+//            Resource dest = new Resource(Constants.FILE_URL);
+//            Resource[] files = dest.listFiles();
 //            StringBuffer sb = new StringBuffer("");
 //            String fileNames = null;
 //            if(files.length == 0){
 //                fileNames = sb.toString();
 //            }else {
-//                for (File file : files) {
+//                for (Resource file : files) {
 //                    sb.append(file.getName()+",");
 //                }
 //                fileNames = sb.substring(0,sb.length()-1).toString();
