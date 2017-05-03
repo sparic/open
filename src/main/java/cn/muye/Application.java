@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,10 +25,10 @@ import java.util.Properties;
 @ComponentScan
 @MapperScan("cn.muye.mapper")
 public class Application {
-    private static Logger logger = Logger.getLogger(Application.class);
+    private static Logger LOGGER = Logger.getLogger(Application.class);
 
-   @Bean
-    @ConfigurationProperties(prefix="spring.datasource")
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
         return new org.apache.tomcat.jdbc.pool.DataSource();
     }
@@ -46,7 +47,7 @@ public class Application {
         props.setProperty("params", "count=countSql");
         pageHelper.setProperties(props);
         //添加插件
-        sqlSessionFactoryBean.setPlugins(new Interceptor[]{ pageHelper});
+        sqlSessionFactoryBean.setPlugins(new Interceptor[]{pageHelper});
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
         sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:/mybatis*//**//*.xml"));
@@ -65,7 +66,7 @@ public class Application {
      */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-        logger.info("SpringBoot Start Success");
+        LOGGER.info("SpringBoot Start Success");
     }
 
 }

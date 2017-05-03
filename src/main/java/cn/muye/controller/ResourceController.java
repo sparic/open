@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +36,12 @@ public class ResourceController {
 
     @Autowired
     private VersionService versionService;
+
+//    @Value("${devCenter.push.dirs}")
+//    private String DOWNLOAD_HOME;
+
+//    @Value("${devCenter.push.http}")
+    private static String DOWNLOAD_HTTP = "http://172.16.0.100/devResource/";
 
     /**
      * 获取所有文件列表
@@ -76,7 +83,7 @@ public class ResourceController {
 
     private void modifyVersionInfo(MultipartFile file, Long versionId) {
         Version versionDb = versionService.getById(versionId);
-        versionDb.setUrl("http://172.16.1.52:18080/devResource/" + file.getOriginalFilename());
+        versionDb.setUrl(DOWNLOAD_HTTP + file.getOriginalFilename());
         versionService.updateVersion(versionDb);
     }
 
