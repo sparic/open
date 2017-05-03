@@ -3,13 +3,15 @@ package cn.muye.controller;
 import cn.muye.bean.AjaxResult;
 import cn.muye.model.Menu;
 import cn.muye.model.Version;
-import cn.muye.service.DocumentService;
 import cn.muye.service.MenuService;
 import cn.muye.service.VersionService;
 import com.github.pagehelper.PageHelper;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -30,13 +32,15 @@ public class VersionController {
 
     /**
      * 查询版本列表接口
+     *
      * @param page
      * @param pageSize
      * @return
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public AjaxResult getVersionList(@RequestParam(value = "page", required = false) Integer page,
-                                  @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+    @ApiOperation(value = "查询版本列表", httpMethod = "GET", notes = "查询版本列表")
+    public AjaxResult getVersionList(@ApiParam(value = "页号")@RequestParam(value = "page", required = false) Integer page,
+                                     @ApiParam(value = "每页记录数")@RequestParam(value = "pageSize", required = false) Integer pageSize) {
         if (page != null && pageSize != null) {
             PageHelper.startPage(page, pageSize);
         }
@@ -45,15 +49,16 @@ public class VersionController {
     }
 
     /**
-     * 新增接口
+     * 新增版本接口
+     *
      * @param version
      * @return
      */
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public AjaxResult postVersion(@RequestBody Version version) {
+    @ApiOperation(value = "新增版本", httpMethod = "POST", notes = "新增版本列表")
+    public AjaxResult postVersion(@ApiParam(value = "版本对象")@RequestBody Version version) {
         return post(version);
     }
-
 
     private AjaxResult post(Version version) {
         version.setCreateTime(new Date());
@@ -63,23 +68,27 @@ public class VersionController {
 
     /**
      * 获取单个版本
+     *
      * @param id
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public AjaxResult getVersion(@PathVariable Long id) {
+    @ApiOperation(value = "获取单个版本", httpMethod = "GET", notes = "获取单个版本")
+    public AjaxResult getVersion(@ApiParam(value = "版本ID")@PathVariable Long id) {
         Version version = versionService.getById(id);
         return AjaxResult.success(version);
     }
 
     /**
      * 修改版本
+     *
      * @param id
      * @param version
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public AjaxResult putVersion(@PathVariable Long id, @RequestBody Version version) {
+    @ApiOperation(value = "修改版本", httpMethod = "PUT", notes = "修改版本")
+    public AjaxResult putVersion(@ApiParam(value = "版本ID")@PathVariable Long id, @ApiParam(value = "版本对象")@RequestBody Version version) {
         Version versionDb = versionService.getById(id);
         if (versionDb != null) {
             versionDb.setVersionCode(version.getVersionCode());
@@ -95,24 +104,28 @@ public class VersionController {
 
     /**
      * 删除版本
+     *
      * @param id
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public AjaxResult deleteVersion(@PathVariable Long id) {
+    @ApiOperation(value = "删除版本", httpMethod = "DELETE", notes = "删除版本")
+    public AjaxResult deleteVersion(@ApiParam(value = "版本ID")@PathVariable Long id) {
         versionService.deleteById(id);
         return AjaxResult.success();
     }
 
     /**
      * 拷贝版本
+     *
      * @param versionId
      * @return
      */
     @RequestMapping(value = "/copy", method = RequestMethod.POST)
-    public AjaxResult copyVersion(@RequestParam(value = "versionId",required = true) Long versionId,
-                                  @RequestParam(value = "versionCode",required = true) String versionCode,
-                                  @RequestParam(value = "description",required = false) String description) {
+    @ApiOperation(value = "拷贝版本", httpMethod = "POST", notes = "拷贝版本")
+    public AjaxResult copyVersion(@ApiParam(value = "版本ID")@RequestParam(value = "versionId", required = true) Long versionId,
+                                  @ApiParam(value = "版本编号")@RequestParam(value = "versionCode", required = true) String versionCode,
+                                  @ApiParam(value = "版本描述")@RequestParam(value = "description", required = false) String description) {
         Version versionNew = new Version();
         versionNew.setDescription(description);
         versionNew.setVersionCode(versionCode);

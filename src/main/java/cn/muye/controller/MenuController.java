@@ -4,6 +4,8 @@ import cn.muye.bean.AjaxResult;
 import cn.muye.model.Menu;
 import cn.muye.service.MenuService;
 import com.github.pagehelper.PageHelper;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,33 +31,19 @@ public class MenuController {
 
     /**
      * 查询菜单列表接口
+     *
      * @param page
      * @param pageSize
      * @param versionId
      * @return
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public AjaxResult getMenuList(@RequestParam(value = "page", required = false) Integer page,
-                                      @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                      @RequestParam(value = "versionId", required = true) Long versionId) {
+    @ApiOperation(value = "查询菜单列表", httpMethod = "GET", notes = "查询菜单列表")
+    public AjaxResult getMenuList(@ApiParam(value = "页号")@RequestParam(value = "page", required = false) Integer page,
+                                  @ApiParam(value = "每页记录数")@RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                  @ApiParam(value = "版本ID")@RequestParam(value = "versionId", required = true) Long versionId) {
         if (page == null && pageSize == null) {
             List<Menu> menuList = menuService.listMenus(null, versionId);
-//            menuDtoList = Lists.newArrayList();
-//            if (menuList != null && menuList.size() > 0) {
-//                for (Menu menu : menuList) {
-//                    MenuDto menuDto = new MenuDto();
-//                    menuDto.setId(menu.getId());
-//                    menuDto.setMenuName(menu.getName());
-//                    menuDto.setVersionId(menu.getVersionId());
-//                    menuDto.setParentId(menu.getParentId());
-//                    menuDto.setIsLeaf(menu.getIsLeaf());
-//                    menuDtoList.add(menuDto);
-//                }
-//            }
-//            for (MenuDto dto : menuDtoList) {
-//                getMenu(dto);
-//            }
-//            return AjaxResult.success(menuDtoList.get(0));
             return AjaxResult.success(menuList);
         } else {
             PageHelper.startPage(page, pageSize);
@@ -101,11 +89,13 @@ public class MenuController {
 
     /**
      * 新增接口
+     *
      * @param menu
      * @return
      */
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public AjaxResult postMenu(@RequestBody Menu menu) {
+    @ApiOperation(value = "新增菜单", httpMethod = "POST", notes = "新增菜单")
+    public AjaxResult postMenu(@ApiParam(value = "菜单对象")@RequestBody Menu menu) {
         return post(menu);
     }
 
@@ -119,23 +109,27 @@ public class MenuController {
 
     /**
      * 获取单个菜单下的子菜单
+     *
      * @param id
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public AjaxResult getMenu(@PathVariable Long id) {
+    @ApiOperation(value = "获取单个菜单下的子菜单", httpMethod = "GET", notes = "获取单个菜单下的子菜单")
+    public AjaxResult getMenu(@ApiParam(value = "菜单ID")@PathVariable Long id) {
         List<Menu> menuList = menuService.getByPid(id);
         return AjaxResult.success(menuList);
     }
 
     /**
      * 修改菜单
+     *
      * @param id
      * @param menu
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public AjaxResult putMenu(@PathVariable Long id, @RequestBody Menu menu) {
+    @ApiOperation(value = "修改菜单", httpMethod = "PUT", notes = "修改菜单")
+    public AjaxResult putMenu(@ApiParam(value = "菜单ID")@PathVariable Long id, @ApiParam(value = "菜单对象")@RequestBody Menu menu) {
         Menu menuDb = menuService.getById(id);
         menuDb.setName(menu.getName());
         menuDb.setParentId(menu.getParentId());
@@ -148,11 +142,13 @@ public class MenuController {
 
     /**
      * 删除菜单
+     *
      * @param id
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public AjaxResult deleteMenu(@PathVariable Long id) {
+    @ApiOperation(value = "删除菜单", httpMethod = "DELETE", notes = "删除菜单")
+    public AjaxResult deleteMenu(@ApiParam(value = "菜单ID")@PathVariable Long id) {
         menuService.deleteById(id);
         return AjaxResult.success();
     }

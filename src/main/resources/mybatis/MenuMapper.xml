@@ -43,7 +43,9 @@
         UPDATE_TIME,
         VERSION_ID,
         IS_LEAF,
-        ORIGIN_ID
+        ORIGIN_ID,
+        CONTENT,
+        URL
     ) values (
         #{parentId},
         #{name},
@@ -51,7 +53,9 @@
         #{updateTime},
         #{versionId},
         #{isLeaf},
-        #{originId}
+        #{originId},
+        #{content},
+        #{url}
         )
   </insert>
 
