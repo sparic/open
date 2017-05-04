@@ -15,7 +15,7 @@
     select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME from D_VERSION
   </select>
 
-  <select id="getById" resultMap="versionResult">
+  <select id="getById" parameterType="Long" resultMap="versionResult">
     select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME from D_VERSION where ID = #{id}
   </select>
 

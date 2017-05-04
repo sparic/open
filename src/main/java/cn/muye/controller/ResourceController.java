@@ -2,11 +2,11 @@ package cn.muye.controller;
 
 import cn.muye.bean.AjaxResult;
 import cn.muye.bean.Constants;
+import cn.muye.config.CustomProperties;
 import cn.muye.model.Resource;
 import cn.muye.model.Version;
 import cn.muye.service.ResourceService;
 import cn.muye.service.VersionService;
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,11 +40,14 @@ public class ResourceController {
     @Autowired
     private VersionService versionService;
 
+    @Autowired
+    private CustomProperties customProperties;
+
 //    @Value("${devCenter.push.dirs}")
 //    private String DOWNLOAD_HOME;
-
+//
 //    @Value("${devCenter.push.http}")
-    private static String DOWNLOAD_HTTP = "http://172.16.0.100/devResource/";
+//    private String DOWNLOAD_HTTP;
 
     /**
      * 获取所有文件列表
@@ -74,6 +80,9 @@ public class ResourceController {
                                         @ApiParam(value = "版本ID") @RequestParam(value = "versionId", required = false) Long versionId) {
         uploadFile(file);
         if (type != null && type.equals(Constants.TYPE_SDK)) {
+            if (versionId == null) {
+                return AjaxResult.failed("丢失版本ID");
+            }
             modifyVersionInfo(file, versionId);
             return addFileInfo(file);
         } else {
@@ -83,7 +92,7 @@ public class ResourceController {
 
     private void modifyVersionInfo(MultipartFile file, Long versionId) {
         Version versionDb = versionService.getById(versionId);
-        versionDb.setUrl(DOWNLOAD_HTTP + file.getOriginalFilename());
+        versionDb.setUrl(customProperties.getHttp() + file.getOriginalFilename());
         versionService.updateVersion(versionDb);
     }
 

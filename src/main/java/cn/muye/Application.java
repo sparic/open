@@ -1,5 +1,6 @@
 package cn.muye;
 
+import cn.muye.config.CustomProperties;
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -10,9 +11,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,6 +25,7 @@ import java.util.Properties;
 @SpringBootApplication
 @ComponentScan
 @MapperScan("cn.muye.mapper")
+@EnableConfigurationProperties({CustomProperties.class})
 public class Application {
     private static Logger LOGGER = Logger.getLogger(Application.class);
 
