@@ -24,7 +24,7 @@ import java.util.Properties;
 @EnableAutoConfiguration
 @SpringBootApplication
 @ComponentScan
-@MapperScan("cn.muye.mapper")
+@MapperScan("cn.muye.**.mapper")
 @EnableConfigurationProperties({CustomProperties.class})
 public class Application {
     private static Logger LOGGER = Logger.getLogger(Application.class);
