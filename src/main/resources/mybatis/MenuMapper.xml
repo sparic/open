@@ -32,8 +32,12 @@
     </select>
 
     <select id="getById" resultMap="menuResult">
-    select ID,PARENT_ID,NAME,ORIGIN_ID,CREATE_TIME,UPDATE_TIME,VERSION_ID,IS_LEAF,CONTENT,URL from D_MENU where ID = #{id} and IS_VALID = 1
-  </select>
+        select ID,PARENT_ID,NAME,ORIGIN_ID,CREATE_TIME,UPDATE_TIME,VERSION_ID,IS_LEAF,CONTENT,URL from D_MENU where ID = #{id} and IS_VALID = 1
+    </select>
+
+    <select id="listMenusByParentId" resultMap="menuResult">
+        select ID,PARENT_ID,NAME,ORIGIN_ID,CREATE_TIME,UPDATE_TIME,VERSION_ID,IS_LEAF,CONTENT,URL from D_MENU where PARENT_ID = #{id} and IS_VALID = 1
+    </select>
 
     <insert id="saveMenu" useGeneratedKeys="true" keyProperty="id">
     insert into D_MENU(

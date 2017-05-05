@@ -51,4 +51,8 @@ public class MenuService {
     public List<Menu> getByVersionId(Long id) {
         return menuMapper.getByVersionId(id);
     }
+
+    public List<Menu> listMenusByParentId(Long id) {
+        return menuMapper.listMenusByParentId(id);
+    }
 }

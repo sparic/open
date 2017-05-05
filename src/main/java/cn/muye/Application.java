@@ -4,9 +4,10 @@ import cn.muye.config.CustomProperties;
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,7 +28,7 @@ import java.util.Properties;
 @MapperScan("cn.muye.**.mapper")
 @EnableConfigurationProperties({CustomProperties.class})
 public class Application {
-    private static Logger LOGGER = Logger.getLogger(Application.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")

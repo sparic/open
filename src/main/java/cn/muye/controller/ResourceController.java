@@ -21,6 +21,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -98,11 +99,11 @@ public class ResourceController {
 
     private void uploadFile(MultipartFile file) {
         try {
-            java.io.File dest = FileUtils.getFile(Constants.FILE_DIRECTORY + java.io.File.separator + "developers");
+            File dest = FileUtils.getFile(customProperties.getDirs() + File.separator + Constants.RESOURCE_SUB_DIRECTORY);
             LOGGER.info("createResource dest.path ={} ", dest.getPath());
             String fileName = file.getOriginalFilename();
             dest.mkdirs();
-            dest = FileUtils.getFile(dest.getPath() + java.io.File.separator + fileName);
+            dest = FileUtils.getFile(dest.getPath() + File.separator + fileName);
             LOGGER.info("createResource dest.path with fileName ={} ", dest.getPath());
             if (!dest.exists()) {
                 dest.createNewFile();
@@ -110,6 +111,8 @@ public class ResourceController {
             file.transferTo(dest);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+
         }
     }
 

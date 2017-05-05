@@ -7,7 +7,7 @@ import java.io.File;
  */
 public class Constants {
 
-    public static final String FILE_DIRECTORY = "e:\\\\download_home";
+    public static final String RESOURCE_SUB_DIRECTORY = "developers";
 
     public static final String TYPE_SDK = "sdk";
 

@@ -149,8 +149,12 @@ public class MenuController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "删除菜单", httpMethod = "DELETE", notes = "删除菜单")
     public AjaxResult deleteMenu(@ApiParam(value = "菜单ID")@PathVariable Long id) {
-        menuService.deleteById(id);
-        return AjaxResult.success();
+        List<Menu> childrenMenu = menuService.listMenusByParentId(id);
+        if (childrenMenu != null && childrenMenu.size() > 0) {
+            return AjaxResult.failed("不能删除有子菜单的父菜单");
+        } else {
+            return AjaxResult.success();
+        }
     }
 
 }

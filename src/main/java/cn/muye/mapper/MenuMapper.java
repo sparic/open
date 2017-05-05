@@ -23,4 +23,6 @@ public interface MenuMapper {
     Menu getById(Long id);
 
     List<Menu> getByVersionId(Long id);
+
+    List<Menu> listMenusByParentId(Long id);
 }

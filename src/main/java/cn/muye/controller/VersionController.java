@@ -1,9 +1,7 @@
 package cn.muye.controller;
 
 import cn.muye.bean.AjaxResult;
-import cn.muye.model.Menu;
 import cn.muye.model.Version;
-import cn.muye.service.MenuService;
 import cn.muye.service.VersionService;
 import com.github.pagehelper.PageHelper;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -12,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Date;
 import java.util.List;
 
@@ -27,9 +24,6 @@ public class VersionController {
 
     @Autowired
     private VersionService versionService;
-
-    @Autowired
-    private MenuService menuService;
 
     /**
      * 查询版本列表接口
@@ -112,7 +106,13 @@ public class VersionController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "删除版本", httpMethod = "DELETE", notes = "删除版本")
     public AjaxResult deleteVersion(@ApiParam(value = "版本ID") @PathVariable Long id) {
-        versionService.deleteById(id);
+        try {
+            versionService.deleteById(id);
+        } catch (Exception e) {
+            LOGGER.error("不能刪除有绑定菜单或SDK的版本", e);
+            return AjaxResult.failed("不能刪除有绑定菜单或SDK的版本");
+        } finally {
+        }
         return AjaxResult.success();
     }
 
@@ -127,27 +127,19 @@ public class VersionController {
     public AjaxResult copyVersion(@ApiParam(value = "版本ID") @RequestParam(value = "versionId", required = true) Long versionId,
                                   @ApiParam(value = "版本编号") @RequestParam(value = "versionCode", required = true) String versionCode,
                                   @ApiParam(value = "版本描述") @RequestParam(value = "description", required = false) String description) {
-        Version versionNew = new Version();
-        versionNew.setDescription(description);
-        versionNew.setVersionCode(versionCode);
-        versionNew.setCreateTime(new Date());
-        versionService.saveVersion(versionNew);
-        List<Menu> menuList = menuService.getByVersionId(versionId);
-        if (menuList != null && menuList.size() > 0) {
-            for (Menu m : menuList) {
-                Menu newMenu = new Menu();
-                newMenu.setVersionId(versionNew.getId());
-                newMenu.setIsLeaf(m.getIsLeaf());
-                newMenu.setCreateTime(new Date());
-                newMenu.setIsValid(m.getIsValid());
-                newMenu.setParentId(m.getParentId());
-                newMenu.setName(m.getName());
-                newMenu.setOriginId(m.getOriginId());
-                newMenu.setContent(m.getContent());
-                newMenu.setUrl(m.getUrl());
-                menuService.saveMenu(newMenu);
+
+        try {
+            Version versionNew = versionService.copyVersion(versionId, versionCode, description);
+            if (versionNew != null) {
+                return AjaxResult.success(versionNew);
+            } else {
+                return AjaxResult.failed();
             }
+        } catch (Exception e) {
+            LOGGER.error("添加失败", e);
+            return AjaxResult.failed();
+        } finally {
+
         }
-        return AjaxResult.success(versionNew);
     }
 }
