@@ -35,4 +35,8 @@ public class ResourceService {
     public Resource getById(Long id) {
         return resourceMapper.getById(id);
     }
+
+    public Long countResources(Integer page) {
+        return resourceMapper.countResources(page);
+    }
 }

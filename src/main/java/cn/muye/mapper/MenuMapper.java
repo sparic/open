@@ -25,4 +25,6 @@ public interface MenuMapper {
     List<Menu> getByVersionId(Long id);
 
     List<Menu> listMenusByParentId(Long id);
+
+    Long countMenus(Integer page, Long versionId);
 }

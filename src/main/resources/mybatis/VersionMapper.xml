@@ -9,14 +9,17 @@
     <result property="createTime" column="CREATE_TIME"/>
     <result property="updateTime" column="UPDATE_TIME"/>
     <result property="url" column="URL"/>
+    <result property="extendedVersionCode" column="EXTENDED_VERSION_CODE"/>
   </resultMap>
 
   <select id="listVersions" resultMap="versionResult">
-    select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME from D_VERSION
+    select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME,EXTENDED_VERSION_CODE from D_VERSION
+    ORDER BY CREATE_TIME DESC
   </select>
 
   <select id="getById" parameterType="Long" resultMap="versionResult">
-    select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME from D_VERSION where ID = #{id}
+    select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME,EXTENDED_VERSION_CODE from D_VERSION where ID = #{id}
+    ORDER BY CREATE_TIME DESC
   </select>
 
   <insert id="saveVersion" useGeneratedKeys="true" keyProperty="id">
@@ -24,12 +27,14 @@
     VERSION_CODE,
     DESCRIPTION,
     CREATE_TIME,
-    UPDATE_TIME
+    UPDATE_TIME,
+    EXTENDED_VERSION_CODE
     ) values (
     #{versionCode},
     #{description},
     #{createTime},
-    #{updateTime}
+    #{updateTime},
+    #{extendedVersionCode}
     )
   </insert>
 

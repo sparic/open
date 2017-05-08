@@ -1,20 +1,21 @@
-package cn.muye.model;
+package cn.muye.dto;
 
 import java.util.Date;
 
 /**
- * Created by Ray.Fu on 2017/5/2.
+ * Created by Ray.Fu on 2017/5/8.
  */
-public class Version {
+public class VersionDto {
+
     private Long id;
 
     private String versionCode;
 
     private String description;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date updateTime;
+    private String updateTime;
 
     private String extendedVersionCode;
 
@@ -44,28 +45,20 @@ public class Version {
         this.description = description;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public String getExtendedVersionCode() {
@@ -74,5 +67,13 @@ public class Version {
 
     public void setExtendedVersionCode(String extendedVersionCode) {
         this.extendedVersionCode = extendedVersionCode;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

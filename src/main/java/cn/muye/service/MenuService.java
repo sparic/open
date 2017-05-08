@@ -55,4 +55,8 @@ public class MenuService {
     public List<Menu> listMenusByParentId(Long id) {
         return menuMapper.listMenusByParentId(id);
     }
+
+    public Long countMenus(Integer page, Long versionId) {
+        return menuMapper.countMenus(page, versionId);
+    }
 }

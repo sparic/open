@@ -43,13 +43,15 @@ public class VersionService {
         versionMapper.deleteById(id);
     }
 
-    public Version copyVersion(Long versionId, String versionCode, String description) {
+    public Version copyVersion(Long extendedVersionId, String versionCode, String description) {
         Version versionNew = new Version();
+        Version extendedVersion = versionMapper.getById(extendedVersionId);
+        versionNew.setExtendedVersionCode(extendedVersion != null ? extendedVersion.getVersionCode() : null);
         versionNew.setDescription(description);
         versionNew.setVersionCode(versionCode);
         versionNew.setCreateTime(new Date());
         versionMapper.saveVersion(versionNew);
-        List<Menu> menuList = menuService.getByVersionId(versionId);
+        List<Menu> menuList = menuService.getByVersionId(extendedVersionId);
         if (menuList != null && menuList.size() > 0) {
             for (Menu m : menuList) {
                 Menu newMenu = new Menu();

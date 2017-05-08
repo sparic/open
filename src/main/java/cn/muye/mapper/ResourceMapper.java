@@ -18,4 +18,6 @@ public interface ResourceMapper {
     void deleteById(Long id);
 
     Resource getById(Long id);
+
+    Long countResources(Integer page);
 }
