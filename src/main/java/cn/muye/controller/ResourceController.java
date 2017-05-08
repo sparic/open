@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.impl.cookie.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import java.util.Random;
  * Created by Ray.Fu on 2017/4/27.
  */
 @RestController
-@RequestMapping("/resource")
 public class ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceController.class);
@@ -49,7 +47,7 @@ public class ResourceController {
      * @param pageSize
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = {"resource","admin/resource"},method = RequestMethod.GET)
     @ApiOperation(value = "获取所有文件", httpMethod = "GET", notes = "获取所有文件")
     public AjaxResult getFileList(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                   @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
@@ -72,7 +70,7 @@ public class ResourceController {
      * @param file
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = {"admin/resource"},method = RequestMethod.POST)
     @ApiOperation(value = "上传文件", httpMethod = "POST", notes = "上传文件")
     public AjaxResult uploadAndPostFile(@ApiParam(value = "文件") @RequestParam(value = "file", required = false) MultipartFile file) {
         String fileName = file.getOriginalFilename();

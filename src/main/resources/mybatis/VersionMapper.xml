@@ -14,12 +14,12 @@
 
   <select id="listVersions" resultMap="versionResult">
     select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME,EXTENDED_VERSION_CODE from D_VERSION
-    ORDER BY CREATE_TIME DESC
+    ORDER BY ID DESC
   </select>
 
   <select id="getById" parameterType="Long" resultMap="versionResult">
     select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME,EXTENDED_VERSION_CODE from D_VERSION where ID = #{id}
-    ORDER BY CREATE_TIME DESC
+    ORDER BY ID DESC
   </select>
 
   <insert id="saveVersion" useGeneratedKeys="true" keyProperty="id">

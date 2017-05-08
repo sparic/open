@@ -25,7 +25,6 @@ import java.util.List;
  * Created by Ray.Fu on 2017/5/2.
  */
 @RestController
-@RequestMapping("/version")
 public class VersionController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(VersionController.class);
@@ -37,13 +36,13 @@ public class VersionController {
     private CustomProperties customProperties;
 
     /**
-     * 查询版本列表接口
+     * 查询版本列表接口 admin
      *
      * @param page
      * @param pageSize
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = {"admin/version","/version"}, method = RequestMethod.GET)
     @ApiOperation(value = "查询版本列表", httpMethod = "GET", notes = "查询版本列表")
     public AjaxResult listVersions(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                    @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
@@ -78,7 +77,7 @@ public class VersionController {
      * @param versionStr
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = {"admin/version"}, method = RequestMethod.POST)
     @ApiOperation(value = "新增或修改版本", httpMethod = "POST", notes = "新增或修改版本")
     public AjaxResult postVersion(@ApiParam(value = "版本对象") @RequestBody String versionStr) {
         return addOrUpdate(versionStr);
@@ -93,11 +92,6 @@ public class VersionController {
         if (version.getId() != null) {
             Version versionDb = versionService.getById(version.getId());
             if (versionDb != null) {
-//            String extendId = version.getExtendedVersionCode();
-//            if (!StringUtils.isNullOrEmpty(extendId)) {
-//                Version versionNew = versionService.copyVersion(Long.valueOf(extendId), version.getVersionCode(), version.getDescription());
-//                return AjaxResult.success(versionNew);
-//            }
                 versionDb.setVersionCode(version.getVersionCode());
                 versionDb.setDescription(version.getDescription());
                 versionDb.setUpdateTime(new Date());
@@ -129,7 +123,7 @@ public class VersionController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = {"admin/version/{id}"}, method = RequestMethod.GET)
     @ApiOperation(value = "获取单个版本", httpMethod = "GET", notes = "获取单个版本")
     public AjaxResult getVersion(@ApiParam(value = "版本ID") @PathVariable Long id) {
         Version version = versionService.getById(id);
@@ -144,7 +138,7 @@ public class VersionController {
      * @param versionStr
      * @return
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = {"admin/version/{id}"}, method = RequestMethod.PUT)
     @ApiOperation(value = "修改版本", httpMethod = "PUT", notes = "修改版本")
     public AjaxResult putVersion(@ApiParam(value = "版本ID") @PathVariable Long id, @ApiParam(value = "版本对象") @RequestBody String versionStr) {
         Version version = JSON.parseObject(versionStr, Version.class);
@@ -175,7 +169,7 @@ public class VersionController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = {"admin/version/{id}"}, method = RequestMethod.DELETE)
     @ApiOperation(value = "删除版本", httpMethod = "DELETE", notes = "删除版本")
     public AjaxResult deleteVersion(@ApiParam(value = "版本ID") @PathVariable Long id) {
         try {
