@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -50,8 +51,8 @@ public class ResourceController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ApiOperation(value = "获取所有文件", httpMethod = "GET", notes = "获取所有文件")
-    public AjaxResult getFileList(@ApiParam(value = "页号")@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                  @ApiParam(value = "每页记录数")@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
+    public AjaxResult getFileList(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                  @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<Resource> list = resourceService.listFiles(page);
         List<ResourceDto> listDto = Lists.newArrayList();
@@ -74,15 +75,15 @@ public class ResourceController {
     @RequestMapping(method = RequestMethod.POST)
     @ApiOperation(value = "上传文件", httpMethod = "POST", notes = "上传文件")
     public AjaxResult uploadAndPostFile(@ApiParam(value = "文件") @RequestParam(value = "file", required = false) MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+        List<String> excludeFileTypes = customProperties.getExcludeFileTypes();
+        if (excludeFileTypes.contains(extensionName)) {
+            return AjaxResult.failed("不能上传" + extensionName + "类型文件");
+        }
         uploadFile(file);
         return addFileInfo(file);
     }
-
-//    private void modifyVersionInfo(MultipartFile file, Long versionId) {
-//        Version versionDb = versionService.getById(versionId);
-//        versionDb.setUrl(customProperties.getHttp() + file.getOriginalFilename());
-//        versionService.updateVersion(versionDb);
-//    }
 
     private void uploadFile(MultipartFile file) {
         try {

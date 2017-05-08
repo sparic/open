@@ -62,7 +62,7 @@ public class VersionController {
 
     private VersionDto objectToDto(Version version) {
         VersionDto dto = new VersionDto();
-        dto.setUrl(version.getUrl() == null ? null : customProperties.getHttp() + version.getUrl());
+        dto.setUrl(version.getUrl());
         dto.setCreateTime(DateTimeUtils.getDateString(version.getCreateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
         dto.setUpdateTime(DateTimeUtils.getDateString(version.getUpdateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
         dto.setDescription(version.getDescription());
@@ -112,8 +112,8 @@ public class VersionController {
             //ps:extendedVersionCode这个字段其实是表的ID
             String extendId = version.getExtendedVersionCode();
             if (!StringUtils.isNullOrEmpty(extendId)) {
-                Version versionNew = versionService.copyVersion(Long.valueOf(extendId), version.getVersionCode(), version.getDescription());
-                return AjaxResult.success(versionNew);
+                version = versionService.copyVersion(Long.valueOf(extendId), version.getVersionCode(), version.getDescription());
+                return AjaxResult.success(version);
             }
             version.setCreateTime(new Date());
             version.setExtendedVersionCode(null);

@@ -28,13 +28,15 @@
     DESCRIPTION,
     CREATE_TIME,
     UPDATE_TIME,
-    EXTENDED_VERSION_CODE
+    EXTENDED_VERSION_CODE,
+    URL
     ) values (
     #{versionCode},
     #{description},
     #{createTime},
     #{updateTime},
-    #{extendedVersionCode}
+    #{extendedVersionCode},
+    #{url}
     )
   </insert>
 
