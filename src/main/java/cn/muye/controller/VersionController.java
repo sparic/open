@@ -112,7 +112,7 @@ public class VersionController {
             //ps:extendedVersionCode这个字段其实是表的ID
             String extendId = version.getExtendedVersionCode();
             if (!StringUtils.isNullOrEmpty(extendId)) {
-                version = versionService.copyVersion(Long.valueOf(extendId), version.getVersionCode(), version.getDescription());
+                version = versionService.copyVersion(Long.valueOf(extendId), version);
                 return AjaxResult.success(version);
             }
             version.setCreateTime(new Date());
