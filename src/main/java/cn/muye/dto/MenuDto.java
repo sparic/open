@@ -1,6 +1,7 @@
 package cn.muye.dto;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Ray.Fu on 2017/5/8.
@@ -9,7 +10,7 @@ public class MenuDto {
 
     private Long id;
 
-    private Long parentId;
+    private String parentId;
 
     private String name;
 
@@ -29,6 +30,8 @@ public class MenuDto {
 
     private String url;
 
+    private List<MenuDto> children;
+
     public Long getId() {
         return id;
     }
@@ -37,11 +40,11 @@ public class MenuDto {
         this.id = id;
     }
 
-    public Long getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Long parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
@@ -115,5 +118,13 @@ public class MenuDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public List<MenuDto> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<MenuDto> children) {
+        this.children = children;
     }
 }

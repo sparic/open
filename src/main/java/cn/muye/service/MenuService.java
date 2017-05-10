@@ -31,8 +31,17 @@ public class MenuService {
      * @param page
      * @return
      */
-    public List<Menu> listMenus(Integer page, Long versionId) {
-        return menuMapper.listMenus(page, versionId);
+//    public List<Menu> listMenus(Integer page, Long versionId) {
+//        return menuMapper.listMenus(page, versionId);
+//    }
+
+    /**
+     * 不分页
+     * @param versionId
+     * @return
+     */
+    public List<Menu> listMenus(Long versionId) {
+        return menuMapper.listMenus(versionId);
     }
 
     public List<Menu> getByPid(Long id) {

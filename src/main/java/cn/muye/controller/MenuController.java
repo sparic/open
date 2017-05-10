@@ -33,37 +33,43 @@ public class MenuController {
     @Autowired
     private VersionService versionService;
 
+    private static List<MenuDto> menuDtoList;
+
     /**
      * 查询菜单列表接口
      *
-     * @param page
-     * @param pageSize
      * @param versionId
      * @return
      */
     @RequestMapping(value = {"/menu", "admin/menu"},method = RequestMethod.GET)
     @ApiOperation(value = "查询菜单列表", httpMethod = "GET", notes = "查询菜单列表")
-    public AjaxResult getMenuList(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                  @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-                                  @ApiParam(value = "版本ID") @RequestParam(value = "versionId", required = false) Long versionId) {
+    public AjaxResult getMenuList(@ApiParam(value = "版本ID") @RequestParam(value = "versionId", required = false) Long versionId) {
         List<Menu> menuList = null;
-        PageHelper.startPage(page, pageSize);
         if (versionId == null) {
             List<Version> list = versionService.listVersions();
             Version version = list.get(0);
             menuList = menuService.getByVersionId(version.getId());
         } else {
-            menuList = menuService.listMenus(page, versionId);
+            menuList = menuService.listMenus(versionId);
         }
-        List<MenuDto> menuDtoList = Lists.newArrayList();
+        menuDtoList = Lists.newArrayList();
         if (menuList != null && menuList.size() > 0) {
             for (Menu menu : menuList) {
                 menuDtoList.add(objectToDto(menu));
             }
         }
-        PageInfo<MenuDto> menuPageInfo = new PageInfo(menuList);
-        menuPageInfo.setList(menuDtoList);
-        return AjaxResult.success(menuPageInfo);
+        //扔给前端的最上层菜单
+        List<MenuDto> menuDtoNewList = Lists.newArrayList();
+        if (menuDtoList != null && menuDtoList.size() > 0) {
+            for (MenuDto menuDto : menuDtoList) {
+                menuDto.setContent(null);
+                getMenu(menuDto);
+                if (menuDto.getParentId() == null || menuDto.getParentId().equals("null")) {
+                    menuDtoNewList.add(menuDto);
+                }
+            }
+        }
+        return AjaxResult.success(menuDtoNewList);
     }
 
     private MenuDto objectToDto(Menu menu) {
@@ -77,7 +83,7 @@ public class MenuController {
         menuDto.setIsLeaf(menu.getIsLeaf());
         menuDto.setOriginId(menu.getOriginId());
         menuDto.setName(menu.getName());
-        menuDto.setParentId(menu.getParentId());
+        menuDto.setParentId(String.valueOf(menu.getParentId()));
         menuDto.setVersionId(menu.getVersionId());
         return menuDto;
     }
@@ -87,35 +93,32 @@ public class MenuController {
      * @param menuDto
      * @return
      */
-//    private static List<MenuDto> getChildrenMenu(MenuDto menuDto) {
-//        List<MenuDto> menuChildren = Lists.newArrayList();
-//        if (menuDtoList != null && menuDtoList.size() > 0) {
-//            for (MenuDto m : menuDtoList) {
-//                Long parentId = m.getParentId();
-//                if (parentId != null && parentId.equals(menuDto.getId())) {
-//                    menuChildren.add(m);
-//                }
-//            }
-//        }
-//        return menuChildren;
-//    }
+    private static List<MenuDto> getChildrenMenu(MenuDto menuDto) {
+        List<MenuDto> menuChildren = Lists.newArrayList();
+        if (menuDtoList != null && menuDtoList.size() > 0) {
+            for (MenuDto m : menuDtoList) {
+                Long parentId = m.getParentId() == null || m.getParentId().equals("null") ? null : Long.valueOf(m.getParentId());
+                if (parentId != null && parentId.equals(menuDto.getOriginId())) {
+                    menuChildren.add(m);
+                }
+            }
+        }
+        return menuChildren;
+    }
 
     /**
      * 组装MenuDto的menuDtoChildren
      * @param menuDto
      */
-//    private void getMenu(MenuDto menuDto) {
-//        List<MenuDto> childrenMenuDtoList = getChildrenMenu(menuDto);
-//        if (!menuDto.getIsLeaf()) {
-//            menuDto.setChildrenMenuDtoList(childrenMenuDtoList);
-//            for (MenuDto m : childrenMenuDtoList) {
-//                getMenu(m);
-//            }
-//        } else {
-//            Document document = documentService.getByMenuId(menuDto.getId());
-//            menuDto.setDocumentId(document.getId());
-//        }
-//    }
+    private void getMenu(MenuDto menuDto) {
+        List<MenuDto> childrenMenuDtoList = getChildrenMenu(menuDto);
+        if (childrenMenuDtoList != null && childrenMenuDtoList.size() > 0) {
+            menuDto.setChildren(childrenMenuDtoList);
+            for (MenuDto m : childrenMenuDtoList) {
+                getMenu(m);
+            }
+        }
+    }
 
     /**
      * 新增接口
@@ -161,10 +164,15 @@ public class MenuController {
      * @return
      */
     @RequestMapping(value = {"admin/menu/{id}"}, method = RequestMethod.GET)
-    @ApiOperation(value = "获取单个菜单下的子菜单", httpMethod = "GET", notes = "获取单个菜单下的子菜单")
+    @ApiOperation(value = "获取单个菜单详情", httpMethod = "GET", notes = "获取单个菜单详情")
     public AjaxResult getMenu(@ApiParam(value = "菜单ID") @PathVariable Long id) {
-        List<Menu> menuList = menuService.getByPid(id);
-        return AjaxResult.success(menuList);
+        try {
+            Menu menu = menuService.getById(id);
+            return AjaxResult.success(objectToDto(menu));
+        } catch (Exception e) {
+            LOGGER.error("{}", e);
+            return AjaxResult.failed("不存在该条记录");
+        }
     }
 
     /**

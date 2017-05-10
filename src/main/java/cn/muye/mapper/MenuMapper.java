@@ -14,7 +14,7 @@ public interface MenuMapper {
 
     void updateMenu(Menu menu);
 
-    List<Menu> listMenus(Integer page, @Param(value = "versionId") Long versionId);
+    List<Menu> listMenus(@Param(value = "versionId") Long versionId);
 
     List<Menu> getByPid(Long id);
 
