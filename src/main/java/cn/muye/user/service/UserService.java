@@ -1,7 +1,7 @@
-package cn.muye.login.service;
+package cn.muye.user.service;
 
-import cn.muye.login.domain.User;
-import cn.muye.login.mapper.UserMapper;
+import cn.muye.user.domain.User;
+import cn.muye.user.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

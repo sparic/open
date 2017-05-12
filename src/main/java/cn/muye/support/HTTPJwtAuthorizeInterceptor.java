@@ -4,7 +4,7 @@ import cn.muye.bean.AjaxResult;
 import cn.muye.bean.Constants;
 import cn.muye.cache.RedisUtil;
 import cn.muye.config.CustomProperties;
-import cn.muye.login.domain.Token;
+import cn.muye.user.domain.Token;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;

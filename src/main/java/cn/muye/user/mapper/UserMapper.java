@@ -1,6 +1,6 @@
-package cn.muye.login.mapper;
+package cn.muye.user.mapper;
 
-import cn.muye.login.domain.User;
+import cn.muye.user.domain.User;
 
 import java.util.List;
 

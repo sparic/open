@@ -1,4 +1,4 @@
-package cn.muye.login.domain;
+package cn.muye.user.domain;
 
 import java.io.Serializable;
 
