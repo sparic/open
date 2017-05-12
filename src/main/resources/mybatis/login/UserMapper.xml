@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.login.mapper.UserMapper">
+
+    <resultMap id="userResult" type="cn.muye.login.domain.User">
+        <result property="id" column="ID"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="emailAddress" column="EMAIL_ADDRESS"/>
+        <result property="sex" column="SEX"/>
+        <result property="passwordChangeRequired" column="PASSWORD_CHANGE_REQUIRED"/>
+        <result property="receiveEmail" column="RECEIVE_EMAIL"/>
+        <result property="registered" column="REGISTERED"/>
+        <result property="deactivated" column="DEACTIVATED"/>
+        <result property="lastVisit" column="LAST_VISIT"/>
+        <result property="userType" column="USER_TYPE"/>
+        <result property="appKey" column="APP_KEY"/>
+        <result property="appSecret" column="APP_SECRET"/>
+        <result property="phone" column="PHONE"/>
+        <result property="company" column="COMPANY"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      ID, USER_NAME, EMAIL_ADDRESS, LAST_VISIT, USER_TYPE, COMPANY, PHONE
+    </sql>
+
+    <select id="getUserById" resultMap="userResult">
+        select
+        <include refid="Base_Column_List"/>
+        from D_USER u where u.ID = #{id}
+    </select>
+
+    <select id="getUserByName" resultMap="userResult">
+        select
+        *
+        from D_USER u where u.USER_NAME = #{userName}
+    </select>
+
+    <select id="getUserList" resultMap="userResult">
+        select
+        <include refid="Base_Column_List"/>
+        from D_USER ORDER BY USER_NAME
+    </select>
+
+    <insert id="save">
+    insert into D_USER(
+    USER_NAME,
+    PASSWORD,
+    SEX,
+    EMAIL_ADDRESS,
+    PASSWORD_CHANGE_REQUIRED,
+    RECEIVE_EMAIL,
+    DEACTIVATED,
+    LAST_VISIT,
+    USER_TYPE
+    ) values (
+    #{userName},
+    #{password},
+    #{sex},
+    #{emailAddress},
+    #{passwordChangeRequired},
+    #{receiveEmail},
+    #{deactivated},
+    #{lastVisit},
+    #{userType}
+    )
+  </insert>
+
+    <update id="update">
+        update D_USER SET
+        USER_NAME = #{userName},
+        PASSWORD = #{password},
+        SEX = #{sex},
+        EMAIL_ADDRESS = #{emailAddress},
+        PASSWORD_CHANGE_REQUIRED = #{passwordChangeRequired},
+        RECEIVE_EMAIL = #{receiveEmail},
+        DEACTIVATED = #{deactivated},
+        LAST_VISIT = #{lastVisit},
+        USER_TYPE = #{userType}
+        WHERE
+        ID = #{id}
+    </update>
+
+</mapper>

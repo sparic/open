@@ -12,10 +12,10 @@
 //@SpringApplicationConfiguration(classes = Application.class)
 //public class TestProperties {
 //
-//    @Value("${devCenter.push.dirs}")
+//    @Value("${devCenter.pushDirs}")
 //    private String blogAuthor;
 //
-//    @Value("${devCenter.push.http}")
+//    @Value("${devCenter.pushHttp}")
 //    private String blogTitle;
 //
 //    private Logger LOGGER = LoggerFactory.getLogger(this.getClass());

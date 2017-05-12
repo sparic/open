@@ -9,29 +9,37 @@ import java.util.List;
  * Created by Ray.Fu on 2017/5/3.
  */
 @Component
-@ConfigurationProperties(prefix="devCenter.push")
+@ConfigurationProperties(prefix="devCenter")
 public class CustomProperties {
 
-    private String dirs;
+    private String pushDirs;
 
-    private String http;
+    private String pushHttp;
+
+	private long tokenExpireTime;
+
+	private String redisMasterAddress;
+
+	private int redisMasterPort;
+
+	private String redisRedissonCache;
 
     private List<String> excludeFileTypes;
 
-    public String getDirs() {
-        return dirs;
+    public String getPushDirs() {
+        return pushDirs;
     }
 
-    public void setDirs(String dirs) {
-        this.dirs = dirs;
+    public void setPushDirs(String pushDirs) {
+        this.pushDirs = pushDirs;
     }
 
     public String getHttp() {
-        return http;
+        return pushHttp;
     }
 
     public void setHttp(String http) {
-        this.http = http;
+        this.pushHttp = http;
     }
 
     public List<String> getExcludeFileTypes() {
@@ -41,4 +49,36 @@ public class CustomProperties {
     public void setExcludeFileTypes(List<String> excludeFileTypes) {
         this.excludeFileTypes = excludeFileTypes;
     }
+
+	public long getTokenExpireTime() {
+		return tokenExpireTime;
+	}
+
+	public void setTokenExpireTime(long tokenExpireTime) {
+		this.tokenExpireTime = tokenExpireTime;
+	}
+
+	public String getRedisMasterAddress() {
+		return redisMasterAddress;
+	}
+
+	public void setRedisMasterAddress(String redisMasterAddress) {
+		this.redisMasterAddress = redisMasterAddress;
+	}
+
+	public int getRedisMasterPort() {
+		return redisMasterPort;
+	}
+
+	public void setRedisMasterPort(int redisMasterPort) {
+		this.redisMasterPort = redisMasterPort;
+	}
+
+	public String getRedisRedissonCache() {
+		return redisRedissonCache;
+	}
+
+	public void setRedisRedissonCache(String redisRedissonCache) {
+		this.redisRedissonCache = redisRedissonCache;
+	}
 }

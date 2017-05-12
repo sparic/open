@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -85,7 +84,7 @@ public class ResourceController {
 
     private void uploadFile(MultipartFile file) {
         try {
-            File dest = FileUtils.getFile(customProperties.getDirs() + File.separator + Constants.RESOURCE_SUB_DIRECTORY);
+            File dest = FileUtils.getFile(customProperties.getPushDirs() + File.separator + Constants.RESOURCE_SUB_DIRECTORY);
             LOGGER.info("createResource dest.path ={} ", dest.getPath());
             String fileName = file.getOriginalFilename();
             dest.mkdirs();

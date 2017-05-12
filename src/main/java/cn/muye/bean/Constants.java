@@ -11,4 +11,6 @@ public class Constants {
 
     public static final String TYPE_SDK = "sdk";
 
+
+	public static final String REDIS_TOKEN = "token";
 }

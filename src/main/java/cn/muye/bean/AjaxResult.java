@@ -50,7 +50,11 @@ public class AjaxResult {
 	public static final AjaxResult failed(Object data, String message) {
 		return new AjaxResult(CODE_FAILED, data, message);
 	}
-	
+
+	public static final AjaxResult failed(int code, String message) {
+		return new AjaxResult(code, null, message);
+	}
+
 	public static final AjaxResult failed(Object data) {
 		return new AjaxResult(CODE_FAILED, data, "");
 	}

@@ -643,11 +643,11 @@ public class TypeConverter {
 
 	}
     
-	static public void main(String[] args) {
-		Integer[] integerArray = new Integer[]{120100,300400,1,2,330100,980100,310000,330000,120200,980000,110000,340200,110100,300000,340000,490000,490100,310100,110200,120000,340100,310200};
-		int[] ints = TypeConverter.toInts(integerArray);
-		System.out.println(toString(null));
-		System.out.println("ggg="+0x0613);
-		System.out.println("ggg="+(int)0x0613);
-	}
+//	static public void main(String[] args) {
+//		Integer[] integerArray = new Integer[]{120100,300400,1,2,330100,980100,310000,330000,120200,980000,110000,340200,110100,300000,340000,490000,490100,310100,110200,120000,340100,310200};
+//		int[] ints = TypeConverter.toInts(integerArray);
+//		System.out.println(toString(null));
+//		System.out.println("ggg="+0x0613);
+//		System.out.println("ggg="+(int)0x0613);
+//	}
 }
