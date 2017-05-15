@@ -1,7 +1,7 @@
 package cn.muye;
 
-//import cn.muye.cache.redisson.RedissonBean;
-
+import cn.muye.cache.RedissonUtil;
+import cn.muye.cache.redisson.RedissonBean;
 import cn.muye.config.CustomProperties;
 import cn.muye.support.HTTPJwtAuthorizeInterceptor;
 import com.github.pagehelper.PageHelper;
@@ -12,6 +12,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -44,8 +45,20 @@ public class Application extends WebMvcConfigurerAdapter {
 	@Autowired
 	private CustomProperties customProperties;
 
-//	@Value("${redis.masterAddress}")
-//	private String masterAddress;
+	@Value("${devCenter.redisMasterAddressPort}")
+	private String masterAddress;
+
+	@Bean
+	public RedissonBean redissonBean() {
+		RedissonBean redissonBean = new RedissonBean();
+		redissonBean.setMasterAddress(masterAddress);
+		return redissonBean;
+	}
+
+	@Bean
+	public RedissonUtil redissonUtil() {
+		return new RedissonUtil();
+	}
 
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource")
@@ -85,6 +98,7 @@ public class Application extends WebMvcConfigurerAdapter {
 	public void addInterceptors(InterceptorRegistry registry) {
 		HTTPJwtAuthorizeInterceptor httpJwtAuthorizeInterceptor = new HTTPJwtAuthorizeInterceptor();
 		httpJwtAuthorizeInterceptor.setCustomProperties(customProperties);
+		httpJwtAuthorizeInterceptor.setRedissonUtil(redissonUtil());
 		registry.addInterceptor(httpJwtAuthorizeInterceptor).addPathPatterns("/**")
 				.excludePathPatterns("/**/user/login/**", "/**/api-docs/**");
 		super.addInterceptors(registry);
@@ -95,23 +109,6 @@ public class Application extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/swagger/**").addResourceLocations("classpath:/static/swagger/");
 		super.addResourceHandlers(registry);
 	}
-
-	/**
-	 * 利用fastjson替换掉jackson，且解决中文乱码问题
-	 * @param converters
-//	 */
-//	@Override
-//	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//		FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
-//		FastJsonConfig fastJsonConfig = new FastJsonConfig();
-//		fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
-//		//处理中文乱码问题
-//		List<MediaType> fastMediaTypes = new ArrayList<>();
-//		fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
-//		fastConverter.setSupportedMediaTypes(fastMediaTypes);
-//		fastConverter.setFastJsonConfig(fastJsonConfig);
-//		converters.add(fastConverter);
-//	}
 
 	/**
 	 * Start

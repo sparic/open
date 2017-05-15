@@ -2,9 +2,8 @@ package cn.muye.user.controller;
 
 import cn.muye.bean.AjaxResult;
 import cn.muye.bean.Constants;
-import cn.muye.cache.RedisUtil;
-//import cn.muye.cache.entity.CommonCache;
-//import cn.muye.cache.util.RedissonUtil;
+import cn.muye.cache.CommonCache;
+import cn.muye.cache.RedissonUtil;
 import cn.muye.config.CustomProperties;
 import cn.muye.user.domain.LoginInfo;
 import cn.muye.user.domain.Token;
@@ -44,10 +43,8 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-//	@Autowired
-//	private RedissonUtil redissonUtil;
-
-	private RedisUtil redisUtil;
+	@Autowired
+	private RedissonUtil redissonUtil;
 
 	/**
 	 * 登录接口
@@ -57,7 +54,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = {"admin/user/login", "user/login"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ApiOperation(value = "登录", httpMethod = "POST", notes = "登录（type:页面类型（1:后台页面 3：前台页面））")
-	public AjaxResult login(@RequestBody String loginInfoStr, HttpServletRequest httpRequest) {
+	public AjaxResult login(@RequestBody String loginInfoStr) {
 		LoginInfo loginInfo = JSON.parseObject(loginInfoStr, LoginInfo.class);
 		String userName = loginInfo.getUserName();
 		int type = loginInfo.getType();
@@ -76,20 +73,23 @@ public class UserController {
 		if (localMD5.equals(md5)) {
 			String tokenCode = TokenUtils.createToken(userName);
 
-			Jedis jedis = RedisUtil.getJedis();
-			Map<String, String> tokenMap = Maps.newConcurrentMap();
 			long expireTime = System.currentTimeMillis() + customProperties.getTokenExpireTime();
 			Token token = new Token(tokenCode, new Date(expireTime));
 			token.setUser(user);
-			//删除原redis中的登录token信息
-			jedis.hdel(Constants.REDIS_TOKEN, tokenCode);
-			//存入新的信息
-			tokenMap.put(tokenCode, JSON.toJSONString(token));
-			jedis.hmset(Constants.REDIS_TOKEN, tokenMap);
+
+			//将token存入redis
+			CommonCache commonCache = redissonUtil.commonCache();
+			Map<String, Token> tokenCache = commonCache.getTokenCache();
+			if (null == tokenCache) {
+				tokenCache = Maps.newConcurrentMap();
+			}
+			tokenCache.put(tokenCode, new Token(tokenCode, new Date(expireTime)));
+			commonCache.setTokenCache(tokenCache);
 
 			//更新最后访问时间
 			user.setLastVisit(new Date());
 			userService.update(user);
+
 			//将token返回前端
 			JSONObject jo = new JSONObject();
 			jo.put("token", tokenCode);
@@ -120,23 +120,24 @@ public class UserController {
 	/**
 	 * 添加用户
 	 *
-	 * @param user
+	 * @param userStr
 	 * @return
 	 */
 	@RequestMapping(value = "admin/user", method = RequestMethod.POST)
 	@ApiOperation(value = "添加/更新用户", httpMethod = "POST", notes = "添加/更新用户")
-	public AjaxResult addUser(@ApiParam(value = "用户对象（userType：1：超管 2：管理员 3：普通用户）") @RequestBody User user) {
+	public AjaxResult addUser(@ApiParam(value = "用户对象（userType：1：超管 2：管理员 3：普通用户）") @RequestBody String userStr) {
+		User user = JSON.parseObject(userStr, User.class);
 		if(null == user){
 			return AjaxResult.failed("用户信息为空");
 		}
 		//TODO 生成秘钥
 
-		if(user.getId() >= 1){
+		if(user.getId() != null && user.getId() >= 1){
 			userService.update(user); //更新用户
 		}else {
 			userService.save(user); //添加用户
 		}
-		return AjaxResult.success(user);
+		return AjaxResult.success();
 	}
 
 
@@ -171,8 +172,11 @@ public class UserController {
 	public AjaxResult loginOut(HttpServletRequest request) {
 		//清除redis中的token 数据
 		String tokenCode = request.getParameter("token");
-		Jedis jedis = RedisUtil.getJedis();
-		jedis.hdel(Constants.REDIS_TOKEN,tokenCode);
+		//将token存入redis
+		CommonCache commonCache = redissonUtil.commonCache();
+		Map<String, Token> tokenCache = commonCache.getTokenCache();
+		tokenCache.remove(tokenCode);
+		commonCache.setTokenCache(tokenCache);
 		return AjaxResult.success();
 	}
 }

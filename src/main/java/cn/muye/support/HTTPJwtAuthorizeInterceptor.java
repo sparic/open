@@ -1,28 +1,23 @@
 package cn.muye.support;
 
 import cn.muye.bean.AjaxResult;
-import cn.muye.bean.Constants;
-import cn.muye.cache.RedisUtil;
+import cn.muye.cache.CommonCache;
+import cn.muye.cache.RedissonUtil;
 import cn.muye.config.CustomProperties;
 import cn.muye.user.domain.Token;
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-
-//import cn.muye.cache.entity.CommonCache;
-//import cn.muye.cache.util.RedissonUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,8 +31,8 @@ import java.util.Map;
 public class HTTPJwtAuthorizeInterceptor implements HandlerInterceptor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(HTTPJwtAuthorizeInterceptor.class);
-//	@Autowired
-//	private RedissonUtil redissonUtil;
+
+	private RedissonUtil redissonUtil;
 
 	private CustomProperties customProperties;
 
@@ -51,31 +46,28 @@ public class HTTPJwtAuthorizeInterceptor implements HandlerInterceptor {
 			this.returnJson(httpResponse, JSON.toJSONString(ajaxResult));
 			return false;
 		}
-		Jedis jedis = RedisUtil.getJedis();
-		List<String> tokenList = jedis.hmget(Constants.REDIS_TOKEN, requestToken);
-		if (null == tokenList || tokenList.size() <= 0) {
+
+		//验证是否有登录
+		CommonCache commonCache = redissonUtil.commonCache();
+		Map<String, Token> tokenMap = commonCache.getTokenCache();
+		if (!tokenMap.containsKey(requestToken)) {
 			AjaxResult ajaxResult = AjaxResult.failed(-1, "用户未登录");
 			this.returnJson(httpResponse, JSON.toJSONString(ajaxResult));
-			return false;
 		}
-		String tokenStr = tokenList.get(0);
-		Token token = JSON.parseObject(tokenStr, Token.class);
-		if(null == token){
-			AjaxResult ajaxResult = AjaxResult.failed(-1, "token无效");
-			this.returnJson(httpResponse, JSON.toJSONString(ajaxResult));
-			return false;
-		}
-		if (token.getExpireTime().before(new Date())) {
+
+		//验证token是否过期
+		Token token = tokenMap.get(requestToken);
+		Date expireTime = token.getExpireTime();
+		if(expireTime.before(new Date())){
 			AjaxResult ajaxResult = AjaxResult.failed(-1, "token过期");
 			this.returnJson(httpResponse, JSON.toJSONString(ajaxResult));
-			return false;
 		}
+
 		//更新token的超时时间,添加到redis
-		long expireTime = System.currentTimeMillis() + customProperties.getTokenExpireTime();
-		token.setExpireTime(new Date(expireTime));
-		Map<String, String> tokenMap = Maps.newConcurrentMap();
-		tokenMap.put(requestToken, JSON.toJSONString(token));
-		jedis.hmset(Constants.REDIS_TOKEN, tokenMap);
+		long newExpireTime = System.currentTimeMillis() + customProperties.getTokenExpireTime();
+		token.setExpireTime(new Date(newExpireTime));
+		tokenMap.put(requestToken, token);
+		commonCache.setTokenCache(tokenMap);
 		return true;
 	}
 
@@ -111,5 +103,9 @@ public class HTTPJwtAuthorizeInterceptor implements HandlerInterceptor {
 
 	public void setCustomProperties(CustomProperties customProperties) {
 		this.customProperties = customProperties;
+	}
+
+	public void setRedissonUtil(RedissonUtil redissonUtil) {
+		this.redissonUtil = redissonUtil;
 	}
 }
