@@ -166,7 +166,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = {"admin/user/loginOut", "user/loginOut"}, method = RequestMethod.POST)
-	@ApiOperation(value = "注销", httpMethod = "GET", notes = "注销")
+	@ApiOperation(value = "注销", httpMethod = "POST", notes = "注销")
 	public AjaxResult loginOut(HttpServletRequest request) {
 		//清除redis中的token 数据
 		String tokenCode = request.getParameter("token");
