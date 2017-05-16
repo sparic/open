@@ -1,7 +1,6 @@
 package cn.muye.user.controller;
 
 import cn.muye.bean.AjaxResult;
-import cn.muye.bean.Constants;
 import cn.muye.cache.CommonCache;
 import cn.muye.cache.RedissonUtil;
 import cn.muye.config.CustomProperties;
@@ -19,7 +18,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
