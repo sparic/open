@@ -24,4 +24,10 @@ public interface UserMapper {
 	User getUserByName(String userName);
 
 	List<User> getUserList(Integer page);
+
+	User getUserInfoByUserPhone(String userPhone);
+
+	void deleteById(Long id);
+
+	void bindUserRole(Long roleId, Long userId);
 }

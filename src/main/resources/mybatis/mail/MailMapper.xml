@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.mail.mapper.MailMapper">
+
+    <resultMap id="mailResult" type="cn.muye.mail.domain.Mail">
+        <result property="id" column="ID"/>
+        <result property="fromMail" column="FROM_MAIL"/>
+        <result property="toMail" column="TO_MAIL"/>
+        <result property="context" column="CONTEXT"/>
+        <result property="subject" column="SUBJECT"/>
+        <result property="sendTime" column="SEND_TIME"/>
+    </resultMap>
+
+    <select id="list" resultMap="mailResult">
+        select ID,
+            FROM_MAIL,
+            TO_MAIL,
+            CONTEXT,
+            SUBJECT,
+            SEND_TIME
+        from D_MAIL ORDER BY ID DESC
+    </select>
+
+    <select id="getById" parameterType="Long" resultMap="mailResult">
+        select ID,
+            FROM_MAIL,
+            TO_MAIL,
+            CONTEXT,
+            SUBJECT,
+            SEND_TIME
+        from D_MAIL where ID = #{id}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into D_MAIL(
+            FROM_MAIL,
+            TO_MAIL,
+            CONTEXT,
+            SUBJECT,
+            SEND_TIME)
+        values (
+            #{fromMail},
+            #{toMail},
+            #{context},
+            #{subject},
+            #{sendTime}
+          )
+    </insert>
+
+</mapper>

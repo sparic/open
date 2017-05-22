@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.muye.mapper.MenuMapper">
+<mapper namespace="cn.muye.menu.mapper.MenuMapper">
 
-    <resultMap id="menuResult" type="cn.muye.model.Menu">
+    <resultMap id="menuResult" type="cn.muye.menu.domain.Menu">
         <result property="id" column="ID"/>
         <result property="originId" column="ORIGIN_ID"/>
         <result property="parentId" column="PARENT_ID"/>
@@ -44,38 +44,38 @@
     </select>
 
     <insert id="saveMenu" useGeneratedKeys="true" keyProperty="id">
-    insert into D_MENU(
-        PARENT_ID,
-        NAME,
-        CREATE_TIME,
-        UPDATE_TIME,
-        VERSION_ID,
-        ORIGIN_ID,
-        CONTENT,
-        URL，
-        IS_VALID
-    ) values (
-        #{parentId},
-        #{name},
-        #{createTime},
-        #{updateTime},
-        #{versionId},
-        #{originId},
-        #{content},
-        #{url},
-        true
-        )
+        insert into D_MENU(
+            PARENT_ID,
+            NAME,
+            CREATE_TIME,
+            UPDATE_TIME,
+            VERSION_ID,
+            ORIGIN_ID,
+            CONTENT,
+            URL,
+            IS_VALID
+        ) values (
+            #{parentId},
+            #{name},
+            #{createTime},
+            #{updateTime},
+            #{versionId},
+            #{originId},
+            #{content},
+            #{url},
+            #{isValid}
+            )
   </insert>
 
     <update id="updateMenu">
       update D_MENU set
-      PARENT_ID = #{parentId},
-      UPDATE_TIME = #{updateTime},
-      VERSION_ID = #{versionId},
-      CONTENT = #{content},
-      URL = #{url},
-      NAME = #{name},
-      ORIGIN_ID = #{originId}
+          PARENT_ID = #{parentId},
+          UPDATE_TIME = #{updateTime},
+          VERSION_ID = #{versionId},
+          CONTENT = #{content},
+          URL = #{url},
+          NAME = #{name},
+          ORIGIN_ID = #{originId}
       where ID = #{id}
     </update>
 
