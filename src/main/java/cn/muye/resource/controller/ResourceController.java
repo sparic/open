@@ -89,8 +89,7 @@ public class ResourceController {
     private String uploadFile(MultipartFile file, HttpServletRequest request) {
         String newFileName = null;
         try {
-            String path = request.getSession().getServletContext().getRealPath("/all_resource");
-            File dest = FileUtils.getFile(path);
+            File dest = FileUtils.getFile(customProperties.getPushDirs() + File.separator);
             LOGGER.info("createResource dest.path ={} ", dest.getPath());
             dest.mkdirs();
             String originalFileName = file.getOriginalFilename();

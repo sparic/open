@@ -16,7 +16,9 @@ public class AgentApply implements Serializable {
     private String companyName;
 
     //联系电话
-    private String phoneNumber;
+    private String tel;
+
+    private String phone;
 
     //审核状态
     private Integer status;
@@ -56,12 +58,20 @@ public class AgentApply implements Serializable {
         this.companyName = companyName;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getTel() {
+        return tel;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Integer getStatus() {
@@ -78,6 +88,14 @@ public class AgentApply implements Serializable {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Date getCreateTime() {
@@ -102,14 +120,6 @@ public class AgentApply implements Serializable {
 
     public void setContext(String context) {
         this.context = context;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getComment() {

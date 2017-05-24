@@ -13,7 +13,9 @@ public class AgentApplyDto {
     private String companyName;
 
     //联系电话
-    private String phoneNumber;
+    private String phone;
+
+    private String tel;
 
     //审核状态
     private String status;
@@ -32,6 +34,10 @@ public class AgentApplyDto {
     //审核备注
     private String comment;
 
+    private String userName;
+
+    private String password;
+
     public Long getId() {
         return id;
     }
@@ -48,12 +54,20 @@ public class AgentApplyDto {
         this.companyName = companyName;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     public String getStatus() {
@@ -70,6 +84,14 @@ public class AgentApplyDto {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getCreateTime() {
@@ -96,14 +118,6 @@ public class AgentApplyDto {
         this.context = context;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getComment() {
         return comment;
     }
@@ -111,5 +125,4 @@ public class AgentApplyDto {
     public void setComment(String comment) {
         this.comment = comment;
     }
-
 }
