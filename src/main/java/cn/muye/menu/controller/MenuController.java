@@ -155,17 +155,16 @@ public class MenuController {
                 menuService.updateMenu(menuDb);
                 return AjaxResult.success(objectToDto(menuDb));
             } else {
-                return AjaxResult.failed();
+                return AjaxResult.failed("不存在的文档");
             }
         } else {
             menu.setCreateTime(new Date());
             menu.setIsValid(true);
             menuService.saveMenu(menu);
-            menu.setOriginId(id);
+            menu.setOriginId(menu.getId());
             menuService.updateMenu(menu);
             return AjaxResult.success(objectToDto(menu));
         }
-
     }
 
     /**
