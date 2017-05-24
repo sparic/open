@@ -61,12 +61,12 @@ public class AgentApplyService {
             subject = "代理商资格" + ApplyStatusType.SUCCESS.getName();
             String userName = agentApply.getUserName();
             String password = agentApply.getPassword();
-            context = agentApply.getContact() + ",你好，恭喜" + agentApply.getCompanyName() + "获得木爷代理商资格";
-            context += "<br> 用户名:" + userName + "密码:" + password;
+            context = agentApply.getContact() + ",你好! \t 恭喜" + agentApply.getCompanyName() + "获得木爷代理商资格";
+            context += "\n\r 用户名:" + userName + "\n\r 密码:" + password;
             emailArr = new String[]{agentApply.getUserName()};
         } else if (agentApply.getStatus().equals(ApplyStatusType.FAILED.getValue())) {
             subject = "代理商资格" + ApplyStatusType.FAILED.getName();
-            context = agentApply.getContact() + ",你好，很抱歉" + agentApply.getCompanyName() + "未通过木爷代理商资格审核，原因:" + agentApply.getComment();
+            context = agentApply.getContact() + ",你好! \t很抱歉" + agentApply.getCompanyName() + "未通过木爷代理商资格审核。 \t 原因:" + agentApply.getComment();
         }
         mailUtil.send(emailArr, subject, context);
     }

@@ -31,7 +31,7 @@
 
     <select id="getByVersionId" resultMap="menuResult">
         select ID,PARENT_ID,NAME,ORIGIN_ID,CREATE_TIME,UPDATE_TIME,VERSION_ID,CONTENT,URL,IS_VALID from D_MENU where VERSION_ID = #{versionId} and IS_VALID = 1
-        ORDER BY ID DESC
+        ORDER BY ID ASC
     </select>
 
     <select id="getById" resultMap="menuResult">

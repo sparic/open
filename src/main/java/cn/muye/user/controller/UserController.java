@@ -154,7 +154,7 @@ public class UserController {
                 }
                 userDb.setDeactivated(true);
                 userService.deleteById(userDb.getId());
-                return AjaxResult.success();
+                return AjaxResult.success("删除成功");
             }
         } else {
             return AjaxResult.failed("不存在该用户");
@@ -173,7 +173,7 @@ public class UserController {
             return AjaxResult.failed("绑定失败");
         } finally {
         }
-        return AjaxResult.success();
+        return AjaxResult.success("绑定成功");
     }
 
     /**
@@ -201,7 +201,7 @@ public class UserController {
             logger.error("{}", e);
             return AjaxResult.failed("您的账号或密码输入错误");
         }
-        return AjaxResult.success(dto);
+        return AjaxResult.success(dto,"成功登录");
     }
 
     @RequestMapping(value = {"admin/user/loginOut", "user/loginOut"}, method = RequestMethod.POST)
@@ -214,7 +214,7 @@ public class UserController {
             logger.error("{}", e);
             return AjaxResult.failed("注销失败");
         }
-        return AjaxResult.success();
+        return AjaxResult.success("注销成功");
     }
 
     private UserDto objectToDto(User user) {

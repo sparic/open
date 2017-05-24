@@ -44,11 +44,13 @@ public class CooperationController {
         JSONObject jsonObject = JSONObject.parseObject(formObjectStr);
         String email = (String)((JSONObject) jsonObject.get("totalMan")).get("email");
         String contact = (String)((JSONObject)jsonObject.get("totalMan")).get("name");
+        String companyName = (String)jsonObject.get("company");
         String password = String.valueOf(getRandomPassword());
         AgentApply agentApply = new AgentApply();
         agentApply.setCreateTime(new Date());
         agentApply.setContext(formObjectStr);
         agentApply.setContact(contact);
+        agentApply.setCompanyName(companyName);
         agentApply.setUserName(email);
         agentApply.setPassword(password);
         agentApplyService.save(agentApply);
