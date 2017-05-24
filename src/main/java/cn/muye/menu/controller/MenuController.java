@@ -160,9 +160,7 @@ public class MenuController {
         } else {
             menu.setCreateTime(new Date());
             menu.setIsValid(true);
-            menuService.saveMenu(menu);
-            menu.setOriginId(menu.getId());
-            menuService.updateMenu(menu);
+            menuService.saveMenuAndUpdateOriginId(menu);
             return AjaxResult.success(objectToDto(menu));
         }
     }
@@ -193,18 +191,18 @@ public class MenuController {
      * @param menu
      * @return
      */
-//    @RequestMapping(value = "admin/menu/{id}", method = RequestMethod.PUT)
-//    @ApiOperation(value = "修改菜单", httpMethod = "PUT", notes = "修改菜单")
-//    public AjaxResult putMenu(@ApiParam(value = "菜单ID") @PathVariable Long id, @ApiParam(value = "菜单对象") @RequestBody Menu menu) {
-//        Menu menuDb = menuService.getById(id);
-//        menuDb.setName(menu.getName());
-//        menuDb.setParentId(menu.getParentId());
-//        menuDb.setUpdateTime(new Date());
-//        menuDb.setContent(menu.getContent());
-//        menuDb.setUrl(menu.getUrl());
-//        menuService.updateMenu(menuDb);
-//        return AjaxResult.success(objectToDto(menuDb));
-//    }
+    @RequestMapping(value = "admin/menu/{id}", method = RequestMethod.PUT)
+    @ApiOperation(value = "修改菜单", httpMethod = "PUT", notes = "修改菜单")
+    public AjaxResult putMenu(@ApiParam(value = "菜单ID") @PathVariable Long id, @ApiParam(value = "菜单对象") @RequestBody Menu menu) {
+        Menu menuDb = menuService.getById(id);
+        menuDb.setName(menu.getName());
+        menuDb.setParentId(menu.getParentId());
+        menuDb.setUpdateTime(new Date());
+        menuDb.setContent(menu.getContent());
+        menuDb.setUrl(menu.getUrl());
+        menuService.updateMenu(menuDb);
+        return AjaxResult.success(objectToDto(menuDb));
+    }
 
     /**
      * 删除菜单

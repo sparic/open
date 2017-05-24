@@ -42,13 +42,6 @@ public class UserService {
 		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
 	}
 
-//	private void sendMail(User user) {
-//		String subject = "您的账号已创建";
-//		String[] emailArr = new String[]{user.getEmailAddress()};
-//		String context = "用户名: " + user.getUserName() + "密码:" + user.getPassword();
-//		mailUtil.send(emailArr, subject, context);
-//	}
-
 	public void updateAndBindRole(User user) {
 		userMapper.update(user);
 		shiroService.bindUserRole(user.getUserRoleId(), user.getId());

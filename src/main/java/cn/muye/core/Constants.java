@@ -7,10 +7,6 @@ import java.io.File;
  */
 public class Constants {
 
-    public static final String TYPE_SDK = "sdk";
-
-	public static final String REDIS_TOKEN = "token";
-
     public final static String MAIL_HOST = "smtp.exmail.qq.com";
     public final static String MAIL_SENDER_ACCOUNT = "cloudmanager@mrobot.cn";
     public final static String MAIL_SENDER_PSW = "Cloud161230";

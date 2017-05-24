@@ -66,7 +66,7 @@ public class VersionService {
                 newMenu.setOriginId(m.getOriginId());
                 newMenu.setContent(m.getContent());
                 newMenu.setUrl(m.getUrl());
-                menuService.saveMenu(newMenu);
+                menuService.saveMenuAndUpdateOriginId(newMenu);
             }
         }
         return versionNew;

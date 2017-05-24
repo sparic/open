@@ -47,7 +47,7 @@ public class AgentApplyService {
             User user = new User();
             user.setUserName(agentApply.getUserName());
             user.setPassword(agentApply.getPassword());
-            user.setUserRoleId(Constants.ISV_ROLE_ID);
+            user.setUserRoleId(Constants.AGENT_ROLE_ID);
             userService.saveAndBindRole(user);
         }
         sendMail(agentApply);
