@@ -39,18 +39,18 @@ public class ErrorController extends BasicErrorController {
         LOGGER.error(body.toString());
         String className = body.get("exception").toString();
         if (className.equals("org.apache.shiro.authz.UnauthenticatedException") || className.equals("org.apache.shiro.authc.AuthenticationException")) {
-            map.put("msg", "用户未登录");
+            map.put("message", "用户未登录");
             map.put("code", AjaxResult.CODE_LOG_FAILED);
         } else if (className.equals("org.apache.shiro.authz.UnauthorizedException") || className.equals("org.apache.shiro.authz.AuthorizationException")){
-            map.put("msg", "用户无权限");
+            map.put("message", "用户无权限");
             map.put("code", AjaxResult.CODE_LOG_FAILED);
         } else if (className.equals("java.lang.IllegalArgumentException") || className.equals("org.springframework.web.bind.MissingServletRequestParameterException")) {
-            map.put("msg", "参数有误");
+            map.put("message", "参数有误");
             map.put("code", AjaxResult.CODE_PARAM_MISTAKE_FAILED);
         } else if (status.equals(404)){
-            map.put("msg", "不存在的地址");
+            map.put("message", "不存在的地址");
         } else {
-            map.put("msg", "系统内部错误");
+            map.put("message", "系统内部错误");
         }
 
         return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);

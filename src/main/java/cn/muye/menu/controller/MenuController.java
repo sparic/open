@@ -73,17 +73,17 @@ public class MenuController {
 
     private MenuDto objectToDto(Menu menu) {
         MenuDto menuDto = new MenuDto();
-        menuDto.setId(menu.getId());
+        menuDto.setId(menu.getId()== null ? "" : String.valueOf(menu.getId()));
         menuDto.setUpdateTime(DateTimeUtils.getDateString(menu.getUpdateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
         menuDto.setCreateTime(DateTimeUtils.getDateString(menu.getCreateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
         menuDto.setContent(menu.getContent() == null ? "" : menu.getContent());
         menuDto.setUrl(menu.getUrl() == null ? "" : menu.getUrl());
         menuDto.setIsValid(menu.getIsValid());
         menuDto.setIsLeaf(menu.getIsLeaf());
-        menuDto.setOriginId(menu.getOriginId());
+        menuDto.setOriginId(menu.getOriginId() == null ? "" : String.valueOf(menu.getOriginId()));
         menuDto.setName(menu.getName());
         menuDto.setParentId(String.valueOf(menu.getParentId()));
-        menuDto.setVersionId(menu.getVersionId());
+        menuDto.setVersionId(menu.getVersionId()== null ? "" : String.valueOf(menu.getVersionId()));
         return menuDto;
     }
 
@@ -98,7 +98,8 @@ public class MenuController {
         if (menuDtoList != null && menuDtoList.size() > 0) {
             for (MenuDto m : menuDtoList) {
                 Long parentId = m.getParentId() == null || m.getParentId().equals("null") ? null : Long.valueOf(m.getParentId());
-                if (parentId != null && parentId.equals(menuDto.getOriginId())) {
+                String parentIdStr = String.valueOf(parentId);
+                if (parentIdStr != null && parentIdStr.equals(menuDto.getOriginId())) {
                     menuChildren.add(m);
                 }
             }

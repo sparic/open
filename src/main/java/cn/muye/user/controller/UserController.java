@@ -90,7 +90,7 @@ public class UserController {
                 userDb.setDeactivated(user.isDeactivated());
                 userDb.setUserRoleId(user.getUserRoleId());
                 userService.updateAndBindRole(userDb); //更新用户绑定角色
-                return AjaxResult.success(userDb);
+                return AjaxResult.success(objectToDto(userDb));
             } else {
                 return AjaxResult.failed("不存在该用户");
             }
@@ -105,7 +105,7 @@ public class UserController {
                 logger.error("{}", e);
                 return AjaxResult.failed("添加失败");
             }
-            return AjaxResult.success(user);
+            return AjaxResult.success(objectToDto(user));
         }
     }
 
@@ -232,17 +232,5 @@ public class UserController {
         }
         dto.setEmailAddress(user.getEmailAddress() == null ? "" : user.getEmailAddress());
         return dto;
-    }
-
-    private Set<String> getRoleNames(User user) {
-        List<UserRole> listUserRoles = shiroService.listUserRolesByUserId(user.getId());
-        Set<String> roleNameSet = Sets.newSet();
-        if (listUserRoles != null && listUserRoles.size() > 0) {
-            for (UserRole userRole : listUserRoles) {
-                Role role = shiroService.getRoleByRoleId(userRole.getrId());
-                roleNameSet.add(role.getCnName());
-            }
-        }
-        return roleNameSet;
     }
 }

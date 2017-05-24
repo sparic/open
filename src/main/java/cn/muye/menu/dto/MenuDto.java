@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class MenuDto {
 
-    private Long id;
+    private String id;
 
     private String parentId;
 
@@ -19,9 +19,9 @@ public class MenuDto {
 
     private Boolean isValid;
 
-    private Long versionId;
+    private String versionId;
 
-    private Long originId;
+    private String originId;
 
     private Boolean isLeaf;
 
@@ -31,11 +31,11 @@ public class MenuDto {
 
     private List<MenuDto> children;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -79,19 +79,19 @@ public class MenuDto {
         this.isValid = isValid;
     }
 
-    public Long getVersionId() {
+    public String getVersionId() {
         return versionId;
     }
 
-    public void setVersionId(Long versionId) {
+    public void setVersionId(String versionId) {
         this.versionId = versionId;
     }
 
-    public Long getOriginId() {
+    public String getOriginId() {
         return originId;
     }
 
-    public void setOriginId(Long originId) {
+    public void setOriginId(String originId) {
         this.originId = originId;
     }
 

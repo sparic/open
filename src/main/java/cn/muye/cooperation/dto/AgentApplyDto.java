@@ -16,7 +16,7 @@ public class AgentApplyDto {
     private String phoneNumber;
 
     //审核状态
-    private Integer status;
+    private String status;
 
     //联系人
     private String contact;
@@ -31,10 +31,6 @@ public class AgentApplyDto {
 
     //审核备注
     private String comment;
-
-    private String userName;
-
-    private String password;
 
     public Long getId() {
         return id;
@@ -60,11 +56,11 @@ public class AgentApplyDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -116,19 +112,4 @@ public class AgentApplyDto {
         this.comment = comment;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
