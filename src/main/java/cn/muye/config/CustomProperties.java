@@ -26,29 +26,21 @@ public class CustomProperties {
 
     private List<String> excludeFileTypes;
 
-    public String getPushDirs() {
-        return pushDirs;
-    }
+	public String getPushDirs() {
+		return pushDirs;
+	}
 
-    public void setPushDirs(String pushDirs) {
-        this.pushDirs = pushDirs;
-    }
+	public void setPushDirs(String pushDirs) {
+		this.pushDirs = pushDirs;
+	}
 
-    public String getHttp() {
-        return pushHttp;
-    }
+	public String getPushHttp() {
+		return pushHttp;
+	}
 
-    public void setHttp(String http) {
-        this.pushHttp = http;
-    }
-
-    public List<String> getExcludeFileTypes() {
-        return excludeFileTypes;
-    }
-
-    public void setExcludeFileTypes(List<String> excludeFileTypes) {
-        this.excludeFileTypes = excludeFileTypes;
-    }
+	public void setPushHttp(String pushHttp) {
+		this.pushHttp = pushHttp;
+	}
 
 	public long getTokenExpireTime() {
 		return tokenExpireTime;
@@ -80,5 +72,13 @@ public class CustomProperties {
 
 	public void setRedisRedissonCache(String redisRedissonCache) {
 		this.redisRedissonCache = redisRedissonCache;
+	}
+
+	public List<String> getExcludeFileTypes() {
+		return excludeFileTypes;
+	}
+
+	public void setExcludeFileTypes(List<String> excludeFileTypes) {
+		this.excludeFileTypes = excludeFileTypes;
 	}
 }

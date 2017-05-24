@@ -1,16 +1,17 @@
 package cn.muye.menu.controller;
 
-import cn.muye.bean.AjaxResult;
+import cn.muye.core.AjaxResult;
 import cn.muye.menu.dto.MenuDto;
 import cn.muye.menu.domain.Menu;
 import cn.muye.version.domain.Version;
 import cn.muye.menu.service.MenuService;
 import cn.muye.version.service.VersionService;
-import cn.muye.util.DateTimeUtils;
+import cn.muye.utils.DateTimeUtils;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,8 @@ public class MenuController {
      * @param versionId
      * @return
      */
-    @RequestMapping(value = {"admin/menu"},method = RequestMethod.GET)
+    @RequestMapping(value = {"/menu", "admin/menu"}, method = RequestMethod.GET)
+    @RequiresPermissions("menu:query")
     @ApiOperation(value = "查询菜单列表", httpMethod = "GET", notes = "查询菜单列表")
     public AjaxResult getMenuList(@ApiParam(value = "版本号") @RequestParam(value = "versionId", required = false) Long versionId) {
         List<Menu> menuList = null;
@@ -74,8 +76,8 @@ public class MenuController {
         menuDto.setId(menu.getId());
         menuDto.setUpdateTime(DateTimeUtils.getDateString(menu.getUpdateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
         menuDto.setCreateTime(DateTimeUtils.getDateString(menu.getCreateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
-        menuDto.setContent(menu.getContent());
-        menuDto.setUrl(menu.getUrl());
+        menuDto.setContent(menu.getContent() == null ? "" : menu.getContent());
+        menuDto.setUrl(menu.getUrl() == null ? "" : menu.getUrl());
         menuDto.setIsValid(menu.getIsValid());
         menuDto.setIsLeaf(menu.getIsLeaf());
         menuDto.setOriginId(menu.getOriginId());
@@ -87,6 +89,7 @@ public class MenuController {
 
     /**
      * 获取某个menu所有子menu
+     *
      * @param menuDto
      * @return
      */
@@ -105,6 +108,7 @@ public class MenuController {
 
     /**
      * 组装MenuDto的menuDtoChildren
+     *
      * @param menuDto
      */
     private void getMenu(MenuDto menuDto) {
@@ -123,7 +127,8 @@ public class MenuController {
      * @param menu
      * @return
      */
-    @RequestMapping(value = {"admin/menu"},method = RequestMethod.POST)
+    @RequestMapping(value = {"admin/menu"}, method = RequestMethod.POST)
+    @RequiresPermissions("menu:upsert")
     @ApiOperation(value = "新增/修改菜单", httpMethod = "POST", notes = "新增/修改菜单")
     public AjaxResult postMenu(@ApiParam(value = "菜单对象") @RequestBody Menu menu) {
         return post(menu);
@@ -168,7 +173,8 @@ public class MenuController {
      * @param id
      * @return
      */
-    @RequestMapping(value = {"admin/menu/{id}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"admin/menu/{id}", "/menu/{id}"}, method = RequestMethod.GET)
+    @RequiresPermissions("menu:query")
     @ApiOperation(value = "获取单个菜单详情", httpMethod = "GET", notes = "获取单个菜单详情")
     public AjaxResult getMenu(@ApiParam(value = "菜单ID") @PathVariable Long id) {
         try {
@@ -182,23 +188,23 @@ public class MenuController {
 
     /**
      * 修改菜单
-     *
+     * todo spring传put接不到参数 网上有方案解决
      * @param id
      * @param menu
      * @return
      */
-    @RequestMapping(value = "admin/menu/{id}", method = RequestMethod.PUT)
-    @ApiOperation(value = "修改菜单", httpMethod = "PUT", notes = "修改菜单")
-    public AjaxResult putMenu(@ApiParam(value = "菜单ID") @PathVariable Long id, @ApiParam(value = "菜单对象") @RequestBody Menu menu) {
-        Menu menuDb = menuService.getById(id);
-        menuDb.setName(menu.getName());
-        menuDb.setParentId(menu.getParentId());
-        menuDb.setUpdateTime(new Date());
-        menuDb.setContent(menu.getContent());
-        menuDb.setUrl(menu.getUrl());
-        menuService.updateMenu(menuDb);
-        return AjaxResult.success(objectToDto(menuDb));
-    }
+//    @RequestMapping(value = "admin/menu/{id}", method = RequestMethod.PUT)
+//    @ApiOperation(value = "修改菜单", httpMethod = "PUT", notes = "修改菜单")
+//    public AjaxResult putMenu(@ApiParam(value = "菜单ID") @PathVariable Long id, @ApiParam(value = "菜单对象") @RequestBody Menu menu) {
+//        Menu menuDb = menuService.getById(id);
+//        menuDb.setName(menu.getName());
+//        menuDb.setParentId(menu.getParentId());
+//        menuDb.setUpdateTime(new Date());
+//        menuDb.setContent(menu.getContent());
+//        menuDb.setUrl(menu.getUrl());
+//        menuService.updateMenu(menuDb);
+//        return AjaxResult.success(objectToDto(menuDb));
+//    }
 
     /**
      * 删除菜单
@@ -207,6 +213,7 @@ public class MenuController {
      * @return
      */
     @RequestMapping(value = "admin/menu/{id}", method = RequestMethod.DELETE)
+    @RequiresPermissions("menu:delete")
     @ApiOperation(value = "删除菜单", httpMethod = "DELETE", notes = "删除菜单")
     public AjaxResult deleteMenu(@ApiParam(value = "菜单ID") @PathVariable Long id) {
         List<Menu> childrenMenu = menuService.listMenusByParentId(id);

@@ -1,11 +1,10 @@
 package cn.muye.user.service;
 
-import cn.muye.bean.AjaxResult;
-import cn.muye.bean.ApplyStatusType;
-import cn.muye.cooperation.domain.AgentApply;
+import cn.muye.shiro.service.ShiroService;
 import cn.muye.user.domain.User;
 import cn.muye.user.mapper.UserMapper;
-import cn.muye.util.MailUtil;
+import cn.muye.utils.MailUtil;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,24 +30,28 @@ public class UserService {
 	@Autowired
 	private MailUtil mailUtil;
 
+	@Autowired
+	private ShiroService shiroService;
+
 	public User getUserById(Long id) {
 		return userMapper.getUserById(id);
 	}
 
-	public void saveAndSendMail(User user) {
+	public void saveAndBindRole(User user) {
 		userMapper.save(user);
-		sendMail(user);
+		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
 	}
 
-	private void sendMail(User user) {
-		String subject = "您的账号已创建";
-		String[] emailArr = new String[]{user.getEmailAddress()};
-		String context = "用户名: " + user.getUserName() + "密码:" + user.getPassword();
-		mailUtil.send(emailArr, subject, context);
-	}
+//	private void sendMail(User user) {
+//		String subject = "您的账号已创建";
+//		String[] emailArr = new String[]{user.getEmailAddress()};
+//		String context = "用户名: " + user.getUserName() + "密码:" + user.getPassword();
+//		mailUtil.send(emailArr, subject, context);
+//	}
 
-	public void update(User user) {
-		 userMapper.update(user);
+	public void updateAndBindRole(User user) {
+		userMapper.update(user);
+		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
 	}
 
 	public User getUserByName(String userName) {

@@ -1,17 +1,15 @@
-package cn.muye.util;
+package cn.muye.utils;
 
-import cn.muye.bean.AjaxResult;
-import cn.muye.bean.Constants;
+import cn.muye.core.AjaxResult;
+import cn.muye.core.Constants;
 import cn.muye.mail.domain.Mail;
 import cn.muye.mail.service.MailService;
-import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 import java.util.Properties;
 
@@ -26,9 +24,6 @@ public class MailUtil {
     private JavaMailSenderImpl email;
 
     private SimpleMailMessage message;
-
-//    @Autowired
-//    private VelocityEngine velocityEngine;
 
     @Autowired
     private MailService mailService;

@@ -1,22 +1,18 @@
 package cn.muye.mail.controller;
 
-import cn.muye.bean.AjaxResult;
-import cn.muye.bean.Constants;
+import cn.muye.core.AjaxResult;
 import cn.muye.mail.domain.Mail;
 import cn.muye.mail.dto.MailDto;
 import cn.muye.mail.service.MailService;
-import cn.muye.util.DateTimeUtils;
-import cn.muye.util.MailUtil;
+import cn.muye.utils.DateTimeUtils;
+import cn.muye.utils.MailUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.velocity.app.VelocityEngine;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 
 /**
  * Created by Ray.Fu on 2017/5/10.
@@ -31,6 +27,7 @@ public class MailController {
     private MailService mailService;
 
     @RequestMapping(value = "admin/mail/send", method = RequestMethod.POST)
+    @RequiresPermissions("mail:send")
     @ApiOperation(value = "发送邮件", httpMethod = "POST", notes = "发送邮件")
     public AjaxResult sendMail(@ApiParam(value = "邮件对象") @RequestBody String cooperationStr) {
         JSONObject jsonObject = JSON.parseObject(cooperationStr);
@@ -42,6 +39,7 @@ public class MailController {
     }
 
     @RequestMapping(value = "admin/mail/{id}", method = RequestMethod.GET)
+    @RequiresPermissions("mail:detail")
     @ApiOperation(value = "查看邮件详情", httpMethod = "GET", notes = "查看邮件详情")
     public AjaxResult getMailById(@ApiParam(value = "邮件ID") @PathVariable Long id) {
         Mail mail = mailService.getById(id);

@@ -1,9 +1,9 @@
 package cn.muye;
 
-//import cn.muye.cache.RedissonUtil;
-//import cn.muye.cache.redisson.RedissonBean;
 import cn.muye.config.CustomProperties;
-import cn.muye.support.FastJsonHttpMessageConverter;
+//import cn.muye.config.MShiroFilterFactoryBean;
+//import cn.muye.config.MyShiroRealm;
+import cn.muye.core.converter.FastJsonHttpMessageConverter;
 //import cn.muye.support.HTTPJwtAuthorizeInterceptor;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
@@ -14,12 +14,9 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -31,11 +28,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.config.annotation.*;
-
 import javax.sql.DataSource;
 import java.util.*;
 
-@EnableWebMvc
 @Configuration
 @EnableAutoConfiguration
 @SpringBootApplication
@@ -45,19 +40,6 @@ import java.util.*;
 public class Application extends WebMvcConfigurerAdapter {
 
     private static Logger LOGGER = LoggerFactory.getLogger(Application.class);
-
-    @Autowired
-    private CustomProperties customProperties;
-
-//    @Value("${devCenter.redisMasterAddressPort}")
-//    private String masterAddress;
-
-//    @Bean
-//    public RedissonBean redissonBean() {
-//        RedissonBean redissonBean = new RedissonBean();
-//        redissonBean.setMasterAddress(masterAddress);
-//        return redissonBean;
-//    }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -87,11 +69,6 @@ public class Application extends WebMvcConfigurerAdapter {
         converters.add(fastConverter);
     }
 
-//    @Bean
-//    public RedissonUtil redissonUtil() {
-//        return new RedissonUtil();
-//    }
-
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
@@ -115,7 +92,7 @@ public class Application extends WebMvcConfigurerAdapter {
         sqlSessionFactoryBean.setPlugins(new Interceptor[]{pageHelper});
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-        sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:/mybatis*//**//*.xml"));
+        sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:/mybatis/**/*.xml"));
 
         return sqlSessionFactoryBean.getObject();
     }
@@ -124,17 +101,6 @@ public class Application extends WebMvcConfigurerAdapter {
     public PlatformTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
-
-
-   /* @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        HTTPJwtAuthorizeInterceptor httpJwtAuthorizeInterceptor = new HTTPJwtAuthorizeInterceptor();
-        httpJwtAuthorizeInterceptor.setCustomProperties(customProperties);
-        httpJwtAuthorizeInterceptor.setRedissonUtil(redissonUtil());
-        registry.addInterceptor(httpJwtAuthorizeInterceptor).addPathPatterns("*//**")
-     .excludePathPatterns("*//**//*user/login*//**", "*//**//*api-docs*//**");
-     super.addInterceptors(registry);
-     }*/
 
     /**
      * Start

@@ -36,7 +36,7 @@ public class User implements Serializable {
 
 	private Date lastVisit;  //最新登录时间
 
-	private int userType; //详见UserType
+	private Long userRoleId; //详见UserType(对应角色ID)
 
 	private String appKey;
 
@@ -126,14 +126,6 @@ public class User implements Serializable {
 		this.sex = sex;
 	}
 
-	public int getUserType() {
-		return userType;
-	}
-
-	public void setUserType(int userType) {
-		this.userType = userType;
-	}
-
 	public String getAppKey() {
 		return appKey;
 	}
@@ -164,5 +156,13 @@ public class User implements Serializable {
 
 	public void setCompany(String company) {
 		this.company = company;
+	}
+
+	public Long getUserRoleId() {
+		return userRoleId;
+	}
+
+	public void setUserRoleId(Long userRoleId) {
+		this.userRoleId = userRoleId;
 	}
 }

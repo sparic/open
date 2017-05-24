@@ -1,4 +1,4 @@
-package cn.muye.bean;
+package cn.muye.core;
 
 import java.io.File;
 
@@ -6,8 +6,6 @@ import java.io.File;
  * Created by Administrator on 2016/12/7.
  */
 public class Constants {
-
-    public static final String RESOURCE_SUB_DIRECTORY = "developers";
 
     public static final String TYPE_SDK = "sdk";
 
@@ -24,5 +22,10 @@ public class Constants {
     public final static String MAIL_TIMEOUT_CLASS = "mail.smtp.timeout";
     public final static long MAIL_TIMEOUT_MILE_SECONDS = 25000;
 
-    public final static String SUPER_ADMIN = "超级管理员";
+    public final static Long SUPER_ADMIN_ID = 5L;
+
+    public final static Long AGENT_ROLE_ID = 8L; //普通代理商ID
+    public final static Long ISV_ROLE_ID = 10L; //ISV代理商ID
+
+
 }

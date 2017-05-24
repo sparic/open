@@ -40,10 +40,9 @@ public class Swagger2Config extends WebMvcConfigurerAdapter {
 
     private ApiInfo apiInfo1() {
         return new ApiInfoBuilder()
-                .title("exampleApi 0.01")
-                .termsOfServiceUrl("www.example.com")
-                .contact(new Contact("liumei", "http://blog.csdn.net/pc_gad", "hilin2333@gmail.com"))
-                .version("v0.01")
+                .title("Api V0.01")
+                .termsOfServiceUrl("www.myee7.com")
+                .version("V0.01")
                 .build();
     }
 }

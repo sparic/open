@@ -1,12 +1,11 @@
 package cn.muye.version.controller;
 
-import cn.muye.bean.AjaxResult;
+import cn.muye.core.AjaxResult;
 import cn.muye.config.CustomProperties;
 import cn.muye.version.dto.VersionDto;
 import cn.muye.version.domain.Version;
 import cn.muye.version.service.VersionService;
-import cn.muye.util.DateTimeUtils;
-//import com.alibaba.fastjson.JSON;
+import cn.muye.utils.DateTimeUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -15,6 +14,7 @@ import com.mysql.jdbc.StringUtils;
 //import com.wordnik.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class VersionController {
      * @return
      */
     @RequestMapping(value = {"admin/version","/version"}, method = RequestMethod.GET)
-//    @RequiresPermissions("version:query")
+    @RequiresPermissions("version:query")
     @ApiOperation(value = "查询版本列表", httpMethod = "GET", notes = "查询版本列表")
     public AjaxResult listVersions(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                    @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
@@ -81,7 +81,7 @@ public class VersionController {
      * @return
      */
     @RequestMapping(value = {"admin/version"}, method = RequestMethod.POST)
-//    @RequiresPermissions("version:upsert")
+    @RequiresPermissions("version:upsert")
     @ApiOperation(value = "新增或修改版本", httpMethod = "POST", notes = "新增或修改版本")
     public AjaxResult postVersion(@ApiParam(value = "版本对象") @RequestBody Version version) {
         return addOrUpdate(version);
@@ -127,9 +127,10 @@ public class VersionController {
      * @return
      */
     @RequestMapping(value = {"admin/version/{id}"}, method = RequestMethod.GET)
-//    @RequiresPermissions("version:detail")
+    @RequiresPermissions("version:detail")
+    @ResponseBody
     @ApiOperation(value = "获取单个版本", httpMethod = "GET", notes = "获取单个版本")
-    public AjaxResult getVersion(/*@ApiParam(value = "版本ID")*/ @PathVariable Long id) {
+    public AjaxResult getVersion(@ApiParam(value = "版本ID") @PathVariable Long id) {
         Version version = versionService.getById(id);
         VersionDto versionDto = objectToDto(version);
         return AjaxResult.success(versionDto);
@@ -137,36 +138,35 @@ public class VersionController {
 
     /**
      * 修改版本
-     *
+     * todo spring不能接受put方法的传参的问题
      * @param id
      * @param versionStr
      * @return
      */
-    @RequestMapping(value = {"admin/version/{id}"}, method = RequestMethod.PUT)
+//    @RequestMapping(value = {"admin/version/{id}"}, method = RequestMethod.PUT)
 //    @ApiOperation(value = "修改版本", httpMethod = "PUT", notes = "修改版本")
-    public AjaxResult putVersion(/*@ApiParam(value = "版本ID")*/ @PathVariable Long id, /*@ApiParam(value = "版本对象")*/ @RequestBody String versionStr) {
-//        Version version = JSON.parseObject(versionStr, Version.class);
-        Version version = null;
-        if (StringUtils.isNullOrEmpty(version.getUrl())) {
-            return AjaxResult.failed("请上传sdk文件");
-        }
-        Version versionDb = versionService.getById(id);
-        if (versionDb != null) {
-//            String extendId = version.getExtendedVersionCode();
-//            if (!StringUtils.isNullOrEmpty(extendId)) {
-//                Version versionNew = versionService.copyVersion(Long.valueOf(extendId), version.getVersionCode(), version.getDescription());
-//                return AjaxResult.success(versionNew);
-//            }
-            versionDb.setVersionCode(version.getVersionCode());
-            versionDb.setDescription(version.getDescription());
-            versionDb.setUpdateTime(new Date());
-            versionService.updateVersion(versionDb);
-            return AjaxResult.success(objectToDto(versionDb));
-        } else {
-            return AjaxResult.failed();
-        }
-
-    }
+//    public AjaxResult putVersion(/*@ApiParam(value = "版本ID")*/ @PathVariable Long id, /*@ApiParam(value = "版本对象")*/ @RequestBody String versionStr) {
+////        Version version = JSON.parseObject(versionStr, Version.class);
+//        Version version = null;
+//        if (StringUtils.isNullOrEmpty(version.getUrl())) {
+//            return AjaxResult.failed("请上传sdk文件");
+//        }
+//        Version versionDb = versionService.getById(id);
+//        if (versionDb != null) {
+////            String extendId = version.getExtendedVersionCode();
+////            if (!StringUtils.isNullOrEmpty(extendId)) {
+////                Version versionNew = versionService.copyVersion(Long.valueOf(extendId), version.getVersionCode(), version.getDescription());
+////                return AjaxResult.success(versionNew);
+////            }
+//            versionDb.setVersionCode(version.getVersionCode());
+//            versionDb.setDescription(version.getDescription());
+//            versionDb.setUpdateTime(new Date());
+//            versionService.updateVersion(versionDb);
+//            return AjaxResult.success(objectToDto(versionDb));
+//        } else {
+//            return AjaxResult.failed();
+//        }
+//    }
 
     /**
      * 删除版本
@@ -175,7 +175,7 @@ public class VersionController {
      * @return
      */
     @RequestMapping(value = {"admin/version/{id}"}, method = RequestMethod.DELETE)
-//    @RequiresPermissions("version:delete")
+    @RequiresPermissions("version:delete")
     @ApiOperation(value = "删除版本", httpMethod = "DELETE", notes = "删除版本")
     public AjaxResult deleteVersion(@ApiParam(value = "版本ID") @PathVariable Long id) {
         try {

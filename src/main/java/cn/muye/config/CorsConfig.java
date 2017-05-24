@@ -16,6 +16,7 @@ public class CorsConfig {
         corsConfiguration.addAllowedOrigin("*"); // 1
         corsConfiguration.addAllowedHeader("*"); // 2
         corsConfiguration.addAllowedMethod("*"); // 3
+        corsConfiguration.setAllowCredentials(true);
         return corsConfiguration;
     }
 
@@ -25,4 +26,5 @@ public class CorsConfig {
         source.registerCorsConfiguration("/**", buildConfig()); // 4
         return new CorsFilter(source);
     }
+
 }

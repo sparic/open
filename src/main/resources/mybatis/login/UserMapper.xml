@@ -13,7 +13,7 @@
         <!--<result property="registered" column="REGISTERED"/>-->
         <result property="deactivated" column="DEACTIVATED"/>
         <result property="lastVisit" column="LAST_VISIT"/>
-        <!--<result property="userType" column="USER_TYPE"/>-->
+        <result property="userRoleId" column="USER_ROLE_ID"/>
         <!--<result property="appKey" column="APP_KEY"/>-->
         <!--<result property="appSecret" column="APP_SECRET"/>-->
         <result property="phone" column="PHONE"/>
@@ -21,7 +21,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-      ID, USER_NAME, EMAIL_ADDRESS, SEX, LAST_VISIT, USER_TYPE, COMPANY, PHONE
+      ID, USER_NAME, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID
     </sql>
 
     <select id="getUserById" resultMap="userResult">
@@ -56,9 +56,9 @@
         EMAIL_ADDRESS,
         DEACTIVATED,
         LAST_VISIT,
-        USER_TYPE,
         COMPANY,
-        PHONE
+        PHONE,
+        USER_ROLE_ID
     ) values (
         #{userName},
         #{password},
@@ -66,9 +66,9 @@
         #{emailAddress},
         #{deactivated},
         #{lastVisit},
-        #{userType},
         #{company},
-        #{phone}
+        #{phone},
+        #{userRoleId}
     )
   </insert>
 
@@ -80,9 +80,9 @@
             EMAIL_ADDRESS = #{emailAddress},
             DEACTIVATED = #{deactivated},
             LAST_VISIT = #{lastVisit},
-            USER_TYPE = #{userType},
             COMPANY = #{company},
-            PHONE = #{phone}
+            PHONE = #{phone},
+            USER_ROLE_ID = #{userRoleId}
         WHERE
           ID = #{id}
     </update>
