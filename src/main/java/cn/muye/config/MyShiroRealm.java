@@ -25,13 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * MyShiroRealm
- *
- * @author 单红宇(365384722)
- * @myblog http://blog.csdn.net/catoop/
- * @create 2016年1月13日
- */
 public class MyShiroRealm extends AuthorizingRealm {
 
     private static final Logger logger = LoggerFactory.getLogger(MyShiroRealm.class);
@@ -57,7 +50,6 @@ public class MyShiroRealm extends AuthorizingRealm {
         String loginName = (String) super.getAvailablePrincipal(principalCollection);
         //到数据库查是否有此对象
         User user = userService.getUserByName(loginName);// 实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-
         if (user != null) {
             //权限信息对象info,用来存放查出的用户的所有的角色（role）及权限（permission）
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -71,10 +63,8 @@ public class MyShiroRealm extends AuthorizingRealm {
                     roleList.add(role);
                 }
             }
-
             //用户的角色集合
             info.setRoles(roleNameSet);
-
             //用户的角色对应的所有权限，如果只使用角色定义访问权限，下面的四行可以不要
             List<String> permissionNameList = Lists.newArrayList();
             for (Role role : roleList) {
@@ -86,13 +76,6 @@ public class MyShiroRealm extends AuthorizingRealm {
                 }
                 info.addStringPermissions(permissionNameList);
             }
-
-            // 或者按下面这样添加
-            //添加一个角色,不是配置意义上的添加,而是证明该用户拥有admin角色
-//            simpleAuthorInfo.addRole("admin");
-            //添加权限
-//            simpleAuthorInfo.addStringPermission("admin:manage");
-//            logger.info("已为用户[mike]赋予了[admin]角色和[admin:manage]权限");
             return info;
         }
         // 返回null的话，就会导致任何用户访问被拦截的请求时，都会自动跳转到unauthorizedUrl指定的地址
@@ -101,6 +84,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     /*
      * 登录认证
+     *
      * */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
@@ -109,11 +93,8 @@ public class MyShiroRealm extends AuthorizingRealm {
         User user = userService.getUserByName(username);
         SimpleAuthenticationInfo authenticationInfo = null;
         if (null != user) {
-            //密码校验移交给了shiro的提供的一个接口实现类，所以这里注释掉
-//            if (EndecryptUtils.checkMd5Password(username,password,user.getSalt(),user.getPassword())) {
             authenticationInfo = new SimpleAuthenticationInfo(user.getUserName(), user.getPassword(), getName());
             authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(username));
-//            }
         }
         return authenticationInfo;
     }

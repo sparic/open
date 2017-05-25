@@ -51,7 +51,7 @@ public class ShiroController {
                 shiroService.update(roleDb);
                 return AjaxResult.success(roleDb);
             } else {
-                return AjaxResult.failed();
+                return AjaxResult.failed("不存在该角色");
             }
         } else {
             shiroService.save(role);
@@ -75,7 +75,7 @@ public class ShiroController {
         if (permissionIdList != null && permissionIdList.size() > 0) {
             shiroService.bindRolePermission(roleId, permissionIdList);
         }
-        return AjaxResult.success();
+        return AjaxResult.success("绑定成功");
     }
 
     @RequestMapping(value = "/admin/permission", method = RequestMethod.GET)

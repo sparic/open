@@ -56,4 +56,8 @@ public class AjaxResult {
         return new AjaxResult(CODE_LOG_FAILED, data, "");
     }
 
+    public static final AjaxResult failed(int code, Object data, String message) {
+        return new AjaxResult(code, data, message);
+    }
+
 }

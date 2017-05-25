@@ -8,7 +8,6 @@ import cn.muye.shiro.mapper.PermissionMapper;
 import cn.muye.shiro.mapper.RoleMapper;
 import cn.muye.shiro.mapper.RolePermissionMapper;
 import cn.muye.shiro.mapper.UserRoleMapper;
-import cn.muye.user.mapper.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,6 @@ import java.util.Map;
 @Service
 @Transactional
 public class ShiroService {
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     private UserRoleMapper userRoleMapper;

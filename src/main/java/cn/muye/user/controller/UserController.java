@@ -77,9 +77,12 @@ public class UserController {
         if (null == user) {
             return AjaxResult.failed("用户信息为空");
         }
-        //TODO 生成秘钥
+        User userDb = userService.getUserById(user.getId());
+        User sameNameUser = userService.getUserByName(user.getUserName());
+        if ((userDb != null && sameNameUser != null && !sameNameUser.getId().equals(userDb.getId())) || userDb == null &&  sameNameUser != null && sameNameUser.getUserName().equals(user.getUserName())) {
+            return AjaxResult.failed("用户名已存在");
+        }
         if (user.getId() != null && user.getId() >= 1) {
-            User userDb = userService.getUserById(user.getId());
             if (userDb != null) {
                 userDb.setPhone(user.getPhone());
                 userDb.setSex(user.getSex());
@@ -95,10 +98,6 @@ public class UserController {
                 return AjaxResult.failed("不存在该用户");
             }
         } else {
-            User sameNameUser = userService.getUserByName(user.getUserName());
-            if (sameNameUser != null) {
-                return AjaxResult.failed("用户名已存在");
-            }
             try {
                 userService.saveAndBindRole(user); //添加用户 绑定角色 发送邮件
             } catch (Exception e) {
@@ -194,7 +193,6 @@ public class UserController {
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
             subject.login(token);
-            //todo 是否需要把用户的权限返回给前端
             User user = userService.getUserByName(userName);
             dto = objectToDto(user);
         } catch (AuthenticationException e) {

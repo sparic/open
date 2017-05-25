@@ -1,7 +1,7 @@
 package cn.muye.cooperation.controller;
 
 import cn.muye.core.AjaxResult;
-import cn.muye.core.enums.ApplyStatusType;
+import cn.muye.core.Constants;
 import cn.muye.cooperation.domain.AgentApply;
 import cn.muye.cooperation.domain.IsvApply;
 import cn.muye.cooperation.dto.AgentApplyDto;
@@ -54,7 +54,7 @@ public class CooperationController {
         agentApply.setUserName(email);
         agentApply.setPassword(password);
         agentApplyService.save(agentApply);
-        return AjaxResult.success(objectToDto(agentApply), "您已提交申请，我们会在十个工作日内通知您");
+        return AjaxResult.success(objectToDto(agentApply), Constants.FEEDBACK_WORD);
     }
 
     @RequestMapping(value = "admin/agentApply/audit", method = RequestMethod.POST)
@@ -99,7 +99,7 @@ public class CooperationController {
         isvApply.setUserName(email);
         isvApply.setPassword(password);
         isvApplyService.save(isvApply);
-        return AjaxResult.success(objectToDto(isvApply), "您已提交申请，我们会在十个工作日内通知您");
+        return AjaxResult.success(objectToDto(isvApply), Constants.FEEDBACK_WORD);
     }
 
     @RequestMapping(value = "admin/isvApply/audit", method = RequestMethod.POST)

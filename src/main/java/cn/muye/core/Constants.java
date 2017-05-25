@@ -19,9 +19,9 @@ public class Constants {
     public final static long MAIL_TIMEOUT_MILE_SECONDS = 25000;
 
     public final static Long SUPER_ADMIN_ID = 5L;
-
     public final static Long AGENT_ROLE_ID = 8L; //普通代理商ID
     public final static Long ISV_ROLE_ID = 10L; //ISV代理商ID
 
+    public final static String FEEDBACK_WORD = "您已提交申请，我们会在十个工作日内通知您";
 
 }

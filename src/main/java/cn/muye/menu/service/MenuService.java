@@ -18,9 +18,13 @@ public class MenuService {
     @Autowired
     private MenuMapper menuMapper;
 
-    public void saveMenuAndUpdateOriginId(Menu menu) {
+    public void saveMenuAndUpdateOriginId(Menu menu, String type) {
         menuMapper.saveMenu(menu);
-        menu.setOriginId(menu.getId());
+        if (type.equals("version")) {
+            menu.setOriginId(menu.getOriginId());
+        } else {
+            menu.setOriginId(menu.getId());
+        }
         menuMapper.updateMenu(menu);
     }
 
