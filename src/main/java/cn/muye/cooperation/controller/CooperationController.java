@@ -8,6 +8,8 @@ import cn.muye.cooperation.dto.AgentApplyDto;
 import cn.muye.cooperation.dto.IsvApplyDto;
 import cn.muye.cooperation.service.AgentApplyService;
 import cn.muye.cooperation.service.IsvApplyService;
+import cn.muye.user.domain.User;
+import cn.muye.user.service.UserService;
 import cn.muye.utils.DateTimeUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -37,6 +39,9 @@ public class CooperationController {
     @Autowired
     private IsvApplyService isvApplyService;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = "/agentApply", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "新增代理商申请", httpMethod = "POST", notes = "新增代理商申请")
@@ -46,6 +51,10 @@ public class CooperationController {
         String contact = (String)((JSONObject)jsonObject.get("totalMan")).get("name");
         String companyName = (String)jsonObject.get("company");
         String password = String.valueOf(getRandomPassword());
+        User sameNameUser = userService.getUserByName(email);
+        if (sameNameUser != null && sameNameUser.getUserName().equals(email)) {
+            return AjaxResult.failed("负责人邮箱已存在，请更换邮箱");
+        }
         AgentApply agentApply = new AgentApply();
         agentApply.setCreateTime(new Date());
         agentApply.setContext(formObjectStr);

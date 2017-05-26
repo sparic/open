@@ -146,6 +146,10 @@ public class MenuController {
         }
         if (id != null) {
             Menu menuDb = menuService.getById(id);
+            Long pId = menu.getParentId();
+            if (pId != null && (pId.equals(menuDb.getOriginId()) || pId.equals(menuDb.getId()))) {
+                return AjaxResult.failed("不能选择自己做父菜单");
+            }
             if (menuDb != null) {
                 menuDb.setName(menu.getName());
                 menuDb.setParentId(menu.getParentId());
