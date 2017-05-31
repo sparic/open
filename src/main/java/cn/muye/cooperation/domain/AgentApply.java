@@ -12,35 +12,19 @@ public class AgentApply implements Serializable {
 
     private Long id;
 
-    //公司名
-    private String companyName;
+    private Long userId;
 
-    //联系电话
-    private String tel;
+    private String url;
 
-    private String phone;
+    //代理商申请备注
+    private String description;
 
     //审核状态
     private Integer status;
 
-    //联系人
-    private String contact;
-
-    private String email;
-
     private Date createTime;
 
     private Date updateTime;
-
-    //表单内容
-    private String context;
-
-    //审核备注
-    private String comment;
-
-    private String userName;
-
-    private String password;
 
     public Long getId() {
         return id;
@@ -50,28 +34,28 @@ public class AgentApply implements Serializable {
         this.id = id;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getTel() {
-        return tel;
+    public String getUrl() {
+        return url;
     }
 
-    public void setTel(String tel) {
-        this.tel = tel;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getDescription() {
+        return description;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getStatus() {
@@ -80,22 +64,6 @@ public class AgentApply implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Date getCreateTime() {
@@ -112,37 +80,5 @@ public class AgentApply implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getContext() {
-        return context;
-    }
-
-    public void setContext(String context) {
-        this.context = context;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

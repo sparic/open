@@ -4,80 +4,105 @@
 
     <resultMap id="agentApplyResult" type="cn.muye.cooperation.domain.AgentApply">
         <result property="id" column="ID"/>
-        <result property="companyName" column="COMPANY_NAME"/>
-        <result property="context" column="CONTEXT"/>
-        <result property="contact" column="CONTACT"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="url" column="URL"/>
+        <result property="description" column="DESCRIPTION"/>
         <result property="createTime" column="CREATE_TIME"/>
         <result property="updateTime" column="UPDATE_TIME"/>
-        <result property="phone" column="PHONE"/>
-        <result property="tel" column="TEL"/>
         <result property="status" column="STATUS"/>
-        <result property="email" column="EMAIL"/>
-        <result property="userName" column="USER_NAME"/>
-        <result property="password" column="PASSWORD"/>
     </resultMap>
 
-    <select id="list" resultMap="agentApplyResult">
-        select ID,
-                COMPANY_NAME,
-                CONTACT,
-                CONTEXT,
-                CREATE_TIME,
-                UPDATE_TIME,
-                PHONE,
-                TEL,
-                STATUS,
-                EMAIL,
-                USER_NAME,
-                PASSWORD
-         from D_AGENT_APPLY
+    <resultMap id="agentApplyUserResult" type="cn.muye.cooperation.dto.AgentApplyDto">
+        <result property="id" column="ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="url" column="URL"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
+        <result property="status" column="STATUS"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="phone" column="PHONE"/>
+        <result property="email" column="EMAIL_ADDRESS"/>
+    </resultMap>
+
+    <select id="list" resultMap="agentApplyUserResult" parameterType="Integer">
+        select agent.ID,
+                IFNULL(agent.USER_ID,'') as USER_ID,
+                IFNULL(agent.URL,'') as URL,
+                IFNULL(agent.DESCRIPTION,'') as DESCRIPTION,
+                IFNULL(date_format(agent.CREATE_TIME, '%Y-%m-%d'),'') as CREATE_TIME,
+                IFNULL(date_format(agent.UPDATE_TIME, '%Y-%m-%d'),'') as UPDATE_TIME,
+                IFNULL(agent.STATUS,'') as STATUS,
+                IFNULL(user.USER_NAME,'') as USER_NAME,
+                IFNULL(user.PHONE,'') as PHONE,
+                IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
+         from D_AGENT_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
+         where 1=1
+        <if test="status != null">
+            and agent.STATUS = #{status}
+         </if>
          order by ID desc
     </select>
 
-
     <select id="getById" resultMap="agentApplyResult">
-        select ID,
-                COMPANY_NAME,
-                CONTACT,
-                CONTEXT,
-                CREATE_TIME,
-                UPDATE_TIME,
-                PHONE,
-                TEL,
-                STATUS,
-                EMAIL,
-                USER_NAME,
-                PASSWORD
-        from D_AGENT_APPLY where ID = #{id}
+        select agent.ID,
+                agent.USER_ID,
+                agent.URL,
+                agent.DESCRIPTION,
+                agent.CREATE_TIME,
+                agent.UPDATE_TIME,
+                agent.STATUS
+        from D_AGENT_APPLY agent
+        where agent.ID = #{id}
+    </select>
+
+    <select id="getByIdWithUser" resultMap="agentApplyUserResult">
+        select agent.ID,
+                IFNULL(agent.USER_ID,'') as USER_ID,
+                IFNULL(agent.URL,'') as URL,
+                IFNULL(agent.DESCRIPTION,'') as DESCRIPTION,
+                IFNULL(agent.STATUS,'') as STATUS,
+                IFNULL(date_format(agent.CREATE_TIME, '%Y-%m-%d'),'') as CREATE_TIME,
+                IFNULL(date_format(agent.UPDATE_TIME, '%Y-%m-%d'),'') as UPDATE_TIME,
+                IFNULL(user.USER_NAME,'') as USER_NAME,
+                IFNULL(user.PHONE,'') as PHONE,
+                IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
+         from D_AGENT_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
+          where agent.ID = #{id}
+    </select>
+
+    <select id="getDtoByUserId" resultMap="agentApplyUserResult">
+        select agent.ID,
+                IFNULL(agent.USER_ID,'') as USER_ID,
+                IFNULL(agent.DESCRIPTION,'') as DESCRIPTION,
+                IFNULL(agent.STATUS,'') as STATUS
+--                 IFNULL(date_format(agent.CREATE_TIME, '%Y-%m-%d'),'') as CREATE_TIME,
+--                 IFNULL(date_format(agent.UPDATE_TIME, '%Y-%m-%d'),'') as UPDATE_TIME,
+--                 IFNULL(user.USER_NAME,'') as USER_NAME,
+--                 IFNULL(user.PHONE,'') as PHONE,
+--                 IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
+         from D_AGENT_APPLY agent where agent.USER_ID = #{userId}
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
       insert into D_AGENT_APPLY(
-                COMPANY_NAME,
-                CONTACT,
-                CONTEXT,
+                USER_ID,
+                URL,
+                DESCRIPTION,
                 CREATE_TIME,
-                PHONE,
-                TEL,
-                EMAIL,
-                USER_NAME,
-                PASSWORD)
+                STATUS)
             values (
-                #{companyName},
-                #{contact},
-                #{context},
+                #{userId},
+                #{url},
+                #{description},
                 #{createTime},
-                #{phone},
-                #{tel},
-                #{email},
-                #{userName},
-                #{password}
+                #{status}
                 )
     </insert>
 
     <update id="update">
         update D_AGENT_APPLY
-        set STATUS = #{status}, UPDATE_TIME = #{updateTime}
+        set STATUS = #{status},DESCRIPTION=#{description},UPDATE_TIME = #{updateTime}
         where ID = #{id}
     </update>
 

@@ -1,5 +1,6 @@
 package cn.muye.cooperation.service;
 
+import cn.muye.cooperation.dto.AgentApplyDto;
 import cn.muye.core.enums.ApplyStatusType;
 import cn.muye.core.Constants;
 import cn.muye.cooperation.domain.AgentApply;
@@ -7,10 +8,12 @@ import cn.muye.cooperation.mapper.AgentApplyMapper;
 import cn.muye.user.domain.User;
 import cn.muye.user.service.UserService;
 import cn.muye.utils.MailUtil;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Ray.Fu on 2017/5/12.
@@ -32,8 +35,8 @@ public class AgentApplyService {
         return agentApplyMapper.getById(id);
     }
 
-    public List<AgentApply> list(Integer page) {
-        return agentApplyMapper.list(page);
+    public List<AgentApplyDto> list(Integer page, Integer status) {
+        return agentApplyMapper.list(page, status);
     }
 
     public void save(AgentApply agentApply) {
@@ -42,32 +45,36 @@ public class AgentApplyService {
 
     public void update(AgentApply agentApply) {
         agentApplyMapper.update(agentApply);
-        //创建账户
+        //更改用户角色
         if (agentApply.getStatus().equals(ApplyStatusType.SUCCESS.getValue())) {
-            User user = new User();
-            user.setUserName(agentApply.getUserName());
-            user.setPassword(agentApply.getPassword());
-            user.setUserRoleId(Constants.AGENT_ROLE_ID);
-            userService.saveAndBindRole(user);
+            Long userId = agentApply.getUserId();
+            User userDb = userService.getUserById(userId);
+            userDb.setUserRoleId(Constants.AGENT_ROLE_ID);
+            userService.updateAndBindRole(userDb);
         }
-        sendMail(agentApply);
+        AgentApplyDto agentApplyDto = agentApplyMapper.getByIdWithUser(agentApply.getId());
+        sendMail(agentApplyDto);
     }
 
-    private void sendMail(AgentApply agentApply) {
+    private void sendMail(AgentApplyDto agentApplyDto) {
         String subject = null;
-        String[] emailArr = new String[]{agentApply.getUserName()};
+        String[] emailArr = new String[]{agentApplyDto.getEmail()};
         String context = null;
-        if (agentApply.getStatus().equals(ApplyStatusType.SUCCESS.getValue())) {
-            subject = "代理商资格" + ApplyStatusType.SUCCESS.getName();
-            String userName = agentApply.getUserName();
-            String password = agentApply.getPassword();
-            context = agentApply.getContact() + ",你好! \t 恭喜" + agentApply.getCompanyName() + "获得木爷代理商资格";
-            context += "\n\r 用户名:" + userName + "\n\r 密码:" + password;
-            emailArr = new String[]{agentApply.getUserName()};
-        } else if (agentApply.getStatus().equals(ApplyStatusType.FAILED.getValue())) {
-            subject = "代理商资格" + ApplyStatusType.FAILED.getName();
-            context = agentApply.getContact() + ",你好! \t很抱歉" + agentApply.getCompanyName() + "未通过木爷代理商资格审核。 \t 原因:" + agentApply.getComment();
+        if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.SUCCESS.getValue())) {
+            subject = "代理商资格认证" + ApplyStatusType.SUCCESS.getName();
+            context = agentApplyDto.getUserName() + ",你好! \t 恭喜贵公司获得木爷机器人代理商资格";
+        } else if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.FAILED.getValue())) {
+            subject = "代理商资格认证" + ApplyStatusType.FAILED.getName();
+            context = agentApplyDto.getUserName()+ ",你好! \t很抱歉贵公司未通过木爷机器人代理商资格审核 \t 原因:" + agentApplyDto.getDescription();
         }
         mailUtil.send(emailArr, subject, context);
+    }
+
+    public AgentApplyDto getByIdWithUser(Long id) {
+        return agentApplyMapper.getByIdWithUser(id);
+    }
+
+    public AgentApplyDto getDtoByUserId(Long userId) {
+        return agentApplyMapper.getDtoByUserId(userId);
     }
 }

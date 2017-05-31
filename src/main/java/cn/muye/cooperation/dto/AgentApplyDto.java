@@ -7,51 +7,52 @@ import java.util.Date;
  */
 public class AgentApplyDto {
 
-    private Long id;
+    private String id;
 
-    //公司名
-    private String companyName;
+    private String userId;
+
+    //用户名
+    private String userName;
 
     //联系电话
     private String phone;
 
-    private String tel;
-
     //审核状态
     private String status;
 
-    //联系人
-    private String contact;
-
     private String email;
+
+    private String url;
 
     private String createTime;
 
     private String updateTime;
 
-    private String context;
+    //备注(申请，审核，结果)
+    private String description;
 
-    //审核备注
-    private String comment;
-
-    private String userName;
-
-    private String password;
-
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPhone() {
@@ -62,14 +63,6 @@ public class AgentApplyDto {
         this.phone = phone;
     }
 
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -78,20 +71,20 @@ public class AgentApplyDto {
         this.status = status;
     }
 
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getCreateTime() {
@@ -110,19 +103,11 @@ public class AgentApplyDto {
         this.updateTime = updateTime;
     }
 
-    public String getContext() {
-        return context;
+    public String getDescription() {
+        return description;
     }
 
-    public void setContext(String context) {
-        this.context = context;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -46,6 +46,12 @@ public class User implements Serializable {
 
 	private String company;
 
+	private Integer level; //用户等级(1. 金牌ISV，2. 白金ISV，3. 钻石ISV)
+
+	private String url; //申请代理商文件的url返回
+
+	private String description;
+
 	public Long getId() {
 		return id;
 	}
@@ -76,6 +82,14 @@ public class User implements Serializable {
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+	public Integer getSex() {
+		return sex;
+	}
+
+	public void setSex(Integer sex) {
+		this.sex = sex;
 	}
 
 	public boolean isPasswordChangeRequired() {
@@ -118,12 +132,12 @@ public class User implements Serializable {
 		this.lastVisit = lastVisit;
 	}
 
-	public Integer getSex() {
-		return sex;
+	public Long getUserRoleId() {
+		return userRoleId;
 	}
 
-	public void setSex(Integer sex) {
-		this.sex = sex;
+	public void setUserRoleId(Long userRoleId) {
+		this.userRoleId = userRoleId;
 	}
 
 	public String getAppKey() {
@@ -158,11 +172,27 @@ public class User implements Serializable {
 		this.company = company;
 	}
 
-	public Long getUserRoleId() {
-		return userRoleId;
+	public Integer getLevel() {
+		return level;
 	}
 
-	public void setUserRoleId(Long userRoleId) {
-		this.userRoleId = userRoleId;
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

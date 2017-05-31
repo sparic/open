@@ -1,14 +1,19 @@
 package cn.muye.user.service;
 
+import cn.muye.cooperation.domain.AgentApply;
+import cn.muye.cooperation.service.AgentApplyService;
+import cn.muye.core.enums.ApplyStatusType;
 import cn.muye.shiro.service.ShiroService;
 import cn.muye.user.domain.User;
 import cn.muye.user.mapper.UserMapper;
 import cn.muye.utils.MailUtil;
+import cn.muye.utils.StringUtil;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +38,9 @@ public class UserService {
 	@Autowired
 	private ShiroService shiroService;
 
+	@Autowired
+	private AgentApplyService agentApplyService;
+
 	public User getUserById(Long id) {
 		return userMapper.getUserById(id);
 	}
@@ -40,11 +48,38 @@ public class UserService {
 	public void saveAndBindRole(User user) {
 		userMapper.save(user);
 		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
+		//添加代理商申请记录
+		AgentApply agentApply = new AgentApply();
+		agentApply.setUserId(user.getId());
+		agentApply.setUrl(user.getUrl());
+		agentApply.setCreateTime(new Date());
+		agentApply.setStatus(ApplyStatusType.SUBMIT.getValue());
+		agentApplyService.save(agentApply);
+	}
+
+	/**
+	 * 如果前台用户注册+申请代理商，就要添加代理商申请
+	 * @param user
+	 */
+	public void saveAndApplyAgent(User user) {
+		userMapper.save(user);
+		//添加代理商申请记录
+		AgentApply agentApply = new AgentApply();
+		agentApply.setUserId(user.getId());
+		agentApply.setUrl(user.getUrl());
+		agentApply.setDescription(user.getDescription());
+		agentApply.setCreateTime(new Date());
+		agentApply.setStatus(ApplyStatusType.SUBMIT.getValue());
+		agentApplyService.save(agentApply);
 	}
 
 	public void updateAndBindRole(User user) {
 		userMapper.update(user);
 		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
+	}
+
+	public void update(User user) {
+		userMapper.update(user);
 	}
 
 	public User getUserByName(String userName) {

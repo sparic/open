@@ -18,10 +18,11 @@
         <!--<result property="appSecret" column="APP_SECRET"/>-->
         <result property="phone" column="PHONE"/>
         <result property="company" column="COMPANY"/>
+        <result property="level" column="LEVEL"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-      ID, USER_NAME, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID
+      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL
     </sql>
 
     <select id="getUserById" resultMap="userResult">
@@ -32,7 +33,7 @@
 
     <select id="getUserByName" resultMap="userResult">
         select
-        *
+        <include refid="Base_Column_List"/>
         from D_USER u where u.USER_NAME = #{userName}
     </select>
 
@@ -49,27 +50,29 @@
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-    insert into D_USER(
-        USER_NAME,
-        PASSWORD,
-        SEX,
-        EMAIL_ADDRESS,
-        DEACTIVATED,
-        LAST_VISIT,
-        COMPANY,
-        PHONE,
-        USER_ROLE_ID
-    ) values (
-        #{userName},
-        #{password},
-        #{sex},
-        #{emailAddress},
-        #{deactivated},
-        #{lastVisit},
-        #{company},
-        #{phone},
-        #{userRoleId}
-    )
+        insert into D_USER(
+            USER_NAME,
+            PASSWORD,
+            SEX,
+            EMAIL_ADDRESS,
+            DEACTIVATED,
+            LAST_VISIT,
+            COMPANY,
+            PHONE,
+            USER_ROLE_ID,
+            LEVEL
+        ) values (
+            #{userName},
+            #{password},
+            #{sex},
+            #{emailAddress},
+            #{deactivated},
+            #{lastVisit},
+            #{company},
+            #{phone},
+            #{userRoleId},
+            #{level}
+        )
   </insert>
 
     <update id="update">
@@ -82,7 +85,8 @@
             LAST_VISIT = #{lastVisit},
             COMPANY = #{company},
             PHONE = #{phone},
-            USER_ROLE_ID = #{userRoleId}
+            USER_ROLE_ID = #{userRoleId},
+            LEVEL= #{level}
         WHERE
           ID = #{id}
     </update>

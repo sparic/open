@@ -14,7 +14,7 @@
         <!--<Resource>logs/daily/rest-demo.log</Resource>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <FileNamePattern>D://devCenter//logs//daily//rest-access.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>/opt/devCenter/logs/daily/rest-access.%d{yyyy-MM-dd}.log</FileNamePattern>
 
             <!-- keep 365 days' worth of history -->
             <maxHistory>365</maxHistory>
