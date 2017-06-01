@@ -67,7 +67,26 @@ public class ResourceController {
     }
 
     /**
-     * 上传文件
+     * 前台上传文件
+     *
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = {"resource"}, method = RequestMethod.POST)
+    @ApiOperation(value = "前台上传文件", httpMethod = "POST", notes = "前台上传文件")
+    public AjaxResult frontUploadFile(@ApiParam(value = "文件") @RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) {
+        String fileName = file.getOriginalFilename();
+        String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+        List<String> supportFileTypes = customProperties.getSupportFileTypes();
+        if (!supportFileTypes.contains(extensionName)) {
+            return AjaxResult.failed("不能上传" + extensionName + "类型文件");
+        }
+        String newFileName = uploadFile(file, request);
+        return addFileInfo(file, newFileName);
+    }
+
+    /**
+     * 后台上传文件
      *
      * @param file
      * @return

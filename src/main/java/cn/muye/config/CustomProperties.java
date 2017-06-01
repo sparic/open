@@ -26,6 +26,8 @@ public class CustomProperties {
 
     private List<String> excludeFileTypes;
 
+	private List<String> supportFileTypes;
+
 	public String getPushDirs() {
 		return pushDirs;
 	}
@@ -80,5 +82,13 @@ public class CustomProperties {
 
 	public void setExcludeFileTypes(List<String> excludeFileTypes) {
 		this.excludeFileTypes = excludeFileTypes;
+	}
+
+	public List<String> getSupportFileTypes() {
+		return supportFileTypes;
+	}
+
+	public void setSupportFileTypes(List<String> supportFileTypes) {
+		this.supportFileTypes = supportFileTypes;
 	}
 }
