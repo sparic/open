@@ -39,6 +39,9 @@ public class ShiroController {
     @RequiresPermissions("role:upsert")
     @ResponseBody
     public AjaxResult postRole(@ApiParam(value = "角色对象") @RequestBody Role role) {
+        if (role != null && (role.getEnName() == null || role.getCnName() == null)) {
+            return AjaxResult.failed("信息不全，请完善后再提交");
+        }
         return post(role);
     }
 

@@ -88,7 +88,7 @@ public class UserController {
     @RequiresPermissions("user:upsert")
     @ApiOperation(value = "后台添加/更新用户", httpMethod = "POST", notes = "后台添加/更新用户")
     public AjaxResult addUser(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
-        if (null == user) {
+        if (null == user || user != null && (user.getUserName() == null || user.getPassword() == null || user.getEmailAddress() == null || user.getPhone() == null || user.getUrl() == null)) {
             return AjaxResult.failed("用户信息为空");
         }
         User userDb = userService.getUserById(user.getId());
@@ -132,7 +132,7 @@ public class UserController {
     public AjaxResult addUserFront(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
         Subject subject = SecurityUtils.getSubject();
         String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
-        if (null == user) {
+        if (null == user || user != null && (user.getUserName() == null || user.getPassword() == null || user.getEmailAddress() == null || user.getPhone() == null || user.getUrl() == null)) {
             return AjaxResult.failed("用户信息为空");
         }
         User userDb = userService.getUserById(user.getId());

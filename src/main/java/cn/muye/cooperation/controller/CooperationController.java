@@ -64,6 +64,9 @@ public class CooperationController {
     @ResponseBody
     @ApiOperation(value = "审核代理商申请", httpMethod = "POST", notes = "审核代理商申请")
     public AjaxResult auditAgentApply(@RequestBody AgentApply agentApply) {
+        if (agentApply != null && agentApply.getStatus() == null) {
+            return AjaxResult.failed("信息不全，请完善后再提交");
+        }
         try {
             Long id = agentApply.getId();
             if (id != null) {

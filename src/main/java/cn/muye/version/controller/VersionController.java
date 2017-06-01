@@ -84,6 +84,9 @@ public class VersionController {
     @RequiresPermissions("version:upsert")
     @ApiOperation(value = "新增或修改版本", httpMethod = "POST", notes = "新增或修改版本")
     public AjaxResult postVersion(@ApiParam(value = "版本对象") @RequestBody Version version) {
+        if (version != null && (version.getVersionCode() == null || version.getUrl() == null)) {
+            return AjaxResult.failed("信息不全，请补全后提交");
+        }
         return addOrUpdate(version);
     }
 

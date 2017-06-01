@@ -132,6 +132,9 @@ public class MenuController {
     @RequiresPermissions("menu:upsert")
     @ApiOperation(value = "新增/修改菜单", httpMethod = "POST", notes = "新增/修改菜单")
     public AjaxResult postMenu(@ApiParam(value = "菜单对象") @RequestBody Menu menu) {
+        if (menu != null && (menu.getVersionId() == null || menu.getName() == null)) {
+            return AjaxResult.failed("菜单信息不全，请完善");
+        }
         return post(menu);
     }
 
