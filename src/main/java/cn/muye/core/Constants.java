@@ -18,7 +18,14 @@ public class Constants {
     public final static String MAIL_TIMEOUT_CLASS = "mail.smtp.timeout";
     public final static long MAIL_TIMEOUT_MILE_SECONDS = 25000;
 
-    public final static Long SUPER_ADMIN_ID = 5L; //超级管理员ID
-    public final static Long AGENT_ROLE_ID = 8L; //普通代理商ID
-    public final static Long CUSTOMER_ROLE_ID = 9L; //普通代理商ID
+    public final static Long SUPER_ADMIN_ID = 1L; //超级管理员ID
+    public final static Long CUSTOMER_ROLE_ID = 2L; //普通用户
+
+    public static final Integer GOLD_AGENT = 1; //黄金代理商
+    public static final Integer PLATINUM_AGENT = 2; //铂金代理商
+    public static final Integer DIAMOND_AGENT = 3; //钻石代理商
+    public static final Integer CUSTOMER_AGENT = 0; //普通代理商
+
+    public final static String TYPE_AUDIT_AGENT_APPLY = "audit"; //走代理商审核接口
+    public final static String TYPE_UPDATE_AGENT_APPLY = "udpate"; //走代理商申请更新接口
 }

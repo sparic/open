@@ -5,7 +5,7 @@ package cn.muye.core.enums;
  */
 public enum AgentLevelType {
 
-    GOLD(1, "金牌ISV"), PLATINUM(2, "白金ISV"), DIAMOND(3, "钻石ISV");
+    AGENT(0, "代理商"),GOLD(1, "金牌ISV"), PLATINUM(2, "白金ISV"), DIAMOND(3, "钻石ISV");
 
     private Integer value;
     private String name;

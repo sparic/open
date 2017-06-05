@@ -5,12 +5,11 @@ import cn.muye.cooperation.dto.AgentApplyDto;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Ray.Fu on 2017/5/12.
  */
-public interface AgentApplyMapper {
+public interface AdminAgentApplyMapper {
 
     AgentApply getById(Long id);
 

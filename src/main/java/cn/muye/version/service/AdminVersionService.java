@@ -1,9 +1,11 @@
 package cn.muye.version.service;
 
-import cn.muye.version.mapper.VersionMapper;
-import cn.muye.menu.service.MenuService;
 import cn.muye.menu.domain.Menu;
+import cn.muye.menu.service.AdminMenuService;
+import cn.muye.menu.service.MenuService;
 import cn.muye.version.domain.Version;
+import cn.muye.version.mapper.AdminVersionMapper;
+import cn.muye.version.mapper.VersionMapper;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,48 +20,48 @@ import java.util.Map;
  */
 @Service
 @Transactional
-public class VersionService {
+public class AdminVersionService {
 
     @Autowired
-    private VersionMapper versionMapper;
+    private AdminVersionMapper adminVersionMapper;
 
     @Autowired
-    private MenuService menuService;
+    private AdminMenuService adminMenuService;
 
     public List<Version> listVersions() {
-        return versionMapper.listVersions();
+        return adminVersionMapper.listVersions();
     }
 
     public void saveVersion(Version version) {
-        versionMapper.saveVersion(version);
+        adminVersionMapper.saveVersion(version);
     }
 
     public Version getById(Long id) {
         Map map = Maps.newHashMap();
         map.put("id", id);
-        return versionMapper.getById(map);
+        return adminVersionMapper.getById(map);
     }
 
     public void updateVersion(Version versionDb) {
-        versionMapper.updateVersion(versionDb);
+        adminVersionMapper.updateVersion(versionDb);
     }
 
     public void deleteById(Long id) {
-        versionMapper.deleteById(id);
+        adminVersionMapper.deleteById(id);
     }
 
     public Version copyVersion(Long extendedVersionId, Version version) {
         Version versionNew = new Version();
         Map map = Maps.newHashMap();
         map.put("id", extendedVersionId);
-        Version extendedVersion = versionMapper.getById(map);
+        Version extendedVersion = adminVersionMapper.getById(map);
         versionNew.setExtendedVersionCode(extendedVersion != null ? extendedVersion.getVersionCode() : null);
         versionNew.setDescription(version.getDescription());
         versionNew.setVersionCode(version.getVersionCode());
         versionNew.setCreateTime(new Date());
         versionNew.setUrl(version.getUrl());
-        versionMapper.saveVersion(versionNew);
-        List<Menu> menuList = menuService.getByVersionId(extendedVersionId);
+        adminVersionMapper.saveVersion(versionNew);
+        List<Menu> menuList = adminMenuService.getByVersionId(extendedVersionId);
         if (menuList != null && menuList.size() > 0) {
             for (Menu m : menuList) {
                 Menu newMenu = new Menu();
@@ -72,7 +74,7 @@ public class VersionService {
                 newMenu.setOriginId(m.getOriginId());
                 newMenu.setContent(m.getContent());
                 newMenu.setUrl(m.getUrl());
-                menuService.saveMenuAndUpdateOriginId(newMenu, "version");
+                adminMenuService.saveMenuAndUpdateOriginId(newMenu, "version");
             }
         }
         return versionNew;

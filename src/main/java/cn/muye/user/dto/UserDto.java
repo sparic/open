@@ -24,11 +24,11 @@ public class UserDto {
 
     private String roleName;
 
-    private String levelId;
+    private String level;
 
     private String levelName;
 
-    private Boolean haveRight;
+//    private Boolean haveRight;
 
     public Long getId() {
         return id;
@@ -94,12 +94,12 @@ public class UserDto {
         this.roleName = roleName;
     }
 
-    public String getLevelId() {
-        return levelId;
+    public String getLevel() {
+        return level;
     }
 
-    public void setLevelId(String levelId) {
-        this.levelId = levelId;
+    public void setLevel(String level) {
+        this.level = level;
     }
 
     public String getLevelName() {
@@ -110,11 +110,11 @@ public class UserDto {
         this.levelName = levelName;
     }
 
-    public Boolean getHaveRight() {
-        return haveRight;
-    }
-
-    public void setHaveRight(Boolean haveRight) {
-        this.haveRight = haveRight;
-    }
+//    public Boolean getHaveRight() {
+//        return haveRight;
+//    }
+//
+//    public void setHaveRight(Boolean haveRight) {
+//        this.haveRight = haveRight;
+//    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.muye.user.mapper.UserMapper">
+<mapper namespace="cn.muye.user.mapper.AdminUserMapper">
 
     <resultMap id="userResult" type="cn.muye.user.domain.User">
         <result property="id" column="ID"/>
@@ -74,7 +74,8 @@
             LAST_VISIT,
             COMPANY,
             PHONE,
-            USER_ROLE_ID
+            USER_ROLE_ID,
+            LEVEL
         ) values (
             #{userName},
             #{password},
@@ -84,7 +85,8 @@
             #{lastVisit},
             #{company},
             #{phone},
-            #{userRoleId}
+            #{userRoleId},
+            #{level}
         )
   </insert>
 

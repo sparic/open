@@ -48,23 +48,23 @@ public class ResourceController {
      * @param pageSize
      * @return
      */
-    @RequestMapping(value = {"admin/resource"}, method = RequestMethod.GET)
-    @RequiresPermissions("resource:query")
-    @ApiOperation(value = "获取所有文件", httpMethod = "GET", notes = "获取所有文件")
-    public AjaxResult getFileList(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                  @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(page, pageSize);
-        List<Resource> list = resourceService.listFiles(page);
-        List<ResourceDto> listDto = Lists.newArrayList();
-        if (list != null && list.size() > 0) {
-            for (Resource resource : list) {
-                listDto.add(objectToDto(resource));
-            }
-        }
-        PageInfo<ResourceDto> resourceDtoPageInfo = new PageInfo(list);
-        resourceDtoPageInfo.setList(listDto);
-        return AjaxResult.success(resourceDtoPageInfo);
-    }
+//    @RequestMapping(value = {"admin/resource"}, method = RequestMethod.GET)
+//    @RequiresPermissions("resource:query")
+//    @ApiOperation(value = "获取所有文件", httpMethod = "GET", notes = "获取所有文件")
+//    public AjaxResult getFileList(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+//                                  @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
+//        PageHelper.startPage(page, pageSize);
+//        List<Resource> list = resourceService.listFiles(page);
+//        List<ResourceDto> listDto = Lists.newArrayList();
+//        if (list != null && list.size() > 0) {
+//            for (Resource resource : list) {
+//                listDto.add(objectToDto(resource));
+//            }
+//        }
+//        PageInfo<ResourceDto> resourceDtoPageInfo = new PageInfo(list);
+//        resourceDtoPageInfo.setList(listDto);
+//        return AjaxResult.success(resourceDtoPageInfo);
+//    }
 
     /**
      * 前台上传文件

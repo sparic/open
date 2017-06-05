@@ -3,6 +3,7 @@ package cn.muye.shiro.controller;
 import cn.muye.core.AjaxResult;
 import cn.muye.shiro.domain.Permission;
 import cn.muye.shiro.domain.Role;
+import cn.muye.shiro.service.AdminShiroService;
 import cn.muye.shiro.service.ShiroService;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -20,22 +21,22 @@ import java.util.List;
  * Created by Ray.Fu on 2017/5/17.
  */
 @Controller
-public class ShiroController {
+public class AdminShiroController {
 
     @Autowired
-    private ShiroService shiroService;
+    private AdminShiroService adminShiroService;
 
     @RequestMapping(value = "/admin/role", method = RequestMethod.GET)
     @RequiresPermissions("role:query")
     @ResponseBody
-    @ApiOperation(value = "查询角色列表", httpMethod = "GET", notes = "查询角色列表")
+    @ApiOperation(value = "后台查询角色列表", httpMethod = "GET", notes = "后台查询角色列表")
     public AjaxResult listRoles() {
-        List<Role> roleList = shiroService.listRoles();
+        List<Role> roleList = adminShiroService.listRoles();
         return AjaxResult.success(roleList);
     }
 
     @RequestMapping(value = "/admin/role", method = RequestMethod.POST)
-    @ApiOperation(value = "新增/修改角色", httpMethod = "POST", notes = "新增/修改角色")
+    @ApiOperation(value = "后台新增/修改角色", httpMethod = "POST", notes = "后台新增/修改角色")
     @RequiresPermissions("role:upsert")
     @ResponseBody
     public AjaxResult postRole(@ApiParam(value = "角色对象") @RequestBody Role role) {
@@ -47,17 +48,17 @@ public class ShiroController {
 
     private AjaxResult post(Role role) {
         if (role.getId() != null) {
-            Role roleDb = shiroService.getById(role.getId());
+            Role roleDb = adminShiroService.getById(role.getId());
             if (roleDb != null) {
                 roleDb.setEnName(role.getEnName());
                 roleDb.setCnName(role.getCnName());
-                shiroService.update(roleDb);
+                adminShiroService.update(roleDb);
                 return AjaxResult.success(roleDb);
             } else {
                 return AjaxResult.failed("不存在该角色");
             }
         } else {
-            shiroService.save(role);
+            adminShiroService.save(role);
             return AjaxResult.success(role);
         }
     }
@@ -70,25 +71,25 @@ public class ShiroController {
      * @return
      */
     @RequestMapping(value = "/admin/role/permission", method = RequestMethod.POST)
-    @ApiOperation(value = "角色绑定权限", httpMethod = "POST", notes = "角色绑定权限")
+    @ApiOperation(value = "后台角色绑定权限", httpMethod = "POST", notes = "后台角色绑定权限")
     @RequiresPermissions("role:upsert")
     @ResponseBody
-    public AjaxResult bindPermission(@ApiParam(value = "权限id集合(逗号分隔)") @RequestParam String permissionIdListStr, @ApiParam(value = "角色id") @RequestParam Long roleId) {
+    public AjaxResult bindPermissionAdmin(@ApiParam(value = "权限id集合(逗号分隔)") @RequestParam String permissionIdListStr, @ApiParam(value = "角色id") @RequestParam Long roleId) {
         List<Long> permissionIdList = JSON.parseArray(permissionIdListStr, Long.class);
         if (permissionIdList != null && permissionIdList.size() > 0) {
-            shiroService.bindRolePermission(roleId, permissionIdList);
+            adminShiroService.bindRolePermission(roleId, permissionIdList);
         }
         return AjaxResult.success("绑定成功");
     }
 
     @RequestMapping(value = "/admin/permission", method = RequestMethod.GET)
-    @ApiOperation(value = "查询权限列表", httpMethod = "GET", notes = "查询权限列表")
+    @ApiOperation(value = "后台查询权限列表", httpMethod = "GET", notes = "后台查询权限列表")
     @RequiresPermissions("permission:query")
     @ResponseBody
-    public AjaxResult listPermissions(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    public AjaxResult listPermissionsAdmin(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                       @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<Permission> permissionList = shiroService.listPermissions(page);
+        List<Permission> permissionList = adminShiroService.listPermissions(page);
         PageInfo<Permission> permissionPageInfo = new PageInfo(permissionList);
         permissionPageInfo.setList(permissionList);
         return AjaxResult.success(permissionPageInfo);
@@ -96,11 +97,11 @@ public class ShiroController {
 
 
     @RequestMapping(value = "/admin/permission/{roleId}", method = RequestMethod.GET)
-    @ApiOperation(value = "查询角色已绑定权限", httpMethod = "GET", notes = "查询角色已绑定权限")
+    @ApiOperation(value = "后台查询角色已绑定权限", httpMethod = "GET", notes = "后台查询角色已绑定权限")
     @RequiresPermissions("permission:query")
     @ResponseBody
-    public AjaxResult listPermissionsByRoleId(@ApiParam(value = "角色ID") @PathVariable String roleId) {
-        List<Permission> permissionList = shiroService.listPermissionsByRoleId(Long.valueOf(roleId));
+    public AjaxResult listPermissionsByRoleIdAdmin(@ApiParam(value = "角色ID") @PathVariable String roleId) {
+        List<Permission> permissionList = adminShiroService.listPermissionsByRoleId(Long.valueOf(roleId));
         return AjaxResult.success(permissionList);
     }
 

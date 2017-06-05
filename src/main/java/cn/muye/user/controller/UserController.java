@@ -1,19 +1,17 @@
 package cn.muye.user.controller;
 
-import cn.muye.cooperation.domain.AgentApply;
 import cn.muye.cooperation.dto.AgentApplyDto;
+import cn.muye.cooperation.dto.IsvApplyDto;
 import cn.muye.cooperation.service.AgentApplyService;
+import cn.muye.cooperation.service.IsvApplyService;
 import cn.muye.core.AjaxResult;
 import cn.muye.core.Constants;
 import cn.muye.core.enums.AgentLevelType;
-import cn.muye.core.enums.ApplyStatusType;
 import cn.muye.shiro.domain.Role;
 import cn.muye.shiro.service.ShiroService;
 import cn.muye.user.domain.User;
 import cn.muye.user.dto.UserDto;
 import cn.muye.user.service.UserService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.swagger.annotations.ApiOperation;
@@ -21,12 +19,13 @@ import io.swagger.annotations.ApiParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -53,73 +52,28 @@ public class UserController {
     @Autowired
     private AgentApplyService agentApplyService;
 
+    @Autowired
+    private IsvApplyService isvApplyService;
+
     private static final Integer STATUS_SUBMIT = 0; //已提交
     private static final Integer STATUS_AUDITING = 1; //待审核
     private static final Integer STATUS_SUCCESS = 2; //成功
     private static final Integer STATUS_FAILED = 3; //失败
 
-    private static final Integer GOLD_AGENT = 1;
-    private static final Integer PLATINUM_AGENT = 2;
-    private static final Integer DIAMOND_AGENT = 3;
-
     /**
      * 较验用户名
-     *
      * @param userName
      * @return
      */
-    @RequestMapping(value = {"admin/user/validate", "user/validate"}, method = RequestMethod.GET)
-    @ApiOperation(value = "校验用户名", httpMethod = "GET", notes = "校验用户名")
-    public AjaxResult validateUserName(@ApiParam(value = "用户名") @RequestParam(value = "userName") String userName) {
-        User user = userService.getUserByName(userName);
-        if (null != user) {
-            return AjaxResult.failed(-1, "用户名已存在!");
-        }
-        return AjaxResult.success();
-    }
-
-    /**
-     * 后台添加用户
-     *
-     * @param user
-     * @return
-     */
-    @RequestMapping(value = "admin/user", method = RequestMethod.POST)
-    @RequiresPermissions("user:upsert")
-    @ApiOperation(value = "后台添加/更新用户", httpMethod = "POST", notes = "后台添加/更新用户")
-    public AjaxResult addUser(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
-        if (null == user || user != null && (user.getUserName() == null || user.getPassword() == null || user.getEmailAddress() == null || user.getPhone() == null || user.getUrl() == null)) {
-            return AjaxResult.failed("用户信息为空");
-        }
-        User userDb = userService.getUserById(user.getId());
-        User sameNameUser = userService.getUserByName(user.getUserName());
-        if ((userDb != null && sameNameUser != null && !sameNameUser.getId().equals(userDb.getId())) || userDb == null &&  sameNameUser != null && sameNameUser.getUserName().equals(user.getUserName())) {
-            return AjaxResult.failed("用户名已存在");
-        }
-        if (user.getId() != null && user.getId() >= 1) {
-            if (userDb != null) {
-                userDb.setPhone(user.getPhone());
-                userDb.setLevel(user.getLevel());
-                userDb.setEmailAddress(user.getEmailAddress());
-                userDb.setPassword(user.getPassword());
-                userDb.setUserName(user.getUserName());
-                userDb.setDeactivated(user.isDeactivated());
-                userDb.setUserRoleId(user.getUserRoleId());
-                userService.updateAndBindRole(userDb); //更新用户绑定角色
-                return AjaxResult.success(objectToDto(userDb));
-            } else {
-                return AjaxResult.failed("不存在该用户");
-            }
-        } else {
-            try {
-                userService.saveAndBindRole(user); //添加用户 绑定角色 发送邮件
-            } catch (Exception e) {
-                logger.error("{}", e);
-                return AjaxResult.failed("添加失败");
-            }
-            return AjaxResult.success(objectToDto(user));
-        }
-    }
+//    @RequestMapping(value = {"admin/user/validate", "user/validate"}, method = RequestMethod.GET)
+//    @ApiOperation(value = "校验用户名", httpMethod = "GET", notes = "校验用户名")
+//    public AjaxResult validateUserName(@ApiParam(value = "用户名") @RequestParam(value = "userName") String userName) {
+//        User user = userService.getUserByName(userName);
+//        if (null != user) {
+//            return AjaxResult.failed(-1, "用户名已存在!");
+//        }
+//        return AjaxResult.success();
+//    }
 
     /**
      * 前台添加用户
@@ -129,120 +83,54 @@ public class UserController {
      */
     @RequestMapping(value = "user", method = RequestMethod.POST)
     @ApiOperation(value = "添加/更新用户", httpMethod = "POST", notes = "添加/更新用户")
-    public AjaxResult addUserFront(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
-        Subject subject = SecurityUtils.getSubject();
-        String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
+    public AjaxResult addUser(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
         if (null == user || user != null && (user.getUserName() == null || user.getPassword() == null || user.getEmailAddress() == null || user.getPhone() == null || user.getUrl() == null)) {
-            return AjaxResult.failed("用户信息为空");
+            return AjaxResult.failed("用户信息为空或信息不全");
         }
-        User userDb = userService.getUserById(user.getId());
-        User sameNameUser = userService.getUserByName(user.getUserName());
-        if ((userDb != null && sameNameUser != null && !sameNameUser.getId().equals(userDb.getId())) || userDb == null &&  sameNameUser != null && sameNameUser.getUserName().equals(user.getUserName())) {
-            return AjaxResult.failed("用户名已存在");
-        }
-        if (user.getId() != null && user.getId() >= 1) {
-            if (userDb != null && userDb.getUserName().equals(userName)) {
-                userDb.setPassword(user.getPassword());
-                userDb.setPhone(user.getPhone());
-                userDb.setEmailAddress(user.getEmailAddress());
-                userService.update(userDb); //更新用户
-                return AjaxResult.success(objectToDto(userDb));
-            } else if (userDb != null && !userDb.getUserName().equals(userName)){
-                return AjaxResult.failed("您无权修改他人的个人信息");
-            } else {
-                return AjaxResult.failed("不存在该用户");
-            }
-        } else {
-            try {
-                user.setUserRoleId(Constants.CUSTOMER_ROLE_ID);
-                userService.saveAndApplyAgent(user); //添加用户 绑定角色
-            } catch (Exception e) {
-                logger.error("{}", e);
-                return AjaxResult.failed("添加失败");
-            }
-            return AjaxResult.success(objectToDto(user));
-        }
-    }
-
-    /**
-     * 列出全部用户
-     *
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    @RequestMapping(value = "admin/user", method = RequestMethod.GET)
-    @RequiresPermissions("user:query")
-    @ApiOperation(value = "列出全部用户", httpMethod = "GET", notes = "列出全部用户")
-    public AjaxResult getUserList(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                  @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(page, pageSize);
-        List<User> userList = userService.getUserList(page);
-        List<UserDto> userDtoList = Lists.newArrayList();
-        if (userList != null && userList.size() > 0) {
-            for (User user : userList) {
-                if (!Constants.SUPER_ADMIN_ID.equals(user.getUserRoleId())) {
-                    userDtoList.add(objectToDto(user));
-                }
-            }
-        }
-        PageInfo<UserDto> userPageInfo = new PageInfo(userList);
-        userPageInfo.setList(userDtoList);
-        return AjaxResult.success(userPageInfo);
-    }
-
-    /**
-     * 删除用户
-     *
-     * @return
-     */
-    @RequestMapping(value = "admin/user/{id}", method = RequestMethod.DELETE)
-    @RequiresPermissions("user:delete")
-    @ApiOperation(value = "删除用户", httpMethod = "DELETE", notes = "删除用户")
-    public AjaxResult deleteUser(@ApiParam(value = "用户ID") @PathVariable Long id) {
-        if (id != null) {
-            User userDb = userService.getUserById(id);
-            if (userDb != null) {
-                UserDto dto = objectToDto(userDb);
-                if (dto.getRoleId().equals(Constants.SUPER_ADMIN_ID)) {
-                    return AjaxResult.failed("不能删除超级管理员");
-                }
-                userDb.setDeactivated(true);
-                userService.deleteById(userDb.getId());
-                return AjaxResult.success("删除成功");
-            }
-        } else {
-            return AjaxResult.failed("不存在该用户");
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "admin/user/role", method = RequestMethod.POST)
-    @RequiresPermissions("user:upsert")
-    @ApiOperation(value = "绑定用户角色", httpMethod = "POST", notes = "绑定用户角色")
-    public AjaxResult bindUserRole(@ApiParam(value = "角色ID集合,数组类型[]，逗号分隔") @RequestParam Long roleId, @ApiParam(value = "用户ID") @RequestParam Long userId) {
         try {
-            shiroService.bindUserRole(roleId, userId);
+            if (user.getId() == null) {
+                User sameNameUser = userService.getUserByName(user.getUserName());
+                if (sameNameUser != null && sameNameUser.getUserName().equals(user.getUserName())) {
+                    return AjaxResult.failed("用户名已存在");
+                }
+                user.setUserRoleId(Constants.CUSTOMER_ROLE_ID);
+                user.setLevel(null);
+                userService.saveAndApplyAgent(user); //添加用户 绑定角色
+            } else {
+                return AjaxResult.failed("您无权修改");
+            }
         } catch (Exception e) {
-            logger.error("{}", e.getMessage());
-            return AjaxResult.failed("绑定失败");
-        } finally {
+            logger.error("{}", e);
+            return AjaxResult.failed("添加失败");
         }
-        return AjaxResult.success("绑定成功");
+        return AjaxResult.success(objectToDto(user));
     }
 
+
     /**
-     * 后台登录
+     * 前台登录
      *
      * @param user
      * @return
      */
-    @RequestMapping(value = {"admin/login", "/login"}, method = RequestMethod.POST)
-    @ApiOperation(value = "前台登录或后台登录", httpMethod = "POST", notes = "前台登录或后台登录")
-    public AjaxResult login(@ApiParam(value = "用户对象") @RequestBody User user) {
-        return doLogin(user.getUserName(), user.getPassword());
+    @RequestMapping(value = {"/login"}, method = RequestMethod.POST)
+    @ApiOperation(value = "前台登录", httpMethod = "POST", notes = "前台登录")
+    public AjaxResult customerLogin(@ApiParam(value = "用户对象") @RequestBody User user) {
+        User userDb = userService.checkCustomerLogin(user);
+        if (userDb != null) {
+            return doLogin(user.getUserName(), user.getPassword());
+        } else {
+            return AjaxResult.failed("用户名或密码错误");
+        }
     }
 
+    /**
+     * 前台登录
+     *
+     * @param userName
+     * @param password
+     * @return
+     */
     private AjaxResult doLogin(String userName, String password) {
         UserDto dto = null;
         try {
@@ -258,45 +146,36 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = {"admin/user/{userId}"}, method = RequestMethod.GET)
-    @RequiresPermissions("user:admin_detail")
-    @ApiOperation(value = "后台查看用户详情", httpMethod = "GET", notes = "后台查看用户详情")
-    public AjaxResult getUserDetailAdmin(@ApiParam(value = "用户ID")@PathVariable Long userId) {
-        Subject subject = SecurityUtils.getSubject();
-        String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
-        User userDb = userService.getUserById(userId);
-        if (userDb != null) {
-            if (!userDb.getUserName().equals(userName)) {
-                return AjaxResult.failed("您无权查看他人的详情");
-            }
-            return AjaxResult.success(objectToDto(userDb));
-        } else {
-            return AjaxResult.failed("不存在的用户");
-        }
-    }
-
     @RequestMapping(value = {"user/{userId}"}, method = RequestMethod.GET)
     @ApiOperation(value = "前台查看用户详情", httpMethod = "GET", notes = "前台查看用户详情")
-    public AjaxResult getUserDetailFront(@ApiParam(value = "用户ID")@PathVariable Long userId) {
-        Subject subject = SecurityUtils.getSubject();
-        String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
-        User userDb = userService.getUserById(userId);
-        if (userDb != null) {
-            if (!userDb.getUserName().equals(userName)) {
-                return AjaxResult.failed("您无权查看他人的详情");
+    public AjaxResult getUserDetail(@ApiParam(value = "用户ID") @PathVariable Long userId) {
+        if (userId != null) {
+            Subject subject = SecurityUtils.getSubject();
+            String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
+            User userDb = userService.getUserById(userId);
+            if (userDb != null) {
+                if (!userDb.getUserName().equals(userName)) {
+                    return AjaxResult.failed("您无权查看他人的详情");
+                }
+                return AjaxResult.success(objectToDto(userDb));
+            } else {
+                return AjaxResult.failed("不存在的用户");
             }
-            return AjaxResult.success(objectToDto(userDb));
         } else {
-            return AjaxResult.failed("不存在的用户");
+            return AjaxResult.failed(2, "参数有误");
         }
     }
 
     @RequestMapping(value = {"user/agentApply/{userId}"}, method = RequestMethod.GET)
     @ApiOperation(value = "前台查看代理商申请进展", httpMethod = "GET", notes = "前台查看代理商申请进展")
-    public AjaxResult getAgentApplyByUserId(@ApiParam(value = "用户ID")@PathVariable Long userId) {
+    public AjaxResult getAgentApplyByUserId(@ApiParam(value = "用户ID") @PathVariable Long userId) {
         Subject subject = SecurityUtils.getSubject();
         String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
         AgentApplyDto agentApplyDto = agentApplyService.getDtoByUserId(userId);
+        if (agentApplyDto == null) {
+//            AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "不存在的代理商申请");
+            return AjaxResult.emptyArray();
+        }
         User userDb = userService.getUserById(userId);
         if (userDb != null) {
             if (!userDb.getUserName().equals(userName)) {
@@ -310,12 +189,45 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = {"user/isvApply/{userId}"}, method = RequestMethod.GET)
+    @ApiOperation(value = "前台查看ISV申请进展", httpMethod = "GET", notes = "前台查看ISV申请进展")
+    public AjaxResult getIsvApplyByUserId(@ApiParam(value = "用户ID") @PathVariable Long userId) {
+        Subject subject = SecurityUtils.getSubject();
+        String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
+        IsvApplyDto isvApplyDto = isvApplyService.getDtoByUserId(userId);
+        if (isvApplyDto == null) {
+//            AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "不存在的ISV申请");
+            return AjaxResult.emptyArray();
+        }
+        User userDb = userService.getUserById(userId);
+        if (userDb != null) {
+            if (!userDb.getUserName().equals(userName)) {
+                return AjaxResult.failed("您无权查看他人的ISV申请进展");
+            }
+            List<Map> result = Lists.newArrayList();
+            result = assembleIsvApplyResult(result, isvApplyDto);
+            return AjaxResult.success(result);
+        } else {
+            return AjaxResult.failed("不存在该用户");
+        }
+    }
+
+    /**
+     * 组装代理商进展的返回数据
+     *
+     * @param result
+     * @param agentApplyDto
+     * @return
+     */
     private List<Map> assembleAgentApplyResult(List<Map> result, AgentApplyDto agentApplyDto) {
         //遍历3次总共分3个状态(1. 已提交 2. 待审核 3. 通过/失败)
         for (int i = 0; i < 3; i++) {
             Map map = Maps.newHashMap();
-            map.put("flag", (i == Integer.valueOf(agentApplyDto.getStatus()) ? "1" : "0"));
-            map.put("description", (i == Integer.valueOf(agentApplyDto.getStatus()) ? agentApplyDto.getDescription() : ""));
+            String status = agentApplyDto.getStatus();
+            String flag = i == Integer.valueOf(status) || (3 == Integer.valueOf(status) && i == 2) ? "1" : "0";
+            map.put("flag", flag);
+            String desc = i == Integer.valueOf(status) || (3 == Integer.valueOf(status) && i == 2) ? agentApplyDto.getDescription() : "";
+            map.put("description", desc);
             //如果遍历到了通过/失败
             if (i == 2) {
                 if (STATUS_SUCCESS == Integer.valueOf(agentApplyDto.getStatus()) || STATUS_FAILED == Integer.valueOf(agentApplyDto.getStatus())) {
@@ -327,9 +239,35 @@ public class UserController {
         return result;
     }
 
-    @RequestMapping(value = {"admin/user/loginOut", "user/loginOut"}, method = RequestMethod.POST)
-    @ApiOperation(value = "注销", httpMethod = "POST", notes = "注销")
-    public AjaxResult adminLogOut() {
+    /**
+     * 组装ISV进展的返回数据
+     *
+     * @param result
+     * @param isvApplyDto
+     * @return
+     */
+    private List<Map> assembleIsvApplyResult(List<Map> result, IsvApplyDto isvApplyDto) {
+        //遍历3次总共分3个状态(1. 已提交 2. 待审核 3. 通过/失败)
+        for (int i = 0; i < 3; i++) {
+            Map map = Maps.newHashMap();
+            map.put("flag", (i == Integer.valueOf(isvApplyDto.getStatus()) ? "1" : "0"));
+            String status = isvApplyDto.getStatus();
+            String desc = i == Integer.valueOf(status) || (3 == Integer.valueOf(status) && i == 2) ? isvApplyDto.getDescription() : "";
+            map.put("description", desc);
+            //如果遍历到了通过/失败
+            if (i == 2) {
+                if (STATUS_SUCCESS == Integer.valueOf(isvApplyDto.getStatus()) || STATUS_FAILED == Integer.valueOf(isvApplyDto.getStatus())) {
+                    map.put("status", STATUS_SUCCESS != Integer.valueOf(isvApplyDto.getStatus()) && STATUS_FAILED != Integer.valueOf(isvApplyDto.getStatus()) ? "" : isvApplyDto.getStatus());
+                }
+            }
+            result.add(map);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = {"user/loginOut"}, method = RequestMethod.POST)
+    @ApiOperation(value = "前台注销", httpMethod = "POST", notes = "前台注销")
+    public AjaxResult customerLogOut() {
         try {
             Subject subject = SecurityUtils.getSubject();
             subject.logout();
@@ -352,16 +290,17 @@ public class UserController {
         } else {
             dto.setRoleName("");
         }
-        dto.setLevelId(user.getLevel() == null ? "" : String.valueOf(user.getLevel()));
+        dto.setLevel(user.getLevel() == null ? "" : String.valueOf(user.getLevel()));
         if (user.getLevel() != null) {
             Integer levelId = user.getLevel();
-            String levelName = levelId.equals(GOLD_AGENT) ? AgentLevelType.GOLD.getName() : (levelId.equals(PLATINUM_AGENT) ? AgentLevelType.PLATINUM.getName() : levelId.equals(DIAMOND_AGENT) ? AgentLevelType.DIAMOND.getName() : "");
+            List<String> levelList = new ArrayList<String>(Arrays.asList(AgentLevelType.AGENT.getName(), AgentLevelType.GOLD.getName(), AgentLevelType.PLATINUM.getName(), AgentLevelType.DIAMOND.getName()));
+            String levelName = levelList.get(levelId);
             dto.setLevelName(levelName);
         } else {
             dto.setLevelName("");
         }
         dto.setEmailAddress(user.getEmailAddress() == null ? "" : user.getEmailAddress());
-        dto.setHaveRight(!user.getUserRoleId().equals(Constants.CUSTOMER_ROLE_ID) ? true : false);
         return dto;
     }
+
 }

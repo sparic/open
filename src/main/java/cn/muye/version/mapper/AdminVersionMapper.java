@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by Ray.Fu on 2017/5/2.
  */
-public interface VersionMapper {
+public interface AdminVersionMapper {
 
     List<Version> listVersions();
 

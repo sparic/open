@@ -52,6 +52,8 @@ public class User implements Serializable {
 
 	private String description;
 
+	private Boolean isAdminUser;
+
 	public Long getId() {
 		return id;
 	}
@@ -194,5 +196,13 @@ public class User implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Boolean getIsAdminUser() {
+		return isAdminUser;
+	}
+
+	public void setIsAdminUser(Boolean isAdminUser) {
+		this.isAdminUser = isAdminUser;
 	}
 }

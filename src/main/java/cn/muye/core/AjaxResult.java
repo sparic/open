@@ -4,6 +4,8 @@ public class AjaxResult {
     public static final int CODE_SUCCESS = 0;
     public static final int CODE_LOG_FAILED = 1; //未登录失败
     public static final int CODE_PARAM_MISTAKE_FAILED = 2; //参数有误失败
+    public static final int CODE_NOT_AUTHORIZED_FAILED = 3; //用户无权限
+    public static final int CODE_ERROR_FAILED = 4; //其他错误
     private int code;
     private String message;
     private Object data;
@@ -60,4 +62,8 @@ public class AjaxResult {
         return new AjaxResult(code, data, message);
     }
 
+    public static final AjaxResult emptyArray() {
+        String[] arr = new String[]{};
+        return new AjaxResult(CODE_SUCCESS, arr, "empty");
+    }
 }

@@ -1,14 +1,14 @@
 package cn.muye.menu.controller;
 
 import cn.muye.core.AjaxResult;
-import cn.muye.menu.dto.MenuDto;
 import cn.muye.menu.domain.Menu;
+import cn.muye.menu.dto.MenuDto;
 import cn.muye.menu.service.AdminMenuService;
-import cn.muye.version.domain.Version;
 import cn.muye.menu.service.MenuService;
+import cn.muye.utils.DateTimeUtils;
+import cn.muye.version.domain.Version;
 import cn.muye.version.service.AdminVersionService;
 import cn.muye.version.service.VersionService;
-import cn.muye.utils.DateTimeUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.swagger.annotations.ApiOperation;
@@ -18,49 +18,51 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Ray.Fu on 2017/4/25.
  */
 @RestController
-public class MenuController {
+public class AdminMenuController {
 
-    private static final Logger LOGGER = Logger.getLogger(MenuController.class);
-
-    @Autowired
-    private MenuService menuService;
+    private static final Logger LOGGER = Logger.getLogger(AdminMenuController.class);
 
     @Autowired
-    private VersionService versionService;
+    private AdminMenuService adminMenuService;
+
+    @Autowired
+    private AdminVersionService adminVersionService;
 
     private static List<MenuDto> menuDtoList;
 
     /**
-     * 前台查询菜单列表接口
+     * 后台查询菜单列表接口
      *
      * @param versionId
      * @return
      */
-    @RequestMapping(value = {"/menu"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"admin/menu"}, method = RequestMethod.GET)
     @RequiresPermissions("menu:query")
-    @ApiOperation(value = "前台查询菜单列表", httpMethod = "GET", notes = "前台查询菜单列表")
-    public AjaxResult customerGetMenuList(@ApiParam(value = "版本号") @RequestParam(value = "versionId", required = false) Long versionId) {
+    @ApiOperation(value = "后台查询菜单列表", httpMethod = "GET", notes = "后台查询菜单列表")
+    public AjaxResult adminGetMenuList(@ApiParam(value = "版本号") @RequestParam(value = "versionId", required = false) Long versionId) {
         List<Menu> menuList = null;
         if (versionId == null) {
-            List<Version> list = versionService.listVersions();
+            List<Version> list = adminVersionService.listVersions();
             Version version = list.get(0);
-            menuList = menuService.getByVersionId(version.getId());
+            menuList = adminMenuService.getByVersionId(version.getId());
         } else {
-            menuList = menuService.listMenus(versionId);
+            menuList = adminMenuService.listMenus(versionId);
         }
         menuDtoList = Lists.newArrayList();
         if (menuList != null && menuList.size() > 0) {
             for (Menu menu : menuList) {
-                menuDtoList.add(objectToDto(menu));
+                menuDtoList.add(objectToDtoAdmin(menu));
             }
         }
-        Version versionDb = versionService.getById(versionId);
+        Version versionDb = adminVersionService.getById(versionId);
         //扔给前端的最上层菜单
         Map map = Maps.newHashMap();
         List<MenuDto> menuDtoNewList = Lists.newArrayList();
@@ -78,7 +80,7 @@ public class MenuController {
         return AjaxResult.success(map);
     }
 
-    private MenuDto objectToDto(Menu menu) {
+    private MenuDto objectToDtoAdmin(Menu menu) {
         MenuDto menuDto = new MenuDto();
         menuDto.setId(menu.getId() == null ? "" : String.valueOf(menu.getId()));
         menuDto.setUpdateTime(DateTimeUtils.getDateString(menu.getUpdateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
@@ -130,18 +132,68 @@ public class MenuController {
     }
 
     /**
-     * 获取单个菜单下的子菜单
+     * 新增接口
+     *
+     * @param menu
+     * @return
+     */
+    @RequestMapping(value = {"admin/menu"}, method = RequestMethod.POST)
+    @RequiresPermissions("menu:upsert")
+    @ApiOperation(value = "后台新增/修改菜单", httpMethod = "POST", notes = "后台新增/修改菜单")
+    public AjaxResult postMenuAdmin(@ApiParam(value = "菜单对象") @RequestBody Menu menu) {
+        if (menu != null && (menu.getVersionId() == null || menu.getName() == null)) {
+            return AjaxResult.failed("菜单信息不全，请完善");
+        }
+        return post(menu);
+    }
+
+    private AjaxResult post(Menu menu) {
+        Long versionId = menu.getVersionId();
+        Long id = menu.getId();
+        if (versionId != null && !versionId.equals(0L)) {
+            Version version = adminVersionService.getById(versionId);
+            if (version == null) {
+                return AjaxResult.failed("版本号为空或不存在");
+            }
+        }
+        if (id != null) {
+            Menu menuDb = adminMenuService.getById(id);
+            Long pId = menu.getParentId();
+            if (pId != null && (pId.equals(menuDb.getOriginId()) || pId.equals(menuDb.getId()))) {
+                return AjaxResult.failed("不能选择自己做父菜单");
+            }
+            if (menuDb != null) {
+                menuDb.setName(menu.getName());
+                menuDb.setParentId(menu.getParentId());
+                menuDb.setUpdateTime(new Date());
+                menuDb.setContent(menu.getContent());
+                menuDb.setUrl(menu.getUrl());
+                adminMenuService.updateMenu(menuDb);
+                return AjaxResult.success(objectToDtoAdmin(menuDb));
+            } else {
+                return AjaxResult.failed("不存在的文档");
+            }
+        } else {
+            menu.setCreateTime(new Date());
+            menu.setIsValid(true);
+            adminMenuService.saveMenuAndUpdateOriginId(menu, "menu");
+            return AjaxResult.success(objectToDtoAdmin(menu));
+        }
+    }
+
+    /**
+     * 后台获取单个菜单下的子菜单
      *
      * @param id
      * @return
      */
-    @RequestMapping(value = {"/menu/{id}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"admin/menu/{id}"}, method = RequestMethod.GET)
     @RequiresPermissions("menu:query")
-    @ApiOperation(value = "前台获取单个菜单详情", httpMethod = "GET", notes = "前台获取单个菜单详情")
-    public AjaxResult getMenu(@ApiParam(value = "菜单ID") @PathVariable String id) {
+    @ApiOperation(value = "后台获取单个菜单详情", httpMethod = "GET", notes = "后台获取单个菜单详情")
+    public AjaxResult getMenuAdmin(@ApiParam(value = "菜单ID") @PathVariable Long id) {
         try {
-            Menu menu = menuService.getById(Long.valueOf(id));
-            return AjaxResult.success(objectToDto(menu));
+            Menu menu = adminMenuService.getById(id);
+            return AjaxResult.success(objectToDtoAdmin(menu));
         } catch (Exception e) {
             LOGGER.error("{}", e);
             return AjaxResult.failed("不存在该条记录");
@@ -167,5 +219,24 @@ public class MenuController {
 //        menuService.updateMenu(menuDb);
 //        return AjaxResult.success(objectToDto(menuDb));
 //    }
+
+    /**
+     * 删除菜单
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "admin/menu/{id}", method = RequestMethod.DELETE)
+    @RequiresPermissions("menu:delete")
+    @ApiOperation(value = "后台删除菜单", httpMethod = "DELETE", notes = "后台删除菜单")
+    public AjaxResult deleteMenuAdmin(@ApiParam(value = "菜单ID") @PathVariable Long id) {
+        List<Menu> childrenMenu = adminMenuService.listMenusByParentId(id);
+        if (childrenMenu != null && childrenMenu.size() > 0) {
+            return AjaxResult.failed("不能删除有子菜单的父菜单");
+        } else {
+            adminMenuService.deleteById(id);
+            return AjaxResult.success("删除成功");
+        }
+    }
 
 }

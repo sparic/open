@@ -1,28 +1,27 @@
 package cn.muye.cooperation.controller;
 
+import cn.muye.cooperation.domain.IsvApply;
+import cn.muye.cooperation.service.IsvApplyService;
 import cn.muye.core.AjaxResult;
 import cn.muye.core.Constants;
 import cn.muye.cooperation.domain.AgentApply;
-import cn.muye.cooperation.dto.AgentApplyDto;
 import cn.muye.cooperation.service.AgentApplyService;
+import cn.muye.core.enums.ApplyStatusType;
 import cn.muye.user.domain.User;
 import cn.muye.user.service.UserService;
-import cn.muye.utils.DateTimeUtils;
-import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 /**
  * Created by Ray.Fu on 2017/5/9.
@@ -33,99 +32,145 @@ public class CooperationController {
     @Autowired
     private AgentApplyService agentApplyService;
 
-    private static final Integer STATUS_SUBMIT = 0; //已提交
-    private static final Integer STATUS_AUDITING = 1; //待审核
-    private static final Integer STATUS_SUCCESS = 2; //成功
-    private static final Integer STATUS_FAILED = 3; //失败
+    @Autowired
+    private IsvApplyService isvApplyService;
+
+    @Autowired
+    private UserService userService;
+
+    private static final int STATUS_SUBMIT = 0; //已提交
+    private static final int STATUS_AUDITING = 1; //待审核
+    private static final int STATUS_SUCCESS = 2; //成功
+    private static final int STATUS_FAILED = 3; //失败
 
     /*
-    *新增代理上申请接口从业务角度转移到了用户注册
+    * 修改代理商申请
+    * */
     @RequestMapping(value = "/agentApply", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value = "新增代理商申请", httpMethod = "POST", notes = "新增代理商申请")
-    public AjaxResult addAgentApply(@RequestBody String formObjectStr) {
-        JSONObject jsonObject = JSONObject.parseObject(formObjectStr);
-        String email = (String)((JSONObject) jsonObject.get("totalMan")).get("email");
-        String contact = (String)((JSONObject)jsonObject.get("totalMan")).get("name");
-        String companyName = (String)jsonObject.get("company");
-        String password = String.valueOf(getRandomPassword());
-        User sameNameUser = userService.getUserByName(email);
-        if (sameNameUser != null && sameNameUser.getUserName().equals(email)) {
-            return AjaxResult.failed("负责人邮箱已存在，请更换邮箱");
+    @RequiresPermissions("agentApply:update")
+    @ApiOperation(value = "更新代理商申请", httpMethod = "POST", notes = "更新代理商申请")
+    public AjaxResult updateAgentApply(@RequestBody AgentApply agentApply) {
+        if (agentApply == null || agentApply.getUserId() == null || agentApply.getUrl() == null) {
+            return AjaxResult.failed("代理商申请信息有误，请检查后再提交");
         }
-        AgentApply agentApply = new AgentApply();
-        agentApply.setCreateTime(new Date());
-        agentApplyService.save(agentApply);
-        return AjaxResult.success(objectToDto(agentApply), Constants.FEEDBACK_WORD);
-    }*/
-
-    @RequestMapping(value = "admin/agentApply/audit", method = RequestMethod.POST)
-    @RequiresPermissions("agentApply:audit")
-    @ResponseBody
-    @ApiOperation(value = "审核代理商申请", httpMethod = "POST", notes = "审核代理商申请")
-    public AjaxResult auditAgentApply(@RequestBody AgentApply agentApply) {
-        if (agentApply != null && agentApply.getStatus() == null) {
-            return AjaxResult.failed("信息不全，请完善后再提交");
-        }
-        try {
-            Long id = agentApply.getId();
-            if (id != null) {
-                AgentApply agentApplyDb = agentApplyService.getById(id);
-                if (agentApplyDb != null) {
-                    agentApplyDb.setStatus(agentApply.getStatus());
-                    agentApplyDb.setUpdateTime(new Date());
-                    agentApplyDb.setDescription(agentApply.getDescription());
-                    agentApplyService.update(agentApplyDb);
-                    String msg = null;
-                    if (agentApplyDb.getStatus().equals(STATUS_AUDITING)) {
-                        msg = "待审核，请耐心等待";
-                    } else if (agentApplyDb.getStatus().equals(STATUS_SUCCESS)) {
-                        msg = "认证通过，并发送通知邮件";
-                    } else if (agentApplyDb.getStatus().equals(STATUS_FAILED)){
-                        msg = "认证失败，并发送通知邮件";
-                    }
-                    return AjaxResult.success(objectToDto(agentApplyDb), msg);
-                } else {
-                    return AjaxResult.failed("不存在该代理商申请");
-                }
-            } else {
-                return AjaxResult.failed("不存在该代理商申请");
+        AgentApply agentApplyDb = agentApplyService.getByUserId(agentApply.getUserId());
+        Subject subject = SecurityUtils.getSubject();
+        String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
+        User userDb = userService.getUserById(agentApplyDb.getUserId());
+        if (userDb != null) {
+            if (!userDb.getUserName().equals(userName)) {
+                return AjaxResult.failed("您无权更改他人的代理商申请进展");
             }
-        } catch (UnauthenticatedException e) {
-            return AjaxResult.failed("没有权限");
-        } finally {
+        } else {
+            AjaxResult.failed("不存在的用户");
+        }
+        if (agentApplyDb != null) {
+            agentApplyDb.setUrl(agentApply.getUrl());
+            agentApplyDb.setUpdateTime(new Date());
+            agentApplyDb.setDescription(agentApply.getDescription());
+            agentApplyDb.setStatus(ApplyStatusType.SUBMIT.getValue());
+            agentApplyService.update(agentApplyDb, Constants.TYPE_UPDATE_AGENT_APPLY);
+            List<Map> result = Lists.newArrayList();
+            result = assembleAgentApplyResult(result, agentApplyDb);
+            return AjaxResult.success(result);
+        } else {
+            return AjaxResult.failed("不存在的代理商申请");
         }
     }
 
-    @RequestMapping(value = {"admin/agentApply"}, method = RequestMethod.GET)
-    @RequiresPermissions("agentApply:query")
+    /*
+    * 新增或修改Isv申请
+    * */
+    @RequestMapping(value = "/isvApply", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value = "查询代理商申请列表", httpMethod = "GET", notes = "查询代理商申请列表")
-    public AjaxResult listAgentApply(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                     @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-                                     @ApiParam(value = "状态") @RequestParam(value = "status", required = false) Integer status) {
-        PageHelper.startPage(page, pageSize);
-        List<AgentApplyDto> list = agentApplyService.list(page, status);
-        PageInfo<AgentApplyDto> agentApplyDtoPageInfo = new PageInfo(list);
-        agentApplyDtoPageInfo.setList(list);
-        return AjaxResult.success(agentApplyDtoPageInfo);
+    @RequiresPermissions("isvApply:upsert")
+    @ApiOperation(value = "新增或更新ISV申请", httpMethod = "POST", notes = "新增或更新ISV申请")
+    public AjaxResult addOrUpdateIsvApply(@RequestBody IsvApply isvApply) {
+        if (isvApply == null || isvApply.getUserId() == null || isvApply.getUrl() == null) {
+            return AjaxResult.failed("ISV申请信息有误，请检查后再提交");
+        }
+        Long userId = isvApply.getUserId();
+        User userDb = userService.getUserById(userId);
+        if (userDb.getLevel() == null) {
+            return AjaxResult.failed(AjaxResult.CODE_NOT_AUTHORIZED_FAILED,"您不是代理商，无法申请ISV");
+        }
+        IsvApply isvApplyDb = isvApplyService.getByUserId(isvApply.getUserId());
+        Subject subject = SecurityUtils.getSubject();
+        String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
+        if (userDb != null) {
+            if (!userDb.getUserName().equals(userName)) {
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权更改他人的ISV申请进展");
+            } else if (userDb.getLevel() == null){
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您不是代理商无权申请ISV");
+            }
+        } else {
+            AjaxResult.failed("不存在的用户");
+        }
+        if (isvApplyDb != null) {
+            isvApplyDb.setUrl(isvApply.getUrl());
+            isvApplyDb.setUpdateTime(new Date());
+            isvApplyDb.setDescription(isvApply.getDescription());
+            isvApplyDb.setStatus(ApplyStatusType.SUBMIT.getValue());
+            isvApplyService.update(isvApplyDb, Constants.TYPE_UPDATE_AGENT_APPLY);
+            List<Map> result = Lists.newArrayList();
+            result = assembleIsvApplyResult(result, isvApplyDb);
+            return AjaxResult.success(result);
+        } else {
+            isvApply.setCreateTime(new Date());
+            isvApply.setStatus(ApplyStatusType.SUBMIT.getValue());
+            isvApplyService.save(isvApply);
+            return AjaxResult.success("申请成功");
+        }
     }
 
-    @RequestMapping(value = "admin/agentApply/{id}", method = RequestMethod.GET)
-    @RequiresPermissions("agentApply:detail")
-    @ResponseBody
-    @ApiOperation(value = "查询代理商申请详情", httpMethod = "GET", notes = "查询代理商申请详情")
-    public AjaxResult getAgentApplyDetail(@PathVariable Long id) {
-        AgentApplyDto agentApplyDto = agentApplyService.getByIdWithUser(id);
-        return AjaxResult.success(agentApplyDto);
+    /**
+     * 组装代理商进展的返回数据
+     *
+     * @param result
+     * @param agentApply
+     * @return
+     */
+    private List<Map> assembleAgentApplyResult(List<Map> result, AgentApply agentApply) {
+        //遍历3次总共分3个状态(1. 已提交 2. 待审核 3. 通过/失败)
+        for (int i = 0; i < 3; i++) {
+            Map map = Maps.newHashMap();
+            //给前端用，1代表正处于该阶段，0则反之
+            map.put("flag", (i == Integer.valueOf(agentApply.getStatus()) ? "1" : "0"));
+            map.put("description", (i == Integer.valueOf(agentApply.getStatus()) ? agentApply.getDescription() != null ? agentApply.getDescription() : "" : ""));
+            //如果遍历到了通过/失败
+            if (i == 2) {
+                if (STATUS_SUCCESS == Integer.valueOf(agentApply.getStatus()) || STATUS_FAILED == Integer.valueOf(agentApply.getStatus())) {
+                    map.put("status", STATUS_SUCCESS != Integer.valueOf(agentApply.getStatus()) && STATUS_FAILED != Integer.valueOf(agentApply.getStatus()) ? "" : agentApply.getStatus());
+                }
+            }
+            result.add(map);
+        }
+        return result;
     }
 
-    private AgentApplyDto objectToDto(AgentApply agentApply) {
-        AgentApplyDto dto = new AgentApplyDto();
-        dto.setCreateTime(DateTimeUtils.getDateString(agentApply.getCreateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
-        dto.setUpdateTime(DateTimeUtils.getDateString(agentApply.getUpdateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
-        dto.setStatus(agentApply.getStatus() == null ? "" : String.valueOf(agentApply.getStatus()));
-        dto.setId(agentApply.getId()== null ? "" : String.valueOf(agentApply.getId()));
-        return dto;
+    /**
+     * 组装ISV进展的返回数据
+     *
+     * @param result
+     * @param isvApply
+     * @return
+     */
+    private List<Map> assembleIsvApplyResult(List<Map> result, IsvApply isvApply) {
+        //遍历3次总共分3个状态(1. 已提交 2. 待审核 3. 通过/失败)
+        for (int i = 0; i < 3; i++) {
+            Map map = Maps.newHashMap();
+            map.put("flag", (i == Integer.valueOf(isvApply.getStatus()) ? "1" : "0"));
+            map.put("description", (i == Integer.valueOf(isvApply.getStatus()) ? isvApply.getDescription() != null ? isvApply.getDescription() : "" : ""));
+            //如果遍历到了通过/失败
+            if (i == 2) {
+                if (STATUS_SUCCESS == Integer.valueOf(isvApply.getStatus()) || STATUS_FAILED == Integer.valueOf(isvApply.getStatus())) {
+                    map.put("status", STATUS_SUCCESS != Integer.valueOf(isvApply.getStatus()) && STATUS_FAILED != Integer.valueOf(isvApply.getStatus()) ? "" : isvApply.getStatus());
+                }
+            }
+            result.add(map);
+        }
+        return result;
     }
+
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.muye.cooperation.mapper.AgentApplyMapper">
+<mapper namespace="cn.muye.cooperation.mapper.IsvApplyMapper">
 
-    <resultMap id="agentApplyResult" type="cn.muye.cooperation.domain.AgentApply">
+    <resultMap id="isvApplyResult" type="cn.muye.cooperation.domain.IsvApply">
         <result property="id" column="ID"/>
         <result property="userId" column="USER_ID"/>
         <result property="url" column="URL"/>
@@ -12,7 +12,7 @@
         <result property="status" column="STATUS"/>
     </resultMap>
 
-    <resultMap id="agentApplyUserResult" type="cn.muye.cooperation.dto.AgentApplyDto">
+    <resultMap id="isvApplyUserResult" type="cn.muye.cooperation.dto.IsvApplyDto">
         <result property="id" column="ID"/>
         <result property="userId" column="USER_ID"/>
         <result property="url" column="URL"/>
@@ -25,7 +25,7 @@
         <result property="email" column="EMAIL_ADDRESS"/>
     </resultMap>
 
-    <select id="list" resultMap="agentApplyUserResult" parameterType="Integer">
+    <select id="list" resultMap="isvApplyUserResult" parameterType="Integer">
         select agent.ID,
                 IFNULL(agent.USER_ID,'') as USER_ID,
                 IFNULL(agent.URL,'') as URL,
@@ -36,7 +36,7 @@
                 IFNULL(user.USER_NAME,'') as USER_NAME,
                 IFNULL(user.PHONE,'') as PHONE,
                 IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
-         from D_AGENT_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
+         from D_ISV_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
          where 1=1
         <if test="status != null">
             and agent.STATUS = #{status}
@@ -44,7 +44,7 @@
          order by ID desc
     </select>
 
-    <select id="getById" resultMap="agentApplyResult">
+    <select id="getById" resultMap="isvApplyResult">
         select agent.ID,
                 agent.USER_ID,
                 agent.URL,
@@ -52,11 +52,11 @@
                 agent.CREATE_TIME,
                 agent.UPDATE_TIME,
                 agent.STATUS
-        from D_AGENT_APPLY agent
+        from D_ISV_APPLY agent
         where agent.ID = #{id}
     </select>
 
-    <select id="getByUserId" resultMap="agentApplyResult">
+    <select id="getByUserId" resultMap="isvApplyResult">
         select agent.ID,
                 agent.USER_ID,
                 agent.URL,
@@ -64,11 +64,11 @@
                 agent.CREATE_TIME,
                 agent.UPDATE_TIME,
                 agent.STATUS
-        from D_AGENT_APPLY agent
+        from D_ISV_APPLY agent
         where agent.USER_ID = #{userId}
     </select>
 
-    <select id="getByIdWithUser" resultMap="agentApplyUserResult">
+    <select id="getByIdWithUser" resultMap="isvApplyUserResult">
         select agent.ID,
                 IFNULL(agent.USER_ID,'') as USER_ID,
                 IFNULL(agent.URL,'') as URL,
@@ -79,11 +79,11 @@
                 IFNULL(user.USER_NAME,'') as USER_NAME,
                 IFNULL(user.PHONE,'') as PHONE,
                 IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
-         from D_AGENT_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
+         from D_ISV_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
           where agent.ID = #{id}
     </select>
 
-    <select id="getDtoByUserId" resultMap="agentApplyUserResult">
+    <select id="getDtoByUserId" resultMap="isvApplyUserResult">
         select agent.ID,
                 IFNULL(agent.USER_ID,'') as USER_ID,
                 IFNULL(agent.DESCRIPTION,'') as DESCRIPTION,
@@ -93,11 +93,11 @@
 --                 IFNULL(user.USER_NAME,'') as USER_NAME,
 --                 IFNULL(user.PHONE,'') as PHONE,
 --                 IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
-         from D_AGENT_APPLY agent where agent.USER_ID = #{userId}
+         from D_ISV_APPLY agent where agent.USER_ID = #{userId}
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-      insert into D_AGENT_APPLY(
+      insert into D_ISV_APPLY(
                 USER_ID,
                 URL,
                 DESCRIPTION,
@@ -113,8 +113,8 @@
     </insert>
 
     <update id="update">
-        update D_AGENT_APPLY
-        set STATUS = #{status},DESCRIPTION=#{description},UPDATE_TIME = #{updateTime},URL=#{url}
+        update D_ISV_APPLY
+        set STATUS = #{status},DESCRIPTION=#{description},UPDATE_TIME = #{updateTime}
         where ID = #{id}
     </update>
 

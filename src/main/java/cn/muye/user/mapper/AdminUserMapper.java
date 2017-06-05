@@ -13,7 +13,7 @@ import java.util.List;
  * Describe: 用户
  * Version:1.0
  */
-public interface UserMapper {
+public interface AdminUserMapper {
 
 	void save(User user);
 

@@ -1,14 +1,15 @@
 package cn.muye.user.service;
 
 import cn.muye.cooperation.domain.AgentApply;
+import cn.muye.cooperation.service.AdminAgentApplyService;
 import cn.muye.cooperation.service.AgentApplyService;
 import cn.muye.core.enums.ApplyStatusType;
+import cn.muye.shiro.service.AdminShiroService;
 import cn.muye.shiro.service.ShiroService;
 import cn.muye.user.domain.User;
+import cn.muye.user.mapper.AdminUserMapper;
 import cn.muye.user.mapper.UserMapper;
 import cn.muye.utils.MailUtil;
-import cn.muye.utils.StringUtil;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,34 +28,31 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class UserService {
+public class AdminUserService {
 
 	@Autowired
-	private UserMapper userMapper;
+	private AdminUserMapper adminUserMapper;
 
 	@Autowired
-	private MailUtil mailUtil;
+	private AdminShiroService adminShiroService;
 
 	@Autowired
-	private ShiroService shiroService;
-
-	@Autowired
-	private AgentApplyService agentApplyService;
+	private AdminAgentApplyService adminAgentApplyService;
 
 	public User getUserById(Long id) {
-		return userMapper.getUserById(id);
+		return adminUserMapper.getUserById(id);
 	}
 
 	public void saveAndBindRole(User user) {
-		userMapper.save(user);
-		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
+		adminUserMapper.save(user);
+		adminShiroService.bindUserRole(user.getUserRoleId(), user.getId());
 		//添加代理商申请记录
 		AgentApply agentApply = new AgentApply();
 		agentApply.setUserId(user.getId());
 		agentApply.setUrl(user.getUrl());
 		agentApply.setCreateTime(new Date());
 		agentApply.setStatus(ApplyStatusType.SUBMIT.getValue());
-		agentApplyService.save(agentApply);
+		adminAgentApplyService.save(agentApply);
 	}
 
 	/**
@@ -62,8 +60,8 @@ public class UserService {
 	 * @param user
 	 */
 	public void saveAndApplyAgent(User user) {
-		userMapper.save(user);
-		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
+		adminUserMapper.save(user);
+		adminShiroService.bindUserRole(user.getUserRoleId(), user.getId());
 		//添加代理商申请记录
 		AgentApply agentApply = new AgentApply();
 		agentApply.setUserId(user.getId());
@@ -71,39 +69,39 @@ public class UserService {
 		agentApply.setDescription(user.getDescription());
 		agentApply.setCreateTime(new Date());
 		agentApply.setStatus(ApplyStatusType.SUBMIT.getValue());
-		agentApplyService.save(agentApply);
+		adminAgentApplyService.save(agentApply);
 	}
 
 	public void updateAndBindRole(User user) {
-		userMapper.update(user);
-		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
+		adminUserMapper.update(user);
+		adminShiroService.bindUserRole(user.getUserRoleId(), user.getId());
 	}
 
 	public void update(User user) {
-		userMapper.update(user);
+		adminUserMapper.update(user);
 	}
 
 	public User getUserByName(String userName) {
-		return userMapper.getUserByName(userName);
+		return adminUserMapper.getUserByName(userName);
 	}
 
 	public List<User> getUserList(Integer page) {
-		return userMapper.getUserList(page);
+		return adminUserMapper.getUserList(page);
 	}
 
 	public User getUserInfoByUserPhone(String userPhone) {
-		return userMapper.getUserInfoByUserPhone(userPhone);
+		return adminUserMapper.getUserInfoByUserPhone(userPhone);
 	}
 
 	public void deleteById(Long id) {
-		userMapper.deleteById(id);
+		adminUserMapper.deleteById(id);
 	}
 
 	public User checkAdminLogin(User user) {
-		return userMapper.checkAdminLogin(user);
+		return adminUserMapper.checkAdminLogin(user);
 	}
 
 	public User checkCustomerLogin(User user) {
-		return userMapper.checkCustomerLogin(user);
+		return adminUserMapper.checkCustomerLogin(user);
 	}
 }
