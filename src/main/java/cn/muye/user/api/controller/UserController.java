@@ -119,6 +119,7 @@ public class UserController {
     @RequestMapping(value = {"/login"}, method = RequestMethod.POST)
     @ApiOperation(value = "前台登录", httpMethod = "POST", notes = "前台登录")
     public AjaxResult customerLogin(@ApiParam(value = "用户对象") @RequestBody User user) {
+        user.setPassword(MD5Util.getMD5String(user.getPassword()));
         User userDb = userService.checkCustomerLogin(user);
         if (userDb != null) {
             return doLogin(user.getUserName(), user.getPassword());
