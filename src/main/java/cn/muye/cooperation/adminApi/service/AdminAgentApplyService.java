@@ -94,8 +94,7 @@ public class AdminAgentApplyService {
             context = agentApplyDto.getUserName() + ",你好! \t 恭喜贵公司获得木爷机器人代理商资格 \t 您可以点击以下链接进行登录: \t " + linkAddress;
         } else if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.FAILED.getValue())) {
             subject = "代理商资格认证" + ApplyStatusType.FAILED.getName();
-//            地址还需确定
-//            linkAddress = customProperties.getRootAddress() + "login";
+            linkAddress = customProperties.getRootAddress() + "account/pending";
             context = agentApplyDto.getUserName()+ ",你好! \t很抱歉贵公司未通过木爷机器人代理商资格审核 \t 原因:" + agentApplyDto.getDescription() + "\t 您可以点击以下链接重新认证: \t " + linkAddress;
         }
         mailUtil.send(emailArr, subject, context);

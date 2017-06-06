@@ -52,7 +52,7 @@ public class CooperationController {
     @ApiOperation(value = "更新代理商申请", httpMethod = "POST", notes = "更新代理商申请")
     public AjaxResult updateAgentApply(@RequestBody AgentApply agentApply) {
         if (agentApply == null || agentApply.getUserId() == null || agentApply.getUrl() == null) {
-            return AjaxResult.failed("代理商申请信息有误，请检查后再提交");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "代理商申请信息有误，请检查后再提交");
         }
         AgentApply agentApplyDb = agentApplyService.getByUserId(agentApply.getUserId());
         Subject subject = SecurityUtils.getSubject();
@@ -60,10 +60,10 @@ public class CooperationController {
         User userDb = userService.getUserById(agentApplyDb.getUserId());
         if (userDb != null) {
             if (!userDb.getUserName().equals(userName)) {
-                return AjaxResult.failed("您无权更改他人的代理商申请进展");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权更改他人的代理商申请进展");
             }
         } else {
-            AjaxResult.failed("不存在的用户");
+            AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
         }
         if (agentApplyDb != null) {
             agentApplyDb.setUrl(agentApply.getUrl());
@@ -75,7 +75,7 @@ public class CooperationController {
             result = assembleAgentApplyResult(result, agentApplyDb);
             return AjaxResult.success(result);
         } else {
-            return AjaxResult.failed("不存在的代理商申请");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的代理商申请");
         }
     }
 
@@ -88,7 +88,7 @@ public class CooperationController {
     @ApiOperation(value = "新增或更新ISV申请", httpMethod = "POST", notes = "新增或更新ISV申请")
     public AjaxResult addOrUpdateIsvApply(@RequestBody IsvApply isvApply) {
         if (isvApply == null || isvApply.getUserId() == null || isvApply.getUrl() == null) {
-            return AjaxResult.failed("ISV申请信息有误，请检查后再提交");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "ISV申请信息有误，请检查后再提交");
         }
         Long userId = isvApply.getUserId();
         User userDb = userService.getUserById(userId);
@@ -100,12 +100,12 @@ public class CooperationController {
         String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
         if (userDb != null) {
             if (!userDb.getUserName().equals(userName)) {
-                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权更改他人的ISV申请进展");
+                return AjaxResult.failed(AjaxResult.CODE_NOT_AUTHORIZED_FAILED, "您无权更改他人的ISV申请进展");
             } else if (userDb.getLevel() == null){
-                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您不是代理商无权申请ISV");
+                return AjaxResult.failed(AjaxResult.CODE_NOT_AUTHORIZED_FAILED, "您不是代理商无权申请ISV");
             }
         } else {
-            AjaxResult.failed("不存在的用户");
+            AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
         }
         if (isvApplyDb != null) {
             isvApplyDb.setUrl(isvApply.getUrl());

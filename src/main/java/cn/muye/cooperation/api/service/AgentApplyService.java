@@ -24,11 +24,6 @@ public class AgentApplyService {
     @Autowired
     private UserService userService;
 
-    private static final int STATUS_SUBMIT = 0; //已提交
-    private static final int STATUS_AUDITING = 1; //待审核
-    private static final int STATUS_SUCCESS = 2; //成功
-    private static final int STATUS_FAILED = 3; //失败
-
     public AgentApply getById(Long id) {
         return agentApplyMapper.getById(id);
     }

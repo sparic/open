@@ -53,11 +53,6 @@ public class AdminUserController {
     @Autowired
     private AdminAgentApplyService adminAgentApplyService;
 
-    private static final Integer STATUS_SUBMIT = 0; //已提交
-    private static final Integer STATUS_AUDITING = 1; //待审核
-    private static final Integer STATUS_SUCCESS = 2; //成功
-    private static final Integer STATUS_FAILED = 3; //失败
-
     /**
      * 较验用户名
      * @param userName
@@ -84,12 +79,12 @@ public class AdminUserController {
     @ApiOperation(value = "后台添加/更新用户", httpMethod = "POST", notes = "后台添加/更新用户")
     public AjaxResult addUserAdmin(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
         if (null == user || user != null && (user.getUserName() == null || user.getPassword() == null || user.getEmailAddress() == null || user.getPhone() == null)) {
-            return AjaxResult.failed("用户信息为空");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户信息为空");
         }
         User userDb = adminUserService.getUserById(user.getId());
         User sameNameUser = adminUserService.getUserByName(user.getUserName());
         if ((userDb != null && sameNameUser != null && !sameNameUser.getId().equals(userDb.getId())) || userDb == null && sameNameUser != null && sameNameUser.getUserName().equals(user.getUserName())) {
-            return AjaxResult.failed("用户名已存在");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户名已存在");
         }
         if (user.getId() != null && user.getId() >= 1) {
             if (userDb != null) {
@@ -101,7 +96,7 @@ public class AdminUserController {
                 adminUserService.updateAndBindRole(userDb); //更新用户绑定角色
                 return AjaxResult.success(objectToDtoAdmin(userDb));
             } else {
-                return AjaxResult.failed("不存在该用户");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该用户");
             }
         } else {
             try {
@@ -110,7 +105,7 @@ public class AdminUserController {
                 adminUserService.saveAndBindRole(user); //添加用户 绑定角色 发送邮件
             } catch (Exception e) {
                 logger.error("{}", e);
-                return AjaxResult.failed("添加失败");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "添加失败");
             }
             return AjaxResult.success(objectToDtoAdmin(user));
         }
@@ -157,14 +152,14 @@ public class AdminUserController {
             if (userDb != null) {
                 UserDto dto = objectToDtoAdmin(userDb);
                 if (dto.getRoleId().equals(Constants.SUPER_ADMIN_ID)) {
-                    return AjaxResult.failed("不能禁用超级管理员");
+                    return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能禁用超级管理员");
                 }
                 userDb.setDeactivated(true);
                 adminUserService.deActivateById(userDb.getId());
                 return AjaxResult.success("禁用成功");
             }
         } else {
-            return AjaxResult.failed("不存在该用户");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该用户");
         }
         return null;
     }
@@ -177,7 +172,7 @@ public class AdminUserController {
             adminShiroService.bindUserRole(roleId, userId);
         } catch (Exception e) {
             logger.error("{}", e.getMessage());
-            return AjaxResult.failed("绑定失败");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "绑定失败");
         } finally {
         }
         return AjaxResult.success("绑定成功");
@@ -197,7 +192,7 @@ public class AdminUserController {
         if (userDb != null) {
             return doLoginAdmin(user.getUserName(), user.getPassword());
         } else {
-            return AjaxResult.failed("用户名或密码错误");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户名或密码错误");
         }
     }
 
@@ -209,7 +204,6 @@ public class AdminUserController {
      * @return
      */
     private AjaxResult doLoginAdmin(String userName, String password) {
-        UserDto dto = null;
         try {
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
@@ -218,7 +212,7 @@ public class AdminUserController {
             return AjaxResult.success(objectToDtoAdmin(user), "成功登录");
         } catch (AuthenticationException e) {
             logger.error("{}", e);
-            return AjaxResult.failed("您的账号或密码输入错误");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您的账号或密码输入错误");
         } finally {
         }
     }
@@ -232,14 +226,14 @@ public class AdminUserController {
             String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
             User userDb = adminUserService.getUserById(userId);
             if (userDb != null && !userDb.getUserName().equals(userName)) {
-                return AjaxResult.failed("您无权查看他人的详情");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的详情");
             } else if (userDb != null && userDb.getUserName().equals(userName)) {
                 return AjaxResult.success(objectToDtoAdmin(userDb));
             } else {
-                return AjaxResult.failed("不存在的用户");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
             }
         } else {
-            return AjaxResult.failed(2, "参数有误");
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED,  "参数有误");
         }
     }
 
@@ -251,7 +245,7 @@ public class AdminUserController {
             subject.logout();
         } catch (Exception e) {
             logger.error("{}", e);
-            return AjaxResult.failed("注销失败");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "注销失败");
         }
         return AjaxResult.success("注销成功");
     }

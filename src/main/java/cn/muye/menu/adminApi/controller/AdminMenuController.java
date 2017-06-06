@@ -140,7 +140,7 @@ public class AdminMenuController {
     @ApiOperation(value = "后台新增/修改菜单", httpMethod = "POST", notes = "后台新增/修改菜单")
     public AjaxResult postMenuAdmin(@ApiParam(value = "菜单对象") @RequestBody Menu menu) {
         if (menu != null && (menu.getVersionId() == null || menu.getName() == null)) {
-            return AjaxResult.failed("菜单信息不全，请完善");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "菜单信息不全，请完善");
         }
         return post(menu);
     }
@@ -151,14 +151,14 @@ public class AdminMenuController {
         if (versionId != null && !versionId.equals(0L)) {
             Version version = adminVersionService.getById(versionId);
             if (version == null) {
-                return AjaxResult.failed("版本号为空或不存在");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "版本号为空或不存在");
             }
         }
         if (id != null) {
             Menu menuDb = adminMenuService.getById(id);
             Long pId = menu.getParentId();
             if (pId != null && (pId.equals(menuDb.getOriginId()) || pId.equals(menuDb.getId()))) {
-                return AjaxResult.failed("不能选择自己做父菜单");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能选择自己做父菜单");
             }
             if (menuDb != null) {
                 menuDb.setName(menu.getName());
@@ -169,7 +169,7 @@ public class AdminMenuController {
                 adminMenuService.updateMenu(menuDb);
                 return AjaxResult.success(objectToDtoAdmin(menuDb));
             } else {
-                return AjaxResult.failed("不存在的文档");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的文档");
             }
         } else {
             menu.setCreateTime(new Date());
@@ -194,7 +194,7 @@ public class AdminMenuController {
             return AjaxResult.success(objectToDtoAdmin(menu));
         } catch (Exception e) {
             LOGGER.error("{}", e);
-            return AjaxResult.failed("不存在该条记录");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该条记录");
         }
     }
 
@@ -230,7 +230,7 @@ public class AdminMenuController {
     public AjaxResult deleteMenuAdmin(@ApiParam(value = "菜单ID") @PathVariable Long id) {
         List<Menu> childrenMenu = adminMenuService.listMenusByParentId(id);
         if (childrenMenu != null && childrenMenu.size() > 0) {
-            return AjaxResult.failed("不能删除有子菜单的父菜单");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能删除有子菜单的父菜单");
         } else {
             adminMenuService.deleteById(id);
             return AjaxResult.success("删除成功");

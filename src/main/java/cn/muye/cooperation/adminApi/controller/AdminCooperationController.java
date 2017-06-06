@@ -52,7 +52,7 @@ public class AdminCooperationController {
     @ApiOperation(value = "后台审核代理商申请", httpMethod = "POST", notes = "后台审核代理商申请")
     public AjaxResult auditAgentApply(@RequestBody AgentApply agentApply, HttpServletRequest request) {
         if (agentApply != null && agentApply.getStatus() == null) {
-            return AjaxResult.failed("信息不全，请完善后再提交");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "信息不全，请完善后再提交");
         }
         try {
             AgentApply agentApplyDb = adminAgentApplyService.getById(agentApply.getId());
@@ -63,10 +63,10 @@ public class AdminCooperationController {
                 String msg = adminAgentApplyService.update(agentApplyDb, Constants.TYPE_AUDIT_AGENT_APPLY, request);
                 return AjaxResult.success(agentObjectToDtoAdmin(agentApplyDb), msg);
             } else {
-                return AjaxResult.failed("不存在该代理商申请");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该代理商申请");
             }
         } catch (UnauthenticatedException e) {
-            return AjaxResult.failed("没有权限");
+            return AjaxResult.failed(AjaxResult.CODE_NOT_AUTHORIZED_FAILED, "没有权限");
         } finally {
         }
 
@@ -83,7 +83,7 @@ public class AdminCooperationController {
     @ApiOperation(value = "后台审核ISV申请", httpMethod = "POST", notes = "后台审核ISV申请")
     public AjaxResult auditIsvApply(@RequestBody IsvApply isvApply) {
         if (isvApply != null && isvApply.getStatus() == null || isvApply.getId() == null || (isvApply.getStatus().equals(ApplyStatusType.SUCCESS.getValue()) && isvApply.getLevel() == null)) {
-            return AjaxResult.failed("信息不全，请完善后再提交");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "信息不全，请完善后再提交");
         }
         try {
             IsvApply isvApplyDb = adminIsvApplyService.getById(isvApply.getId());
@@ -95,10 +95,10 @@ public class AdminCooperationController {
                 String msg = adminIsvApplyService.update(isvApplyDb, Constants.TYPE_AUDIT_AGENT_APPLY);
                 return AjaxResult.success(isvObjectToDtoAdmin(isvApplyDb), msg);
             } else {
-                return AjaxResult.failed("不存在该ISV申请");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该ISV申请");
             }
         } catch (UnauthenticatedException e) {
-            return AjaxResult.failed("没有权限");
+            return AjaxResult.failed(AjaxResult.CODE_NOT_AUTHORIZED_FAILED, "没有权限");
         } finally {
         }
 

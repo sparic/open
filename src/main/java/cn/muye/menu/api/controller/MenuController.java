@@ -142,7 +142,7 @@ public class MenuController {
             return AjaxResult.success(objectToDto(menu));
         } catch (Exception e) {
             LOGGER.error("{}", e);
-            return AjaxResult.failed("不存在该条记录");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该条记录");
         }
     }
 

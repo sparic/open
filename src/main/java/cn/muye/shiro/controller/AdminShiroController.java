@@ -41,7 +41,7 @@ public class AdminShiroController {
     @ResponseBody
     public AjaxResult postRole(@ApiParam(value = "角色对象") @RequestBody Role role) {
         if (role != null && (role.getEnName() == null || role.getCnName() == null)) {
-            return AjaxResult.failed("信息不全，请完善后再提交");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "信息不全，请完善后再提交");
         }
         return post(role);
     }
@@ -55,7 +55,7 @@ public class AdminShiroController {
                 adminShiroService.update(roleDb);
                 return AjaxResult.success(roleDb);
             } else {
-                return AjaxResult.failed("不存在该角色");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该角色");
             }
         } else {
             adminShiroService.save(role);

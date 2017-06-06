@@ -91,7 +91,7 @@ public class AdminVersionController {
 
     private AjaxResult addOrUpdate(Version version) {
         if (StringUtils.isNullOrEmpty(version.getUrl())) {
-            return AjaxResult.failed("请上传sdk文件");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "请上传sdk文件");
         }
         //修改
         if (version.getId() != null) {
@@ -184,7 +184,7 @@ public class AdminVersionController {
             adminVersionService.deleteById(id);
         } catch (Exception e) {
             LOGGER.error("不能刪除有绑定菜单或SDK的版本", e);
-            return AjaxResult.failed("不能刪除有绑定菜单或SDK的版本");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能刪除有绑定菜单或SDK的版本");
         } finally {
         }
         return AjaxResult.success("删除成功");
