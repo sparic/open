@@ -48,7 +48,7 @@
         )
   </insert>
 
-    <!--<delete id="deleteById">-->
+    <!--<delete id="deActivateById">-->
     <!--delete from FILE where ID = #{id}-->
     <!--</delete>-->
 

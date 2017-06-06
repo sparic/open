@@ -28,4 +28,8 @@ public class Constants {
 
     public final static String TYPE_AUDIT_AGENT_APPLY = "audit"; //走代理商审核接口
     public final static String TYPE_UPDATE_AGENT_APPLY = "udpate"; //走代理商申请更新接口
+
+    public final static String SHIRO_SALT = "sdk1234"; //走代理商申请更新接口
+
+
 }

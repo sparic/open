@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.muye.user.mapper.AdminUserMapper">
+<mapper namespace="cn.muye.user.adminApi.mapper.AdminUserMapper">
 
     <resultMap id="userResult" type="cn.muye.user.domain.User">
         <result property="id" column="ID"/>
@@ -93,7 +93,6 @@
     <update id="update">
         update D_USER SET
             USER_NAME = #{userName},
-            PASSWORD = #{password},
             SEX = #{sex},
             EMAIL_ADDRESS = #{emailAddress},
             DEACTIVATED = #{deactivated},

@@ -88,7 +88,7 @@ public class AdminShiroController {
     @ResponseBody
     public AjaxResult listPermissionsAdmin(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                       @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(page, pageSize);
+        PageHelper.startPage(page, pageSize, true, null, true);
         List<Permission> permissionList = adminShiroService.listPermissions(page);
         PageInfo<Permission> permissionPageInfo = new PageInfo(permissionList);
         permissionPageInfo.setList(permissionList);

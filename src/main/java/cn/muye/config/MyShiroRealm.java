@@ -7,7 +7,7 @@ import cn.muye.shiro.domain.Role;
 import cn.muye.user.domain.User;
 import cn.muye.shiro.domain.UserRole;
 import cn.muye.shiro.service.ShiroService;
-import cn.muye.user.service.UserService;
+import cn.muye.user.api.service.UserService;
 import com.google.common.collect.Lists;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -18,6 +18,8 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.mockito.internal.util.collections.Sets;
@@ -44,7 +46,15 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        SecurityUtils.getSubject().getSession().touch();
+        Session session = SecurityUtils.getSubject().getSession();
+        //返回Session的创建时间
+        long start = session.getStartTimestamp().getTime();
+        //返回用户的最后次访问时间
+        long end = session.getLastAccessTime().getTime();
+        //返回Session过期时间。如果最后时间小于session时长则把session超时时间更新
+        if (end - start < session.getTimeout()) {
+            SecurityUtils.getSubject().getSession().touch();
+        }
         logger.info("##################执行Shiro权限认证##################");
         //获取当前登录输入的用户名，等价于(String) principalCollection.fromRealm(getName()).iterator().next();
         String loginName = (String) super.getAvailablePrincipal(principalCollection);

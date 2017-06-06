@@ -1,6 +1,6 @@
 import cn.muye.Application;
 import cn.muye.cooperation.domain.AgentApply;
-import cn.muye.cooperation.service.AgentApplyService;
+import cn.muye.cooperation.api.service.AgentApplyService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

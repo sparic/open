@@ -24,6 +24,8 @@ public class CustomProperties {
 
 	private String redisRedissonCache;
 
+	private String rootAddress;
+
     private List<String> excludeFileTypes;
 
 	private List<String> supportFileTypes;
@@ -90,5 +92,13 @@ public class CustomProperties {
 
 	public void setSupportFileTypes(List<String> supportFileTypes) {
 		this.supportFileTypes = supportFileTypes;
+	}
+
+	public String getRootAddress() {
+		return rootAddress;
+	}
+
+	public void setRootAddress(String rootAddress) {
+		this.rootAddress = rootAddress;
 	}
 }

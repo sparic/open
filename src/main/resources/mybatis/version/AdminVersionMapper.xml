@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.muye.version.mapper.AdminVersionMapper">
+<mapper namespace="cn.muye.version.adminApi.mapper.AdminVersionMapper">
 
   <resultMap id="versionResult" type="cn.muye.version.domain.Version">
     <result property="id" column="ID"/>
@@ -25,6 +25,10 @@
       <if test="id == null">
         select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME,EXTENDED_VERSION_CODE from D_VERSION ORDER BY ID DESC LIMIT 1
       </if>
+  </select>
+
+  <select id="getByCode" parameterType="String" resultMap="versionResult">
+        select ID,VERSION_CODE,DESCRIPTION,URL,CREATE_TIME,UPDATE_TIME,EXTENDED_VERSION_CODE from D_VERSION where VERSION_CODE = #{versionCode}
   </select>
 
   <insert id="saveVersion" useGeneratedKeys="true" keyProperty="id">

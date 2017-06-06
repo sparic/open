@@ -3,19 +3,17 @@ package cn.muye.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import cn.muye.menu.service.MenuService;
-import cn.muye.version.service.VersionService;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.filter.DelegatingFilterProxy;
 
 /**
  * Shiro 配置
@@ -38,6 +36,17 @@ public class ShiroConfiguration {
         return new AuthorizationAttributeSourceAdvisor();
     }
 
+    /**
+     * 设置session
+     * @return
+     */
+    @Bean(name = "sessionManager")
+    public DefaultWebSessionManager getDefaultSessionMangeer() {
+        DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
+        defaultWebSessionManager.setGlobalSessionTimeout(1800000);//设置session失效时长为30分钟
+        return defaultWebSessionManager;
+    }
+
     @Bean
     public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator daap = new DefaultAdvisorAutoProxyCreator();
@@ -50,6 +59,7 @@ public class ShiroConfiguration {
         DefaultWebSecurityManager dwsm = new DefaultWebSecurityManager();
         dwsm.setRealm(getShiroRealm());
         dwsm.setCacheManager(getEhCacheManager());
+        dwsm.setSessionManager(getDefaultSessionMangeer());
         return dwsm;
     }
 

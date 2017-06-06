@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.muye.cooperation.mapper.AdminAgentApplyMapper">
+<mapper namespace="cn.muye.cooperation.adminApi.mapper.AdminAgentApplyMapper">
 
     <resultMap id="agentApplyResult" type="cn.muye.cooperation.domain.AgentApply">
         <result property="id" column="ID"/>
