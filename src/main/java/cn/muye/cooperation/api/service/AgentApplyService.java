@@ -36,9 +36,8 @@ public class AgentApplyService {
         agentApplyMapper.save(agentApply);
     }
 
-    public String update(AgentApply agentApply, String type) {
+    public void update(AgentApply agentApply) {
         agentApplyMapper.update(agentApply);
-        return null;
     }
 
     public AgentApplyDto getByIdWithUser(Long id) {

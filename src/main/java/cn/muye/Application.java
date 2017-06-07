@@ -26,17 +26,17 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.config.annotation.*;
 import javax.sql.DataSource;
 import java.util.*;
 
-@Configuration
 @EnableAutoConfiguration
 @SpringBootApplication
-@ComponentScan
 @MapperScan({"cn.muye.**.mapper"})
 @EnableConfigurationProperties({CustomProperties.class})
+@EnableScheduling
 public class Application extends WebMvcConfigurerAdapter {
 
     private static Logger LOGGER = LoggerFactory.getLogger(Application.class);

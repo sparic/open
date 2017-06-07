@@ -33,4 +33,8 @@ public class MailService {
     public Mail getById(Long id) {
         return mailMapper.getById(id);
     }
+
+    public void update(Mail mail) {
+        mailMapper.update(mail);
+    }
 }

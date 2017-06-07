@@ -136,7 +136,6 @@ public class UserController {
      * @return
      */
     private AjaxResult doLogin(String userName, String password) {
-        UserDto dto = null;
         try {
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken token = new UsernamePasswordToken(userName, password);

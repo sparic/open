@@ -9,6 +9,7 @@
         <result property="context" column="CONTEXT"/>
         <result property="subject" column="SUBJECT"/>
         <result property="sendTime" column="SEND_TIME"/>
+        <result property="succeed" column="SUCCEED"/>
     </resultMap>
 
     <select id="list" resultMap="mailResult">
@@ -17,8 +18,11 @@
             TO_MAIL,
             CONTEXT,
             SUBJECT,
-            SEND_TIME
-        from D_MAIL ORDER BY ID DESC
+            SEND_TIME,
+            SUCCEED
+        from D_MAIL
+        where SUCCEED = 0
+        ORDER BY ID DESC
     </select>
 
     <select id="getById" parameterType="Long" resultMap="mailResult">
@@ -27,7 +31,8 @@
             TO_MAIL,
             CONTEXT,
             SUBJECT,
-            SEND_TIME
+            SEND_TIME,
+            SUCCEED
         from D_MAIL where ID = #{id}
     </select>
 
@@ -47,4 +52,7 @@
           )
     </insert>
 
+    <update id="update">
+       update D_MAIL set SUCCEED = #{succeed} where ID = #{id}
+    </update>
 </mapper>

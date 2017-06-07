@@ -19,8 +19,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +48,7 @@ public class AdminCooperationController {
     @RequiresPermissions("agentApply:audit")
     @ResponseBody
     @ApiOperation(value = "后台审核代理商申请", httpMethod = "POST", notes = "后台审核代理商申请")
-    public AjaxResult auditAgentApply(@RequestBody AgentApply agentApply, HttpServletRequest request) {
+    public AjaxResult auditAgentApply(@RequestBody AgentApply agentApply) {
         if (agentApply != null && agentApply.getStatus() == null) {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "信息不全，请完善后再提交");
         }
@@ -60,7 +58,7 @@ public class AdminCooperationController {
                 agentApplyDb.setStatus(agentApply.getStatus());
                 agentApplyDb.setUpdateTime(new Date());
                 agentApplyDb.setDescription(agentApply.getDescription());
-                String msg = adminAgentApplyService.update(agentApplyDb, Constants.TYPE_AUDIT_AGENT_APPLY, request);
+                String msg = adminAgentApplyService.update(agentApplyDb, Constants.TYPE_AUDIT_AGENT_APPLY);
                 return AjaxResult.success(agentObjectToDtoAdmin(agentApplyDb), msg);
             } else {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该代理商申请");

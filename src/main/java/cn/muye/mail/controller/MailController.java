@@ -26,17 +26,17 @@ public class MailController {
     @Autowired
     private MailService mailService;
 
-    @RequestMapping(value = "admin/mail/send", method = RequestMethod.POST)
-    @RequiresPermissions("mail:send")
-    @ApiOperation(value = "发送邮件", httpMethod = "POST", notes = "发送邮件")
-    public AjaxResult sendMail(@ApiParam(value = "邮件对象") @RequestBody String cooperationStr) {
-        JSONObject jsonObject = JSON.parseObject(cooperationStr);
-        String email = (String) jsonObject.get("email");
-        String context = (String) jsonObject.get("context");
-        String subject = (String) jsonObject.get("subject");
-        String[] emailArr = new String[] {email};
-        return AjaxResult.success(mailUtil.send(emailArr, subject, context));
-    }
+//    @RequestMapping(value = "admin/mail/send", method = RequestMethod.POST)
+//    @RequiresPermissions("mail:send")
+//    @ApiOperation(value = "发送邮件", httpMethod = "POST", notes = "发送邮件")
+//    public AjaxResult sendMail(@ApiParam(value = "邮件对象") @RequestBody String cooperationStr) {
+//        JSONObject jsonObject = JSON.parseObject(cooperationStr);
+//        String email = (String) jsonObject.get("email");
+//        String context = (String) jsonObject.get("context");
+//        String subject = (String) jsonObject.get("subject");
+//        String[] emailArr = new String[] {email};
+//        return AjaxResult.success(mailUtil.send(emailArr, subject, context));
+//    }
 
     @RequestMapping(value = "admin/mail/{id}", method = RequestMethod.GET)
     @RequiresPermissions("mail:detail")

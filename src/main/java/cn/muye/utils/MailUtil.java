@@ -44,7 +44,7 @@ public class MailUtil {
     }
 
     //发送邮件
-    public AjaxResult send(final String[] to, final String subject, String context) {
+    public AjaxResult send(final String[] to, final String subject, String context, Mail mail) {
         try {
             message = new SimpleMailMessage();
             message.setFrom(Constants.MAIL_SENDER_ACCOUNT);
@@ -52,21 +52,13 @@ public class MailUtil {
             message.setSubject(subject);
             message.setText(context);
             email.send(message);
-            //保存email
-            int size = to.length;
-            for (int i = 0; i < size; i++) {
-                Mail mail = new Mail();
-                mail.setFromMail(Constants.MAIL_SENDER_ACCOUNT);
-                mail.setToMail(to[i]);
-                mail.setSubject(subject);
-                mail.setContext(context);
-                mail.setSendTime(new Date());
-                mailService.save(mail);
-            }
+            //修改任务记录
+            mail.setSucceed(true);
+            mailService.update(mail);
             return AjaxResult.success("发送成功!");
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            return AjaxResult.failed(-1, "发送失败!");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "发送失败!");
         }
 
         /* //按模板发送

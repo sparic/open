@@ -6,6 +6,8 @@ import cn.muye.cooperation.dto.AgentApplyDto;
 import cn.muye.cooperation.adminApi.mapper.AdminAgentApplyMapper;
 import cn.muye.core.Constants;
 import cn.muye.core.enums.ApplyStatusType;
+import cn.muye.mail.domain.Mail;
+import cn.muye.mail.service.MailService;
 import cn.muye.user.domain.User;
 import cn.muye.user.adminApi.service.AdminUserService;
 import cn.muye.utils.MailUtil;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +34,9 @@ public class AdminAgentApplyService {
 
     @Autowired
     private AdminUserService adminUserService;
+
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private CustomProperties customProperties;
@@ -52,7 +58,7 @@ public class AdminAgentApplyService {
         adminAgentApplyMapper.save(agentApply);
     }
 
-    public String update(AgentApply agentApply, String type, HttpServletRequest request) {
+    public String update(AgentApply agentApply, String type) {
         adminAgentApplyMapper.update(agentApply);
         if (type.equals(Constants.TYPE_AUDIT_AGENT_APPLY)) {
             Long userId = agentApply.getUserId();
@@ -76,16 +82,15 @@ public class AdminAgentApplyService {
             }
             AgentApplyDto agentApplyDto = adminAgentApplyMapper.getByIdWithUser(agentApply.getId());
             if (agentApplyDto != null && !Integer.valueOf(agentApplyDto.getStatus()).equals(STATUS_AUDITING)) {
-                sendMail(agentApplyDto, request);
+                createMailInfo(agentApplyDto);
             }
             return msg;
         }
         return null;
     }
 
-    private void sendMail(AgentApplyDto agentApplyDto, HttpServletRequest request) {
+    private void createMailInfo(AgentApplyDto agentApplyDto) {
         String subject = null;
-        String[] emailArr = new String[]{agentApplyDto.getEmail()};
         String context = null;
         String linkAddress = null;
         if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.SUCCESS.getValue())) {
@@ -97,7 +102,15 @@ public class AdminAgentApplyService {
             linkAddress = customProperties.getRootAddress() + "account/pending";
             context = agentApplyDto.getUserName()+ ",你好! \t很抱歉贵公司未通过木爷机器人代理商资格审核 \t 原因:" + agentApplyDto.getDescription() + "\t 您可以点击以下链接重新认证: \t " + linkAddress;
         }
-        mailUtil.send(emailArr, subject, context);
+        //创建邮件任务
+        Mail mail = new Mail();
+        mail.setFromMail(Constants.MAIL_SENDER_ACCOUNT);
+        mail.setToMail(agentApplyDto.getEmail());
+        mail.setSubject(subject);
+        mail.setContext(context);
+        mail.setSendTime(new Date());
+        mailService.save(mail);
+//        mailUtil.send(emailArr, subject, context);
     }
 
     public AgentApplyDto getByIdWithUser(Long id) {

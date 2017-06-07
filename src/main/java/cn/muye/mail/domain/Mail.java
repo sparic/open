@@ -22,6 +22,8 @@ public class Mail implements Serializable {
 
     private Date sendTime;
 
+    private Boolean succeed;
+
     public Long getId() {
         return id;
     }
@@ -68,5 +70,13 @@ public class Mail implements Serializable {
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public Boolean getSucceed() {
+        return succeed;
+    }
+
+    public void setSucceed(Boolean succeed) {
+        this.succeed = succeed;
     }
 }

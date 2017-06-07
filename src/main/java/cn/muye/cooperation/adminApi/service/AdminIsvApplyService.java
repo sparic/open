@@ -6,6 +6,8 @@ import cn.muye.cooperation.adminApi.mapper.AdminIsvApplyMapper;
 import cn.muye.core.Constants;
 import cn.muye.core.enums.AgentLevelType;
 import cn.muye.core.enums.ApplyStatusType;
+import cn.muye.mail.domain.Mail;
+import cn.muye.mail.service.MailService;
 import cn.muye.user.domain.User;
 import cn.muye.user.adminApi.service.AdminUserService;
 import cn.muye.utils.MailUtil;
@@ -28,7 +30,7 @@ public class AdminIsvApplyService {
     private AdminIsvApplyMapper adminIsvApplyMapper;
 
     @Autowired
-    private MailUtil mailUtil;
+    private MailService mailService;
 
     @Autowired
     private AdminUserService adminUserService;
@@ -75,16 +77,15 @@ public class AdminIsvApplyService {
             IsvApplyDto isvApplyDto = adminIsvApplyMapper.getByIdWithUser(isvApply.getId());
 //            isvApplyDto.setLevel(isvApply.getLevel());
             if (isvApplyDto != null && !Integer.valueOf(isvApplyDto.getStatus()).equals(STATUS_AUDITING)) {
-                sendMail(isvApplyDto, userDb);
+                createMailInfo(isvApplyDto, userDb);
             }
             return msg;
         }
         return null;
     }
 
-    private void sendMail(IsvApplyDto isvApplyDto, User userDb) {
+    private void createMailInfo(IsvApplyDto isvApplyDto, User userDb) {
         String subject = null;
-        String[] emailArr = new String[]{isvApplyDto.getEmail()};
         String context = null;
         String levelName = null;
         if (Integer.valueOf(isvApplyDto.getStatus()).equals(ApplyStatusType.FAILED.getValue())) {
@@ -101,7 +102,14 @@ public class AdminIsvApplyService {
             subject = "ISV资格认证" + ApplyStatusType.FAILED.getName();
             context = isvApplyDto.getUserName()+ ",你好! \t很抱歉贵公司未通过木爷机器人"+ levelName +"资格认证 \t 原因:" + isvApplyDto.getDescription();
         }
-        mailUtil.send(emailArr, subject, context);
+        //创建邮件任务
+        Mail mail = new Mail();
+        mail.setFromMail(Constants.MAIL_SENDER_ACCOUNT);
+        mail.setToMail(isvApplyDto.getEmail());
+        mail.setSubject(subject);
+        mail.setContext(context);
+        mailService.save(mail);
+//        mailUtil.send(emailArr, subject, context);
     }
 
     public IsvApplyDto getByIdWithUser(Long id) {

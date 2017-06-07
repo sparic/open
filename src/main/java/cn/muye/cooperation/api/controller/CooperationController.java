@@ -3,7 +3,6 @@ package cn.muye.cooperation.api.controller;
 import cn.muye.cooperation.domain.IsvApply;
 import cn.muye.cooperation.api.service.IsvApplyService;
 import cn.muye.core.AjaxResult;
-import cn.muye.core.Constants;
 import cn.muye.cooperation.domain.AgentApply;
 import cn.muye.cooperation.api.service.AgentApplyService;
 import cn.muye.core.enums.ApplyStatusType;
@@ -18,7 +17,6 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +68,7 @@ public class CooperationController {
             agentApplyDb.setUpdateTime(new Date());
             agentApplyDb.setDescription(agentApply.getDescription());
             agentApplyDb.setStatus(ApplyStatusType.SUBMIT.getValue());
-            agentApplyService.update(agentApplyDb, Constants.TYPE_UPDATE_AGENT_APPLY);
+            agentApplyService.update(agentApplyDb);
             List<Map> result = Lists.newArrayList();
             result = assembleAgentApplyResult(result, agentApplyDb);
             return AjaxResult.success(result);
@@ -112,7 +110,7 @@ public class CooperationController {
             isvApplyDb.setUpdateTime(new Date());
             isvApplyDb.setDescription(isvApply.getDescription());
             isvApplyDb.setStatus(ApplyStatusType.SUBMIT.getValue());
-            isvApplyService.update(isvApplyDb, Constants.TYPE_UPDATE_AGENT_APPLY);
+            isvApplyService.update(isvApplyDb);
             List<Map> result = Lists.newArrayList();
             result = assembleIsvApplyResult(result, isvApplyDb);
             return AjaxResult.success(result);

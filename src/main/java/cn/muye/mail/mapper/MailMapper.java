@@ -15,4 +15,6 @@ public interface MailMapper {
     List<Mail> list();
 
     Mail getById(@Param(value = "id") Long id);
+
+    void update(Mail mail);
 }

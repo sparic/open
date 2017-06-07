@@ -44,7 +44,7 @@ public class IsvApplyService {
         isvApplyMapper.save(isvApply);
     }
 
-    public String update(IsvApply isvApply, String type) {
+    public String update(IsvApply isvApply) {
         isvApplyMapper.update(isvApply);
         return null;
     }
