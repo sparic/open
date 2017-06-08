@@ -28,7 +28,7 @@ public class UserDto {
 
     private String levelName;
 
-//    private Boolean haveRight;
+    private Boolean activated;
 
     public Long getId() {
         return id;
@@ -110,11 +110,11 @@ public class UserDto {
         this.levelName = levelName;
     }
 
-//    public Boolean getHaveRight() {
-//        return haveRight;
-//    }
-//
-//    public void setHaveRight(Boolean haveRight) {
-//        this.haveRight = haveRight;
-//    }
+    public Boolean getActivated() {
+        return activated;
+    }
+
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
+    }
 }

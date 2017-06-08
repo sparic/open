@@ -50,9 +50,6 @@ public class AdminUserController {
     @Autowired
     private AdminShiroService adminShiroService;
 
-    @Autowired
-    private AdminAgentApplyService adminAgentApplyService;
-
     /**
      * 较验用户名
      * @param userName
@@ -78,8 +75,8 @@ public class AdminUserController {
     @RequiresPermissions("user:upsert")
     @ApiOperation(value = "后台添加/更新用户", httpMethod = "POST", notes = "后台添加/更新用户")
     public AjaxResult addUserAdmin(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
-        if (null == user || user != null && (user.getUserName() == null || user.getPassword() == null || user.getEmailAddress() == null || user.getPhone() == null)) {
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户信息为空");
+        if (null == user || user != null && (user.getUserName() == null || user.getEmailAddress() == null || user.getPhone() == null || user.getId() == null && user.getPassword() == null)) {
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户信息为空或信息不全");
         }
         User userDb = adminUserService.getUserById(user.getId());
         User sameNameUser = adminUserService.getUserByName(user.getUserName());
@@ -92,9 +89,9 @@ public class AdminUserController {
                 userDb.setLevel(user.getLevel());
                 userDb.setEmailAddress(user.getEmailAddress());
                 userDb.setUserName(user.getUserName());
-                userDb.setDeactivated(user.isDeactivated());
+                userDb.setActivated(user.getActivated());
                 adminUserService.updateAndBindRole(userDb); //更新用户绑定角色
-                return AjaxResult.success(objectToDtoAdmin(userDb));
+                return AjaxResult.success(objectToDtoAdmin(userDb), "修改成功");
             } else {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该用户");
             }
@@ -107,7 +104,7 @@ public class AdminUserController {
                 logger.error("{}", e);
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "添加失败");
             }
-            return AjaxResult.success(objectToDtoAdmin(user));
+            return AjaxResult.success(objectToDtoAdmin(user), "新增成功");
         }
     }
 
@@ -135,7 +132,7 @@ public class AdminUserController {
         }
         PageInfo<UserDto> userPageInfo = new PageInfo(userList);
         userPageInfo.setList(userDtoList);
-        return AjaxResult.success(userPageInfo);
+        return AjaxResult.success(userPageInfo, "查询成功");
     }
 
     /**
@@ -146,17 +143,17 @@ public class AdminUserController {
     @RequestMapping(value = "admin/user/{id}", method = RequestMethod.DELETE)
     @RequiresPermissions("user:deActive")
     @ApiOperation(value = "禁用用户", httpMethod = "DELETE", notes = "禁用用户")
-    public AjaxResult deleteUserAdmin(@ApiParam(value = "用户ID") @PathVariable Long id) {
+    public AjaxResult deleteUserAdmin(@ApiParam(value = "用户ID") @PathVariable String id) {
         if (id != null) {
-            User userDb = adminUserService.getUserById(id);
+            User userDb = adminUserService.getUserById(Long.valueOf(id));
             if (userDb != null) {
                 UserDto dto = objectToDtoAdmin(userDb);
                 if (dto.getRoleId().equals(Constants.SUPER_ADMIN_ID)) {
                     return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能禁用超级管理员");
                 }
-                userDb.setDeactivated(true);
+                userDb.setActivated(true);
                 adminUserService.deActivateById(userDb.getId());
-                return AjaxResult.success("禁用成功");
+                return AjaxResult.success(userDb, "禁用成功");
             }
         } else {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该用户");
@@ -175,7 +172,7 @@ public class AdminUserController {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "绑定失败");
         } finally {
         }
-        return AjaxResult.success("绑定成功");
+        return AjaxResult.success(null, "绑定成功");
     }
 
     /**
@@ -187,12 +184,16 @@ public class AdminUserController {
     @RequestMapping(value = {"admin/login"}, method = RequestMethod.POST)
     @ApiOperation(value = "后台登录", httpMethod = "POST", notes = "后台登录")
     public AjaxResult adminLogin(@ApiParam(value = "用户对象") @RequestBody User user) {
-        user.setPassword(MD5Util.getMD5String(user.getPassword()));
-        User userDb = adminUserService.checkAdminLogin(user);
-        if (userDb != null) {
-            return doLoginAdmin(user.getUserName(), user.getPassword());
+        if (user != null && user.getUserName() != null && user.getPassword() != null) {
+            user.setPassword(MD5Util.getMD5String(user.getPassword()));
+            User userDb = adminUserService.checkAdminLogin(user);
+            if (userDb != null) {
+                return doLoginAdmin(user.getUserName(), user.getPassword());
+            } else {
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户名或密码错误");
+            }
         } else {
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户名或密码错误");
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "用户名或密码为空");
         }
     }
 
@@ -233,7 +234,7 @@ public class AdminUserController {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
             }
         } else {
-            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED,  "参数有误");
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
         }
     }
 
@@ -247,7 +248,7 @@ public class AdminUserController {
             logger.error("{}", e);
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "注销失败");
         }
-        return AjaxResult.success("注销成功");
+        return AjaxResult.success(null, "注销成功");
     }
 
     private UserDto objectToDtoAdmin(User user) {
@@ -271,6 +272,7 @@ public class AdminUserController {
         } else {
             dto.setLevelName("");
         }
+        dto.setActivated(user.getActivated());
         dto.setEmailAddress(user.getEmailAddress() == null ? "" : user.getEmailAddress());
         return dto;
     }

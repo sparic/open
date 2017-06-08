@@ -21,29 +21,14 @@ import org.springframework.web.bind.annotation.*;
 public class MailController {
 
     @Autowired
-    private MailUtil mailUtil;
-
-    @Autowired
     private MailService mailService;
-
-//    @RequestMapping(value = "admin/mail/send", method = RequestMethod.POST)
-//    @RequiresPermissions("mail:send")
-//    @ApiOperation(value = "发送邮件", httpMethod = "POST", notes = "发送邮件")
-//    public AjaxResult sendMail(@ApiParam(value = "邮件对象") @RequestBody String cooperationStr) {
-//        JSONObject jsonObject = JSON.parseObject(cooperationStr);
-//        String email = (String) jsonObject.get("email");
-//        String context = (String) jsonObject.get("context");
-//        String subject = (String) jsonObject.get("subject");
-//        String[] emailArr = new String[] {email};
-//        return AjaxResult.success(mailUtil.send(emailArr, subject, context));
-//    }
 
     @RequestMapping(value = "admin/mail/{id}", method = RequestMethod.GET)
     @RequiresPermissions("mail:detail")
     @ApiOperation(value = "查看邮件详情", httpMethod = "GET", notes = "查看邮件详情")
     public AjaxResult getMailById(@ApiParam(value = "邮件ID") @PathVariable Long id) {
         Mail mail = mailService.getById(id);
-        return AjaxResult.success(objectToDto(mail));
+        return AjaxResult.success(objectToDto(mail), "查询成功");
     }
 
     private MailDto objectToDto(Mail mail) {

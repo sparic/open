@@ -1,7 +1,6 @@
 package cn.muye.resource.controller;
 
 import cn.muye.core.AjaxResult;
-import cn.muye.core.Constants;
 import cn.muye.config.CustomProperties;
 import cn.muye.resource.dto.ResourceDto;
 import cn.muye.resource.domain.Resource;
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +77,7 @@ public class ResourceController {
         String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
         List<String> supportFileTypes = customProperties.getSupportFileTypes();
         if (!supportFileTypes.contains(extensionName)) {
-            return AjaxResult.failed("不能上传" + extensionName + "类型文件");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能上传" + extensionName + "类型文件");
         }
         String newFileName = uploadFile(file, request);
         return addFileInfo(file, newFileName);
@@ -97,9 +95,9 @@ public class ResourceController {
     public AjaxResult uploadAndPostFile(@ApiParam(value = "文件") @RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) {
         String fileName = file.getOriginalFilename();
         String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-        List<String> excludeFileTypes = customProperties.getExcludeFileTypes();
-        if (excludeFileTypes.contains(extensionName)) {
-            return AjaxResult.failed("不能上传" + extensionName + "类型文件");
+        List<String> sdkSupportedTypes = customProperties.getSdkSupportedTypes();
+        if (!sdkSupportedTypes.contains(extensionName)) {
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能上传" + extensionName + "类型文件");
         }
         String newFileName = uploadFile(file, request);
         return addFileInfo(file, newFileName);

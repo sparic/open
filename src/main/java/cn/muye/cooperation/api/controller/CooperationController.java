@@ -71,7 +71,7 @@ public class CooperationController {
             agentApplyService.update(agentApplyDb);
             List<Map> result = Lists.newArrayList();
             result = assembleAgentApplyResult(result, agentApplyDb);
-            return AjaxResult.success(result);
+            return AjaxResult.success(result, "提交成功");
         } else {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的代理商申请");
         }
@@ -113,12 +113,12 @@ public class CooperationController {
             isvApplyService.update(isvApplyDb);
             List<Map> result = Lists.newArrayList();
             result = assembleIsvApplyResult(result, isvApplyDb);
-            return AjaxResult.success(result);
+            return AjaxResult.success(result, "提交成功");
         } else {
             isvApply.setCreateTime(new Date());
             isvApply.setStatus(ApplyStatusType.SUBMIT.getValue());
             isvApplyService.save(isvApply);
-            return AjaxResult.success("申请成功");
+            return AjaxResult.success(isvApply, "申请成功");
         }
     }
 

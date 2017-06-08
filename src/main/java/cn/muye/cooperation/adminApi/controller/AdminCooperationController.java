@@ -10,6 +10,7 @@ import cn.muye.core.AjaxResult;
 import cn.muye.core.Constants;
 import cn.muye.core.enums.ApplyStatusType;
 import cn.muye.utils.DateTimeUtils;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
@@ -33,11 +34,6 @@ public class AdminCooperationController {
 
     @Autowired
     private AdminIsvApplyService adminIsvApplyService;
-
-    private static final int STATUS_SUBMIT = 0; //已提交
-    private static final int STATUS_AUDITING = 1; //待审核
-    private static final int STATUS_SUCCESS = 2; //成功
-    private static final int STATUS_FAILED = 3; //失败
 
     /**
      * 代理商认证审核
@@ -106,7 +102,7 @@ public class AdminCooperationController {
      * 代理商认证列表查询
      * @param page
      * @param pageSize
-     * @param status
+     * @param statusListStr
      * @return
      */
     @RequestMapping(value = {"admin/agentApply"}, method = RequestMethod.GET)
@@ -115,19 +111,20 @@ public class AdminCooperationController {
     @ApiOperation(value = "后台查询代理商申请列表", httpMethod = "GET", notes = "后台查询代理商申请列表")
     public AjaxResult listAgentApply(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                      @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-                                     @ApiParam(value = "状态") @RequestParam(value = "status", required = false) Integer status) {
+                                     @ApiParam(value = "状态") @RequestParam(value = "status", required = false) String statusListStr) {
+        List<Integer> statusList = JSON.parseArray(statusListStr, Integer.class);
         PageHelper.startPage(page, pageSize, true, null, true);
-        List<AgentApplyDto> list = adminAgentApplyService.list(page, status);
+        List<AgentApplyDto> list = adminAgentApplyService.list(page, statusList);
         PageInfo<AgentApplyDto> agentApplyDtoPageInfo = new PageInfo(list);
         agentApplyDtoPageInfo.setList(list);
-        return AjaxResult.success(agentApplyDtoPageInfo);
+        return AjaxResult.success(agentApplyDtoPageInfo, "查询成功");
     }
 
     /**
      * ISV认证列表查询
      * @param page
      * @param pageSize
-     * @param status
+     * @param statusListStr
      * @return
      */
     @RequestMapping(value = {"admin/isvApply"}, method = RequestMethod.GET)
@@ -136,12 +133,13 @@ public class AdminCooperationController {
     @ApiOperation(value = "后台查询ISV申请列表", httpMethod = "GET", notes = "后台查询ISV申请列表")
     public AjaxResult listIsvApply(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                      @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-                                     @ApiParam(value = "状态") @RequestParam(value = "status", required = false) Integer status) {
+                                     @ApiParam(value = "状态") @RequestParam(value = "status", required = false) String statusListStr) {
+        List<Integer> statusList = JSON.parseArray(statusListStr, Integer.class);
         PageHelper.startPage(page, pageSize, true, null, true);
-        List<IsvApplyDto> list = adminIsvApplyService.list(page, status);
+        List<IsvApplyDto> list = adminIsvApplyService.list(page, statusList);
         PageInfo<IsvApplyDto> isvApplyDtoPageInfo = new PageInfo(list);
         isvApplyDtoPageInfo.setList(list);
-        return AjaxResult.success(isvApplyDtoPageInfo);
+        return AjaxResult.success(isvApplyDtoPageInfo, "查询成功");
     }
 
     /**
@@ -155,7 +153,7 @@ public class AdminCooperationController {
     @ApiOperation(value = "后台查询代理商申请详情", httpMethod = "GET", notes = "后台查询代理商申请详情")
     public AjaxResult getAgentApplyDetail(@PathVariable Long id) {
         AgentApplyDto agentApplyDto = adminAgentApplyService.getByIdWithUser(id);
-        return AjaxResult.success(agentApplyDto);
+        return AjaxResult.success(agentApplyDto, "查询成功");
     }
 
     /**
@@ -169,7 +167,7 @@ public class AdminCooperationController {
     @ApiOperation(value = "后台查询ISV申请详情", httpMethod = "GET", notes = "后台查询ISV申请详情")
     public AjaxResult getIsvApplyDetail(@PathVariable Long id) {
         IsvApplyDto isvApplyDto = adminIsvApplyService.getByIdWithUser(id);
-        return AjaxResult.success(isvApplyDto);
+        return AjaxResult.success(isvApplyDto, "查询成功");
     }
 
     private AgentApplyDto agentObjectToDtoAdmin(AgentApply agentApply) {

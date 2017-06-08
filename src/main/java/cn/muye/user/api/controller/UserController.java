@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +88,7 @@ public class UserController {
     @ApiOperation(value = "添加/更新用户", httpMethod = "POST", notes = "添加/更新用户")
     public AjaxResult addUser(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
         if (null == user || user != null && (user.getUserName() == null || user.getPassword() == null || user.getEmailAddress() == null || user.getPhone() == null || user.getUrl() == null)) {
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED,"用户信息为空或信息不全");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, user, "用户信息为空或信息不全");
         }
         try {
             if (user.getId() == null) {
@@ -98,15 +99,17 @@ public class UserController {
                 user.setUserRoleId(Constants.CUSTOMER_ROLE_ID);
                 user.setLevel(null);
                 user.setPassword(MD5Util.getMD5String(user.getPassword()));
+                user.setActivated(true);
                 userService.saveAndApplyAgent(user); //添加用户 绑定角色
+                return AjaxResult.success(objectToDto(user), "添加成功");
             } else {
-                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权修改");
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, user, "您无权修改");
             }
         } catch (Exception e) {
             logger.error("{}", e);
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "添加失败");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, user, "添加失败");
+        } finally {
         }
-        return AjaxResult.success(objectToDto(user));
     }
 
 
@@ -119,12 +122,16 @@ public class UserController {
     @RequestMapping(value = {"/login"}, method = RequestMethod.POST)
     @ApiOperation(value = "前台登录", httpMethod = "POST", notes = "前台登录")
     public AjaxResult customerLogin(@ApiParam(value = "用户对象") @RequestBody User user) {
-        user.setPassword(MD5Util.getMD5String(user.getPassword()));
-        User userDb = userService.checkCustomerLogin(user);
-        if (userDb != null) {
-            return doLogin(user.getUserName(), user.getPassword());
+        if (user != null && user.getUserName() != null && user.getPassword() != null) {
+            user.setPassword(MD5Util.getMD5String(user.getPassword()));
+            User userDb = userService.checkCustomerLogin(user);
+            if (userDb != null) {
+                return doLogin(user.getUserName(), user.getPassword());
+            } else {
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户名或密码错误");
+            }
         } else {
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED,"用户名或密码错误");
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "用户名或密码为空");
         }
     }
 
@@ -144,7 +151,7 @@ public class UserController {
             return AjaxResult.success(objectToDto(user), "成功登录");
         } catch (AuthenticationException e) {
             logger.error("{}", e);
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您的账号或密码输入错误");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, null, "您的账号或密码输入错误");
         } finally {
         }
     }
@@ -161,7 +168,7 @@ public class UserController {
                 if (!userDb.getUserName().equals(userName)) {
                     return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的详情");
                 }
-                return AjaxResult.success(objectToDto(userDb));
+                return AjaxResult.success(objectToDto(userDb), "查询成功");
             } else {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
             }
@@ -188,7 +195,7 @@ public class UserController {
             }
             List<Map> result = Lists.newArrayList();
             result = assembleAgentApplyResult(result, agentApplyDto);
-            return AjaxResult.success(result);
+            return AjaxResult.success(result, "查询成功");
         } else {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该用户");
         }
@@ -212,7 +219,7 @@ public class UserController {
             }
             List<Map> result = Lists.newArrayList();
             result = assembleIsvApplyResult(result, isvApplyDto);
-            return AjaxResult.success(result);
+            return AjaxResult.success(result, "查询成功");
         } else {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该用户");
         }
@@ -281,7 +288,7 @@ public class UserController {
             logger.error("{}", e);
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "注销失败");
         }
-        return AjaxResult.success("注销成功");
+        return AjaxResult.success(null, "注销成功");
     }
 
     private UserDto objectToDto(User user) {

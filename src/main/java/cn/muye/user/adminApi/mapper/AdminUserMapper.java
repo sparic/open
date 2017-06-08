@@ -25,13 +25,10 @@ public interface AdminUserMapper {
 
 	List<User> getUserList(Integer page);
 
-	User getUserInfoByUserPhone(String userPhone);
-
 	void deleteById(Long id);
 
 	void bindUserRole(Long roleId, Long userId);
 
 	User checkAdminLogin(User user);
 
-	User checkCustomerLogin(User user);
 }

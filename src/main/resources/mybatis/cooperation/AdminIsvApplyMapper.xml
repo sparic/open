@@ -38,9 +38,13 @@
                 IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
          from D_ISV_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
          where 1=1
-        <if test="status != null">
-            and agent.STATUS = #{status}
-         </if>
+        <if test="map.statusList != null">
+            and agent.STATUS in
+            <foreach collection="map.statusList" item="statusId" index="index"
+                     open="(" close=")" separator=",">
+                #{statusId}
+            </foreach>
+        </if>
          order by ID desc
     </select>
 

@@ -32,7 +32,7 @@ public class AdminShiroController {
     @ApiOperation(value = "后台查询角色列表", httpMethod = "GET", notes = "后台查询角色列表")
     public AjaxResult listRoles() {
         List<Role> roleList = adminShiroService.listRoles();
-        return AjaxResult.success(roleList);
+        return AjaxResult.success(roleList, "查询成功");
     }
 
     @RequestMapping(value = "/admin/role", method = RequestMethod.POST)
@@ -53,13 +53,13 @@ public class AdminShiroController {
                 roleDb.setEnName(role.getEnName());
                 roleDb.setCnName(role.getCnName());
                 adminShiroService.update(roleDb);
-                return AjaxResult.success(roleDb);
+                return AjaxResult.success(roleDb, "修改成功");
             } else {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该角色");
             }
         } else {
             adminShiroService.save(role);
-            return AjaxResult.success(role);
+            return AjaxResult.success(role, "新增成功");
         }
     }
 
@@ -79,7 +79,7 @@ public class AdminShiroController {
         if (permissionIdList != null && permissionIdList.size() > 0) {
             adminShiroService.bindRolePermission(roleId, permissionIdList);
         }
-        return AjaxResult.success("绑定成功");
+        return AjaxResult.success(null, "绑定成功");
     }
 
     @RequestMapping(value = "/admin/permission", method = RequestMethod.GET)
@@ -92,7 +92,7 @@ public class AdminShiroController {
         List<Permission> permissionList = adminShiroService.listPermissions(page);
         PageInfo<Permission> permissionPageInfo = new PageInfo(permissionList);
         permissionPageInfo.setList(permissionList);
-        return AjaxResult.success(permissionPageInfo);
+        return AjaxResult.success(permissionPageInfo, "查询成功");
     }
 
 
@@ -102,7 +102,7 @@ public class AdminShiroController {
     @ResponseBody
     public AjaxResult listPermissionsByRoleIdAdmin(@ApiParam(value = "角色ID") @PathVariable String roleId) {
         List<Permission> permissionList = adminShiroService.listPermissionsByRoleId(Long.valueOf(roleId));
-        return AjaxResult.success(permissionList);
+        return AjaxResult.success(permissionList, "绑定成功");
     }
 
 }

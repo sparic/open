@@ -26,7 +26,7 @@ public class CustomProperties {
 
 	private String rootAddress;
 
-    private List<String> excludeFileTypes;
+    private List<String> sdkSupportedTypes;
 
 	private List<String> supportFileTypes;
 
@@ -78,12 +78,12 @@ public class CustomProperties {
 		this.redisRedissonCache = redisRedissonCache;
 	}
 
-	public List<String> getExcludeFileTypes() {
-		return excludeFileTypes;
+	public List<String> getSdkSupportedTypes() {
+		return sdkSupportedTypes;
 	}
 
-	public void setExcludeFileTypes(List<String> excludeFileTypes) {
-		this.excludeFileTypes = excludeFileTypes;
+	public void setSdkSupportedTypes(List<String> sdkSupportedTypes) {
+		this.sdkSupportedTypes = sdkSupportedTypes;
 	}
 
 	public List<String> getSupportFileTypes() {

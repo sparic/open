@@ -187,7 +187,7 @@ public class AdminVersionController {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能刪除有绑定菜单或SDK的版本");
         } finally {
         }
-        return AjaxResult.success("删除成功");
+        return AjaxResult.success(null, "删除成功");
     }
 
 }

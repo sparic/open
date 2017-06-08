@@ -25,23 +25,27 @@
         <result property="email" column="EMAIL_ADDRESS"/>
     </resultMap>
 
-    <select id="list" resultMap="agentApplyUserResult" parameterType="Integer">
+    <select id="list" resultMap="agentApplyUserResult" parameterType="java.util.Map">
         select agent.ID,
-                IFNULL(agent.USER_ID,'') as USER_ID,
-                IFNULL(agent.URL,'') as URL,
-                IFNULL(agent.DESCRIPTION,'') as DESCRIPTION,
-                IFNULL(date_format(agent.CREATE_TIME, '%Y-%m-%d'),'') as CREATE_TIME,
-                IFNULL(date_format(agent.UPDATE_TIME, '%Y-%m-%d'),'') as UPDATE_TIME,
-                IFNULL(agent.STATUS,'') as STATUS,
-                IFNULL(user.USER_NAME,'') as USER_NAME,
-                IFNULL(user.PHONE,'') as PHONE,
-                IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
-         from D_AGENT_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
-         where 1=1
-        <if test="status != null">
-            and agent.STATUS = #{status}
-         </if>
-         order by ID desc
+        IFNULL(agent.USER_ID,'') as USER_ID,
+        IFNULL(agent.URL,'') as URL,
+        IFNULL(agent.DESCRIPTION,'') as DESCRIPTION,
+        IFNULL(date_format(agent.CREATE_TIME, '%Y-%m-%d'),'') as CREATE_TIME,
+        IFNULL(date_format(agent.UPDATE_TIME, '%Y-%m-%d'),'') as UPDATE_TIME,
+        IFNULL(agent.STATUS,'') as STATUS,
+        IFNULL(user.USER_NAME,'') as USER_NAME,
+        IFNULL(user.PHONE,'') as PHONE,
+        IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
+        from D_AGENT_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
+        where 1=1
+        <if test="map.statusList != null">
+            and agent.STATUS in
+            <foreach collection="map.statusList" item="statusId" index="index"
+                     open="(" close=")" separator=",">
+                #{statusId}
+            </foreach>
+        </if>
+        order by ID desc
     </select>
 
     <select id="getById" resultMap="agentApplyResult">

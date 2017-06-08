@@ -11,6 +11,7 @@ import cn.muye.mail.service.MailService;
 import cn.muye.user.domain.User;
 import cn.muye.user.adminApi.service.AdminUserService;
 import cn.muye.utils.MailUtil;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Ray.Fu on 2017/5/12.
@@ -28,9 +30,6 @@ public class AdminAgentApplyService {
 
     @Autowired
     private AdminAgentApplyMapper adminAgentApplyMapper;
-
-    @Autowired
-    private MailUtil mailUtil;
 
     @Autowired
     private AdminUserService adminUserService;
@@ -50,8 +49,10 @@ public class AdminAgentApplyService {
         return adminAgentApplyMapper.getById(id);
     }
 
-    public List<AgentApplyDto> list(Integer page, Integer status) {
-        return adminAgentApplyMapper.list(page, status);
+    public List<AgentApplyDto> list(Integer page, List<Integer> statusList) {
+        Map map = Maps.newHashMap();
+        map.put("statusList", statusList);
+        return adminAgentApplyMapper.list(page, map);
     }
 
     public void save(AgentApply agentApply) {

@@ -11,6 +11,7 @@ import cn.muye.mail.service.MailService;
 import cn.muye.user.domain.User;
 import cn.muye.user.adminApi.service.AdminUserService;
 import cn.muye.utils.MailUtil;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Ray.Fu on 2017/5/12.
@@ -44,8 +46,10 @@ public class AdminIsvApplyService {
         return adminIsvApplyMapper.getById(id);
     }
 
-    public List<IsvApplyDto> list(Integer page, Integer status) {
-        return adminIsvApplyMapper.list(page, status);
+    public List<IsvApplyDto> list(Integer page, List<Integer> statusList) {
+        Map map = Maps.newHashMap();
+        map.put("statusList", statusList);
+        return adminIsvApplyMapper.list(page, map);
     }
 
     public void save(IsvApply isvApply) {

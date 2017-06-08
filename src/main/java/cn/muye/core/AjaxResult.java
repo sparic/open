@@ -16,6 +16,11 @@ public class AjaxResult {
         this.data = data;
     }
 
+    public AjaxResult(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -52,6 +57,10 @@ public class AjaxResult {
 
     public static final AjaxResult failed(Object data, String message) {
         return new AjaxResult(CODE_LOG_FAILED, data, message);
+    }
+
+    public static final AjaxResult failed(int code, String message) {
+        return new AjaxResult(code, "", message);
     }
 
     public static final AjaxResult failed(Object data) {

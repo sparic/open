@@ -7,6 +7,7 @@ import cn.muye.cooperation.dto.IsvApplyDto;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Ray.Fu on 2017/5/12.
@@ -15,7 +16,7 @@ public interface AdminIsvApplyMapper {
 
     IsvApply getById(Long id);
 
-    List<IsvApplyDto> list(Integer page, @Param(value = "status") Integer status);
+    List<IsvApplyDto> list(Integer page, @Param(value = "map") Map map);
 
     void save(IsvApply isvApply);
 

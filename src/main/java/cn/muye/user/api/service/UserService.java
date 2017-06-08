@@ -72,11 +72,6 @@ public class UserService {
 		agentApplyService.save(agentApply);
 	}
 
-	public void updateAndBindRole(User user) {
-		userMapper.update(user);
-		shiroService.bindUserRole(user.getUserRoleId(), user.getId());
-	}
-
 	public void update(User user) {
 		userMapper.update(user);
 	}
@@ -85,20 +80,8 @@ public class UserService {
 		return userMapper.getUserByName(userName);
 	}
 
-	public List<User> getUserList(Integer page) {
-		return userMapper.getUserList(page);
-	}
-
-	public User getUserInfoByUserPhone(String userPhone) {
-		return userMapper.getUserInfoByUserPhone(userPhone);
-	}
-
 	public void deleteById(Long id) {
 		userMapper.deleteById(id);
-	}
-
-	public User checkAdminLogin(User user) {
-		return userMapper.checkAdminLogin(user);
 	}
 
 	public User checkCustomerLogin(User user) {

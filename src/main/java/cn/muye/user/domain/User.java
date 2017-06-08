@@ -26,13 +26,13 @@ public class User implements Serializable {
 
 	private Integer sex; //性别
 
-	private boolean passwordChangeRequired = false;
+	private Boolean passwordChangeRequired = false;
 
-	private boolean receiveEmail = true;
+	private Boolean receiveEmail = true;
 
-	private boolean registered = false;
+	private Boolean registered = false;
 
-	private boolean deactivated = false;  //账号是否无效
+	private Boolean activated = false;  //账号是否无效
 
 	private Date lastVisit;  //最新登录时间
 
@@ -94,36 +94,36 @@ public class User implements Serializable {
 		this.sex = sex;
 	}
 
-	public boolean isPasswordChangeRequired() {
+	public Boolean getPasswordChangeRequired() {
 		return passwordChangeRequired;
 	}
 
-	public void setPasswordChangeRequired(boolean passwordChangeRequired) {
+	public void setPasswordChangeRequired(Boolean passwordChangeRequired) {
 		this.passwordChangeRequired = passwordChangeRequired;
 	}
 
-	public boolean isReceiveEmail() {
+	public Boolean getReceiveEmail() {
 		return receiveEmail;
 	}
 
-	public void setReceiveEmail(boolean receiveEmail) {
+	public void setReceiveEmail(Boolean receiveEmail) {
 		this.receiveEmail = receiveEmail;
 	}
 
-	public boolean isRegistered() {
+	public Boolean getRegistered() {
 		return registered;
 	}
 
-	public void setRegistered(boolean registered) {
+	public void setRegistered(Boolean registered) {
 		this.registered = registered;
 	}
 
-	public boolean isDeactivated() {
-		return deactivated;
+	public Boolean getActivated() {
+		return activated;
 	}
 
-	public void setDeactivated(boolean deactivated) {
-		this.deactivated = deactivated;
+	public void setActivated(Boolean activated) {
+		this.activated = activated;
 	}
 
 	public Date getLastVisit() {

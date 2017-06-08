@@ -75,7 +75,7 @@ public class AdminMenuController {
         }
         map.put("menuList", menuDtoNewList);
         map.put("version", versionDb);
-        return AjaxResult.success(map);
+        return AjaxResult.success(map, "查询成功");
     }
 
     private MenuDto objectToDtoAdmin(Menu menu) {
@@ -167,7 +167,7 @@ public class AdminMenuController {
                 menuDb.setContent(menu.getContent());
                 menuDb.setUrl(menu.getUrl());
                 adminMenuService.updateMenu(menuDb);
-                return AjaxResult.success(objectToDtoAdmin(menuDb));
+                return AjaxResult.success(objectToDtoAdmin(menuDb), "修改成功");
             } else {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的文档");
             }
@@ -175,7 +175,7 @@ public class AdminMenuController {
             menu.setCreateTime(new Date());
             menu.setIsValid(true);
             adminMenuService.saveMenuAndUpdateOriginId(menu, "menu");
-            return AjaxResult.success(objectToDtoAdmin(menu));
+            return AjaxResult.success(objectToDtoAdmin(menu), "新增成功");
         }
     }
 
@@ -191,7 +191,7 @@ public class AdminMenuController {
     public AjaxResult getMenuAdmin(@ApiParam(value = "菜单ID") @PathVariable Long id) {
         try {
             Menu menu = adminMenuService.getById(id);
-            return AjaxResult.success(objectToDtoAdmin(menu));
+            return AjaxResult.success(objectToDtoAdmin(menu), "查询成功");
         } catch (Exception e) {
             LOGGER.error("{}", e);
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该条记录");
@@ -233,7 +233,7 @@ public class AdminMenuController {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能删除有子菜单的父菜单");
         } else {
             adminMenuService.deleteById(id);
-            return AjaxResult.success("删除成功");
+            return AjaxResult.success(null, "删除成功");
         }
     }
 

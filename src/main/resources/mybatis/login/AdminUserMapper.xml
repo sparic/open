@@ -11,7 +11,7 @@
         <!--<result property="passwordChangeRequired" column="PASSWORD_CHANGE_REQUIRED"/>-->
         <!--<result property="receiveEmail" column="RECEIVE_EMAIL"/>-->
         <!--<result property="registered" column="REGISTERED"/>-->
-        <result property="deactivated" column="DEACTIVATED"/>
+        <result property="activated" column="ACTIVATED"/>
         <result property="lastVisit" column="LAST_VISIT"/>
         <result property="userRoleId" column="USER_ROLE_ID"/>
         <!--<result property="appKey" column="APP_KEY"/>-->
@@ -23,7 +23,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER
+      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER,ACTIVATED
     </sql>
 
     <select id="getUserById" resultMap="userResult">
@@ -61,7 +61,7 @@
     <select id="getUserList" resultMap="userResult">
         select
         <include refid="Base_Column_List"/>
-        from D_USER where DEACTIVATED=0 ORDER BY ID desc
+        from D_USER order by ID desc
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
@@ -70,7 +70,7 @@
             PASSWORD,
             SEX,
             EMAIL_ADDRESS,
-            DEACTIVATED,
+            ACTIVATED,
             LAST_VISIT,
             COMPANY,
             PHONE,
@@ -81,7 +81,7 @@
             #{password},
             #{sex},
             #{emailAddress},
-            #{deactivated},
+            #{activated},
             #{lastVisit},
             #{company},
             #{phone},
@@ -95,7 +95,7 @@
             USER_NAME = #{userName},
             SEX = #{sex},
             EMAIL_ADDRESS = #{emailAddress},
-            DEACTIVATED = #{deactivated},
+            ACTIVATED = #{activated},
             LAST_VISIT = #{lastVisit},
             COMPANY = #{company},
             PHONE = #{phone},
@@ -106,7 +106,7 @@
     </update>
 
     <delete id="deleteById">
-        update D_USER set DEACTIVATED=1 where ID= #{id}
+        update D_USER set ACTIVATED=0 where ID= #{id}
     </delete>
 
 </mapper>

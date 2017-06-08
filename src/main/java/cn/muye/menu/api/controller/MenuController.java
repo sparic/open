@@ -73,7 +73,7 @@ public class MenuController {
         }
         map.put("menuList", menuDtoNewList);
         map.put("version", versionDb);
-        return AjaxResult.success(map);
+        return AjaxResult.success(map, "查询成功");
     }
 
     private MenuDto objectToDto(Menu menu) {
@@ -139,7 +139,7 @@ public class MenuController {
     public AjaxResult getMenu(@ApiParam(value = "菜单ID") @PathVariable String id) {
         try {
             Menu menu = menuService.getById(Long.valueOf(id));
-            return AjaxResult.success(objectToDto(menu));
+            return AjaxResult.success(objectToDto(menu), "查询成功");
         } catch (Exception e) {
             LOGGER.error("{}", e);
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在该条记录");
