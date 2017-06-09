@@ -18,8 +18,6 @@ public interface AdminIsvApplyMapper {
 
     List<IsvApplyDto> list(Integer page, @Param(value = "map") Map map);
 
-    void save(IsvApply isvApply);
-
     void update(IsvApply isvApply);
 
     /**
@@ -29,7 +27,4 @@ public interface AdminIsvApplyMapper {
      */
     IsvApplyDto getByIdWithUser(Long id);
 
-    IsvApplyDto getDtoByUserId(Long userId);
-
-    IsvApply getByUserId(Long userId);
 }

@@ -172,7 +172,7 @@ public class AdminUserController {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "绑定失败");
         } finally {
         }
-        return AjaxResult.success(null, "绑定成功");
+        return AjaxResult.success("", "绑定成功");
     }
 
     /**
@@ -221,20 +221,19 @@ public class AdminUserController {
     @RequestMapping(value = {"admin/user/{userId}"}, method = RequestMethod.GET)
     @RequiresPermissions("user:admin_detail")
     @ApiOperation(value = "后台查看用户详情", httpMethod = "GET", notes = "后台查看用户详情")
-    public AjaxResult getUserDetailAdmin(@ApiParam(value = "用户ID") @PathVariable Long userId) {
-        if (userId != null) {
-            Subject subject = SecurityUtils.getSubject();
-            String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
-            User userDb = adminUserService.getUserById(userId);
-            if (userDb != null && !userDb.getUserName().equals(userName)) {
-                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的详情");
-            } else if (userDb != null && userDb.getUserName().equals(userName)) {
-                return AjaxResult.success(objectToDtoAdmin(userDb));
-            } else {
-                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
-            }
-        } else {
+    public AjaxResult getUserDetailAdmin(@ApiParam(value = "用户ID") @PathVariable String userId) {
+        if (userId == null || userId.trim().length() == 0) {
             return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
+        Subject subject = SecurityUtils.getSubject();
+        String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
+        User userDb = adminUserService.getUserById(Long.valueOf(userId));
+        if (userDb != null && !userDb.getUserName().equals(userName)) {
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的详情");
+        } else if (userDb != null && userDb.getUserName().equals(userName)) {
+            return AjaxResult.success(objectToDtoAdmin(userDb), "查询成功");
+        } else {
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
         }
     }
 
@@ -248,7 +247,7 @@ public class AdminUserController {
             logger.error("{}", e);
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "注销失败");
         }
-        return AjaxResult.success(null, "注销成功");
+        return AjaxResult.success("", "注销成功");
     }
 
     private UserDto objectToDtoAdmin(User user) {

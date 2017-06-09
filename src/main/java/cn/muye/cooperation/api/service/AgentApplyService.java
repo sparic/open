@@ -21,15 +21,8 @@ public class AgentApplyService {
     @Autowired
     private AgentApplyMapper agentApplyMapper;
 
-    @Autowired
-    private UserService userService;
-
     public AgentApply getById(Long id) {
         return agentApplyMapper.getById(id);
-    }
-
-    public List<AgentApplyDto> list(Integer page, Integer status) {
-        return agentApplyMapper.list(page, status);
     }
 
     public void save(AgentApply agentApply) {
@@ -38,10 +31,6 @@ public class AgentApplyService {
 
     public void update(AgentApply agentApply) {
         agentApplyMapper.update(agentApply);
-    }
-
-    public AgentApplyDto getByIdWithUser(Long id) {
-        return agentApplyMapper.getByIdWithUser(id);
     }
 
     public AgentApplyDto getDtoByUserId(Long userId) {

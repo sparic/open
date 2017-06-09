@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.muye.user.adminApi.mapper.AdminUserMapper">
+<mapper namespace="cn.muye.user.api.mapper.UserMapper">
 
     <resultMap id="userResult" type="cn.muye.user.domain.User">
         <result property="id" column="ID"/>
@@ -23,20 +23,13 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER,ACTIVATED
+      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER
     </sql>
 
     <select id="getUserById" resultMap="userResult">
         select
         <include refid="Base_Column_List"/>
         from D_USER u where u.ID = #{id}
-    </select>
-
-    <!-- 管理后台用户查询 -->
-    <select id="checkAdminLogin" resultMap="userResult">
-        select
-        <include refid="Base_Column_List"/>
-        from D_USER u where u.USER_NAME = #{userName} and u.PASSWORD = #{password} and u.IS_ADMIN_USER = 1
     </select>
 
     <!-- 前台用户查询 -->
@@ -52,18 +45,6 @@
         from D_USER u where u.USER_NAME = #{userName}
     </select>
 
-    <select id="getUserInfoByUserPhone" resultMap="userResult">
-        select
-        <include refid="Base_Column_List"/>
-        from D_USER u where u.PHONE = #{phone}
-    </select>
-
-    <select id="getUserList" resultMap="userResult">
-        select
-        <include refid="Base_Column_List"/>
-        from D_USER order by ID desc
-    </select>
-
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into D_USER(
             USER_NAME,
@@ -74,8 +55,7 @@
             LAST_VISIT,
             COMPANY,
             PHONE,
-            USER_ROLE_ID,
-            LEVEL
+            USER_ROLE_ID
         ) values (
             #{userName},
             #{password},
@@ -85,28 +65,7 @@
             #{lastVisit},
             #{company},
             #{phone},
-            #{userRoleId},
-            #{level}
+            #{userRoleId}
         )
   </insert>
-
-    <update id="update">
-        update D_USER SET
-            USER_NAME = #{userName},
-            SEX = #{sex},
-            EMAIL_ADDRESS = #{emailAddress},
-            ACTIVATED = #{activated},
-            LAST_VISIT = #{lastVisit},
-            COMPANY = #{company},
-            PHONE = #{phone},
-            USER_ROLE_ID = #{userRoleId},
-            LEVEL= #{level}
-        WHERE
-          ID = #{id}
-    </update>
-
-    <delete id="deleteById">
-        update D_USER set ACTIVATED=0 where ID= #{id}
-    </delete>
-
 </mapper>

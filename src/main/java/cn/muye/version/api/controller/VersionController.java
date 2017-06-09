@@ -42,7 +42,7 @@ public class VersionController {
     @RequiresPermissions("version:query")
     @ApiOperation(value = "前台查询版本列表", httpMethod = "GET", notes = "前台查询版本列表")
     public AjaxResult listVersions(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                        @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
+                                   @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(page, pageSize, true, null, true);
         List<Version> list = versionService.listVersions();
         List<VersionDto> listDto = Lists.newArrayList();
@@ -53,22 +53,10 @@ public class VersionController {
         }
         PageInfo<VersionDto> versionPageInfo = new PageInfo(list);
         versionPageInfo.setList(listDto);
-        return AjaxResult.success(versionPageInfo);
+        return AjaxResult.success(versionPageInfo, "查询成功");
     }
 
     private VersionDto objectToDto(Version version) {
-        VersionDto dto = new VersionDto();
-        dto.setUrl(version.getUrl());
-        dto.setCreateTime(DateTimeUtils.getDateString(version.getCreateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
-        dto.setUpdateTime(DateTimeUtils.getDateString(version.getUpdateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
-        dto.setDescription(version.getDescription());
-        dto.setExtendedVersionCode(version.getExtendedVersionCode());
-        dto.setId(version.getId());
-        dto.setVersionCode(version.getVersionCode());
-        return dto;
-    }
-
-    private VersionDto objectToDtoAdmin(Version version) {
         VersionDto dto = new VersionDto();
         dto.setUrl(version.getUrl());
         dto.setCreateTime(DateTimeUtils.getDateString(version.getCreateTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));

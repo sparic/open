@@ -55,10 +55,6 @@ public class AdminAgentApplyService {
         return adminAgentApplyMapper.list(page, map);
     }
 
-    public void save(AgentApply agentApply) {
-        adminAgentApplyMapper.save(agentApply);
-    }
-
     public String update(AgentApply agentApply, String type) {
         adminAgentApplyMapper.update(agentApply);
         if (type.equals(Constants.TYPE_AUDIT_AGENT_APPLY)) {
@@ -96,7 +92,7 @@ public class AdminAgentApplyService {
         String linkAddress = null;
         if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.SUCCESS.getValue())) {
             subject = "代理商资格认证" + ApplyStatusType.SUCCESS.getName();
-            linkAddress = customProperties.getRootAddress() + "login";
+            linkAddress = customProperties.getRootAddress() + "user";
             context = agentApplyDto.getUserName() + ",你好! \t 恭喜贵公司获得木爷机器人代理商资格 \t 您可以点击以下链接进行登录: \t " + linkAddress;
         } else if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.FAILED.getValue())) {
             subject = "代理商资格认证" + ApplyStatusType.FAILED.getName();
@@ -118,11 +114,4 @@ public class AdminAgentApplyService {
         return adminAgentApplyMapper.getByIdWithUser(id);
     }
 
-    public AgentApplyDto getDtoByUserId(Long userId) {
-        return adminAgentApplyMapper.getDtoByUserId(userId);
-    }
-
-    public AgentApply getByUserId(Long userId) {
-        return adminAgentApplyMapper.getByUserId(userId);
-    }
 }

@@ -11,12 +11,6 @@ import java.util.Map;
  */
 public interface AdminUserRoleMapper {
 
-    void save(UserRole userRole);
-
-    void update(UserRole userRole);
-
-    List<Role> listRolesByUserId(Long id);
-
     List<UserRole> listUserRolesByUserId(Long id);
 
     void bindUserRole(Map map);

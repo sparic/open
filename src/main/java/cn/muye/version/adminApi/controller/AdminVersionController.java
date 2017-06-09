@@ -102,9 +102,9 @@ public class AdminVersionController {
                 versionDb.setUpdateTime(new Date());
                 versionDb.setUrl(version.getUrl());
                 adminVersionService.updateVersion(versionDb);
-                return AjaxResult.success(objectToDtoAdmin(versionDb));
+                return AjaxResult.success(objectToDtoAdmin(versionDb), "修改成功");
             } else {
-                return AjaxResult.failed();
+                return AjaxResult.failed("修改失败");
             }
         } else {
             //拿到extendedVersionCode 去数据库查这个对应值
@@ -117,7 +117,7 @@ public class AdminVersionController {
             version.setCreateTime(new Date());
             version.setExtendedVersionCode(null);
             adminVersionService.saveVersion(version);
-            return AjaxResult.success(objectToDtoAdmin(version));
+            return AjaxResult.success(objectToDtoAdmin(version), "新增成功");
         }
 
     }
@@ -132,10 +132,13 @@ public class AdminVersionController {
     @RequiresPermissions("version:detail")
     @ResponseBody
     @ApiOperation(value = "后台获取单个版本", httpMethod = "GET", notes = "后台获取单个版本")
-    public AjaxResult getVersionAdmin(@ApiParam(value = "版本ID") @PathVariable Long id) {
-        Version version = adminVersionService.getById(id);
+    public AjaxResult getVersionAdmin(@ApiParam(value = "版本ID") @PathVariable String id) {
+        if (id == null || id.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
+        Version version = adminVersionService.getById(Long.valueOf(id));
         VersionDto versionDto = objectToDtoAdmin(version);
-        return AjaxResult.success(versionDto);
+        return AjaxResult.success(versionDto, "查询成功");
     }
 
     /**
@@ -179,15 +182,18 @@ public class AdminVersionController {
     @RequestMapping(value = {"admin/version/{id}"}, method = RequestMethod.DELETE)
     @RequiresPermissions("version:delete")
     @ApiOperation(value = "后台删除版本", httpMethod = "DELETE", notes = "后台删除版本")
-    public AjaxResult deleteVersionAdmin(@ApiParam(value = "版本ID") @PathVariable Long id) {
+    public AjaxResult deleteVersionAdmin(@ApiParam(value = "版本ID") @PathVariable String id) {
+        if (id == null || id.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
         try {
-            adminVersionService.deleteById(id);
+            adminVersionService.deleteById(Long.valueOf(id));
         } catch (Exception e) {
             LOGGER.error("不能刪除有绑定菜单或SDK的版本", e);
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能刪除有绑定菜单或SDK的版本");
         } finally {
         }
-        return AjaxResult.success(null, "删除成功");
+        return AjaxResult.success("", "删除成功");
     }
 
 }

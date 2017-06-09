@@ -52,10 +52,6 @@ public class AdminIsvApplyService {
         return adminIsvApplyMapper.list(page, map);
     }
 
-    public void save(IsvApply isvApply) {
-        adminIsvApplyMapper.save(isvApply);
-    }
-
     public String update(IsvApply isvApply, String type) {
         adminIsvApplyMapper.update(isvApply);
         if (type.equals(Constants.TYPE_AUDIT_AGENT_APPLY)) {
@@ -120,11 +116,4 @@ public class AdminIsvApplyService {
         return adminIsvApplyMapper.getByIdWithUser(id);
     }
 
-    public IsvApplyDto getDtoByUserId(Long userId) {
-        return adminIsvApplyMapper.getDtoByUserId(userId);
-    }
-
-    public IsvApply getByUserId(Long userId) {
-        return adminIsvApplyMapper.getByUserId(userId);
-    }
 }

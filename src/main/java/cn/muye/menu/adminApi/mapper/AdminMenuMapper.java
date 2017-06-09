@@ -16,8 +16,6 @@ public interface AdminMenuMapper {
 
     List<Menu> listMenus(@Param(value = "versionId") Long versionId);
 
-    List<Menu> getByPid(Long id);
-
     void deleteById(Long id);
 
     Menu getById(Long id);
@@ -25,6 +23,4 @@ public interface AdminMenuMapper {
     List<Menu> getByVersionId(Long id);
 
     List<Menu> listMenusByParentId(Long id);
-
-    Long countMenus(Integer page, Long versionId);
 }

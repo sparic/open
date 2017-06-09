@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.muye.user.api.mapper.UserMapper">
+<mapper namespace="cn.muye.user.adminApi.mapper.AdminUserMapper">
 
     <resultMap id="userResult" type="cn.muye.user.domain.User">
         <result property="id" column="ID"/>
@@ -23,7 +23,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER
+      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER,ACTIVATED
     </sql>
 
     <select id="getUserById" resultMap="userResult">
@@ -39,29 +39,16 @@
         from D_USER u where u.USER_NAME = #{userName} and u.PASSWORD = #{password} and u.IS_ADMIN_USER = 1
     </select>
 
-    <!-- 前台用户查询 -->
-    <select id="checkCustomerLogin" resultMap="userResult">
-        select
-        <include refid="Base_Column_List"/>
-        from D_USER u where u.USER_NAME = #{userName} and u.PASSWORD = #{password} and u.IS_ADMIN_USER = 0
-    </select>
-
     <select id="getUserByName" resultMap="userResult">
         select
         <include refid="Base_Column_List"/>
         from D_USER u where u.USER_NAME = #{userName}
     </select>
 
-    <select id="getUserInfoByUserPhone" resultMap="userResult">
-        select
-        <include refid="Base_Column_List"/>
-        from D_USER u where u.PHONE = #{phone}
-    </select>
-
     <select id="getUserList" resultMap="userResult">
         select
         <include refid="Base_Column_List"/>
-        from D_USER where ACTIVATED=0 ORDER BY ID desc
+        from D_USER order by ID desc
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
@@ -74,7 +61,8 @@
             LAST_VISIT,
             COMPANY,
             PHONE,
-            USER_ROLE_ID
+            USER_ROLE_ID,
+            LEVEL
         ) values (
             #{userName},
             #{password},
@@ -84,14 +72,14 @@
             #{lastVisit},
             #{company},
             #{phone},
-            #{userRoleId}
+            #{userRoleId},
+            #{level}
         )
   </insert>
 
     <update id="update">
         update D_USER SET
             USER_NAME = #{userName},
-            PASSWORD = #{password},
             SEX = #{sex},
             EMAIL_ADDRESS = #{emailAddress},
             ACTIVATED = #{activated},

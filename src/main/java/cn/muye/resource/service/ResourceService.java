@@ -18,25 +18,8 @@ public class ResourceService {
     @Autowired
     private ResourceMapper resourceMapper;
 
-
-    public List<Resource> listFiles(Integer page) {
-        return resourceMapper.listResources(page);
-    }
-
-
     public void saveFile(Resource file) {
         resourceMapper.saveResource(file);
     }
 
-    public void deleteById(Long id) {
-        resourceMapper.deleteById(id);
-    }
-
-    public Resource getById(Long id) {
-        return resourceMapper.getById(id);
-    }
-
-    public Long countResources(Integer page) {
-        return resourceMapper.countResources(page);
-    }
 }

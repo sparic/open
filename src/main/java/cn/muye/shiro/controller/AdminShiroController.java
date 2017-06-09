@@ -4,7 +4,6 @@ import cn.muye.core.AjaxResult;
 import cn.muye.shiro.domain.Permission;
 import cn.muye.shiro.domain.Role;
 import cn.muye.shiro.service.AdminShiroService;
-import cn.muye.shiro.service.ShiroService;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -74,12 +73,15 @@ public class AdminShiroController {
     @ApiOperation(value = "后台角色绑定权限", httpMethod = "POST", notes = "后台角色绑定权限")
     @RequiresPermissions("role:upsert")
     @ResponseBody
-    public AjaxResult bindPermissionAdmin(@ApiParam(value = "权限id集合(逗号分隔)") @RequestParam String permissionIdListStr, @ApiParam(value = "角色id") @RequestParam Long roleId) {
+    public AjaxResult bindPermissionAdmin(@ApiParam(value = "权限id集合(逗号分隔)") @RequestParam String permissionIdListStr, @ApiParam(value = "角色id") @RequestParam String roleId) {
+        if (roleId == null || roleId.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
         List<Long> permissionIdList = JSON.parseArray(permissionIdListStr, Long.class);
         if (permissionIdList != null && permissionIdList.size() > 0) {
-            adminShiroService.bindRolePermission(roleId, permissionIdList);
+            adminShiroService.bindRolePermission(Long.valueOf(roleId), permissionIdList);
         }
-        return AjaxResult.success(null, "绑定成功");
+        return AjaxResult.success("", "绑定成功");
     }
 
     @RequestMapping(value = "/admin/permission", method = RequestMethod.GET)
@@ -101,6 +103,9 @@ public class AdminShiroController {
     @RequiresPermissions("permission:query")
     @ResponseBody
     public AjaxResult listPermissionsByRoleIdAdmin(@ApiParam(value = "角色ID") @PathVariable String roleId) {
+        if (roleId == null || roleId.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
         List<Permission> permissionList = adminShiroService.listPermissionsByRoleId(Long.valueOf(roleId));
         return AjaxResult.success(permissionList, "绑定成功");
     }

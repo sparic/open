@@ -10,10 +10,6 @@ import java.util.Map;
  */
 public interface AdminRolePermissionMapper {
 
-    void save(RolePermission rolePermission);
-
-    void update(RolePermission rolePermission);
-
     List<RolePermission> listPermissionsByRoleId(Long id);
 
     void bindRolePermission(Map map);

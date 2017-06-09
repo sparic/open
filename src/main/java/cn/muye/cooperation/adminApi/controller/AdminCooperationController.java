@@ -151,8 +151,11 @@ public class AdminCooperationController {
     @RequiresPermissions("agentApply:detail")
     @ResponseBody
     @ApiOperation(value = "后台查询代理商申请详情", httpMethod = "GET", notes = "后台查询代理商申请详情")
-    public AjaxResult getAgentApplyDetail(@PathVariable Long id) {
-        AgentApplyDto agentApplyDto = adminAgentApplyService.getByIdWithUser(id);
+    public AjaxResult getAgentApplyDetail(@PathVariable String id) {
+        if (id == null || id.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
+        AgentApplyDto agentApplyDto = adminAgentApplyService.getByIdWithUser(Long.valueOf(id));
         return AjaxResult.success(agentApplyDto, "查询成功");
     }
 
@@ -165,8 +168,11 @@ public class AdminCooperationController {
     @RequiresPermissions("isvApply:detail")
     @ResponseBody
     @ApiOperation(value = "后台查询ISV申请详情", httpMethod = "GET", notes = "后台查询ISV申请详情")
-    public AjaxResult getIsvApplyDetail(@PathVariable Long id) {
-        IsvApplyDto isvApplyDto = adminIsvApplyService.getByIdWithUser(id);
+    public AjaxResult getIsvApplyDetail(@PathVariable String id) {
+        if (id == null || id.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
+        IsvApplyDto isvApplyDto = adminIsvApplyService.getByIdWithUser(Long.valueOf(id));
         return AjaxResult.success(isvApplyDto, "查询成功");
     }
 

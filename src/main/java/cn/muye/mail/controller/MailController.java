@@ -26,8 +26,11 @@ public class MailController {
     @RequestMapping(value = "admin/mail/{id}", method = RequestMethod.GET)
     @RequiresPermissions("mail:detail")
     @ApiOperation(value = "查看邮件详情", httpMethod = "GET", notes = "查看邮件详情")
-    public AjaxResult getMailById(@ApiParam(value = "邮件ID") @PathVariable Long id) {
-        Mail mail = mailService.getById(id);
+    public AjaxResult getMailById(@ApiParam(value = "邮件ID") @PathVariable String id) {
+        if (id == null || id.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
+        Mail mail = mailService.getById(Long.valueOf(id));
         return AjaxResult.success(objectToDto(mail), "查询成功");
     }
 

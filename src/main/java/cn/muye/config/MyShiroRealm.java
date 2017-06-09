@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Set;
 import cn.muye.shiro.domain.Permission;
 import cn.muye.shiro.domain.Role;
+import cn.muye.shiro.service.AdminShiroService;
 import cn.muye.user.domain.User;
 import cn.muye.shiro.domain.UserRole;
-import cn.muye.shiro.service.ShiroService;
 import cn.muye.user.api.service.UserService;
 import com.google.common.collect.Lists;
 import org.apache.shiro.SecurityUtils;
@@ -19,7 +19,6 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.mockito.internal.util.collections.Sets;
@@ -35,7 +34,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     private UserService userService;
 
     @Autowired
-    private ShiroService shiroService;
+    private AdminShiroService adminShiroService;
 
     /**
      * 权限认证，为当前登录的Subject授予角色和权限
@@ -63,12 +62,12 @@ public class MyShiroRealm extends AuthorizingRealm {
         if (user != null) {
             //权限信息对象info,用来存放查出的用户的所有的角色（role）及权限（permission）
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-            List<UserRole> listUserRoles = shiroService.listUserRolesByUserId(user.getId());
+            List<UserRole> listUserRoles = adminShiroService.listUserRolesByUserId(user.getId());
             Set<String> roleNameSet = Sets.newSet();
             List<Role> roleList = Lists.newArrayList();
             if (listUserRoles != null && listUserRoles.size() > 0) {
                 for (UserRole userRole : listUserRoles) {
-                    Role role = shiroService.getRoleByRoleId(userRole.getrId());
+                    Role role = adminShiroService.getRoleByRoleId(userRole.getrId());
                     roleNameSet.add(role.getEnName());
                     roleList.add(role);
                 }
@@ -78,7 +77,7 @@ public class MyShiroRealm extends AuthorizingRealm {
             //用户的角色对应的所有权限，如果只使用角色定义访问权限，下面的四行可以不要
             List<String> permissionNameList = Lists.newArrayList();
             for (Role role : roleList) {
-                List<Permission> permissionList = shiroService.listPermissionsByRoleId(role.getId());
+                List<Permission> permissionList = adminShiroService.listPermissionsByRoleId(role.getId());
                 if (permissionList != null && permissionList.size() > 0) {
                     for (Permission permission : permissionList) {
                         permissionNameList.add(permission.getPattern());

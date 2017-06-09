@@ -27,30 +27,4 @@
       </if>
   </select>
 
-  <insert id="saveVersion" useGeneratedKeys="true" keyProperty="id">
-    insert into D_VERSION(
-    VERSION_CODE,
-    DESCRIPTION,
-    CREATE_TIME,
-    UPDATE_TIME,
-    EXTENDED_VERSION_CODE,
-    URL
-    ) values (
-    #{versionCode},
-    #{description},
-    #{createTime},
-    #{updateTime},
-    #{extendedVersionCode},
-    #{url}
-    )
-  </insert>
-
-  <update id="updateVersion">
-    update D_VERSION set VERSION_CODE = #{versionCode}, DESCRIPTION = #{description}, URL = #{url}, CREATE_TIME = #{createTime}, UPDATE_TIME = #{updateTime} where ID = #{id}
-  </update>
-
-  <delete id="deleteById">
-    delete from D_VERSION where ID = #{id}
-  </delete>
-
 </mapper>

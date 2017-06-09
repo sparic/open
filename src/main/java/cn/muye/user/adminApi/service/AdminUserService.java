@@ -32,9 +32,6 @@ public class AdminUserService {
 	@Autowired
 	private AdminShiroService adminShiroService;
 
-	@Autowired
-	private AdminAgentApplyService adminAgentApplyService;
-
 	public User getUserById(Long id) {
 		return adminUserMapper.getUserById(id);
 	}
@@ -47,10 +44,6 @@ public class AdminUserService {
 	public void updateAndBindRole(User user) {
 		adminUserMapper.update(user);
 		adminShiroService.bindUserRole(user.getUserRoleId(), user.getId());
-	}
-
-	public void update(User user) {
-		adminUserMapper.update(user);
 	}
 
 	public User getUserByName(String userName) {

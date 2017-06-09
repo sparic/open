@@ -36,8 +36,8 @@
         where ID = #{id}
     </update>
 
-    <delete id="deleteById">
-        UPDATE D_MENU SET IS_VALID = 0 where ID = #{id}
-    </delete>
+    <!--<delete id="deleteById">-->
+        <!--UPDATE D_MENU SET IS_VALID = 0 where ID = #{id}-->
+    <!--</delete>-->
 
 </mapper>

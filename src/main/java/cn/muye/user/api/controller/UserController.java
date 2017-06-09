@@ -8,7 +8,7 @@ import cn.muye.core.AjaxResult;
 import cn.muye.core.Constants;
 import cn.muye.core.enums.AgentLevelType;
 import cn.muye.shiro.domain.Role;
-import cn.muye.shiro.service.ShiroService;
+import cn.muye.shiro.service.AdminShiroService;
 import cn.muye.user.domain.User;
 import cn.muye.user.dto.UserDto;
 import cn.muye.user.api.service.UserService;
@@ -50,7 +50,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private ShiroService shiroService;
+    private AdminShiroService adminShiroService;
 
     @Autowired
     private AgentApplyService agentApplyService;
@@ -151,7 +151,7 @@ public class UserController {
             return AjaxResult.success(objectToDto(user), "成功登录");
         } catch (AuthenticationException e) {
             logger.error("{}", e);
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, null, "您的账号或密码输入错误");
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您的账号或密码输入错误");
         } finally {
         }
     }
@@ -159,36 +159,38 @@ public class UserController {
     @RequestMapping(value = {"user/{userId}"}, method = RequestMethod.GET)
     @RequiresPermissions(value = "user:detail")
     @ApiOperation(value = "前台查看用户详情", httpMethod = "GET", notes = "前台查看用户详情")
-    public AjaxResult getUserDetail(@ApiParam(value = "用户ID") @PathVariable Long userId) {
-        if (userId != null) {
-            Subject subject = SecurityUtils.getSubject();
-            String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
-            User userDb = userService.getUserById(userId);
-            if (userDb != null) {
-                if (!userDb.getUserName().equals(userName)) {
-                    return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的详情");
-                }
-                return AjaxResult.success(objectToDto(userDb), "查询成功");
-            } else {
-                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
-            }
-        } else {
+    public AjaxResult getUserDetail(@ApiParam(value = "用户ID") @PathVariable String userId) {
+        if (userId == null || userId.trim().length() == 0) {
             return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
+        Subject subject = SecurityUtils.getSubject();
+        String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
+        User userDb = userService.getUserById(Long.valueOf(userId));
+        if (userDb != null) {
+            if (!userDb.getUserName().equals(userName)) {
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的详情");
+            }
+            return AjaxResult.success(objectToDto(userDb), "查询成功");
+        } else {
+            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
         }
     }
 
     @RequestMapping(value = {"user/agentApply/{userId}"}, method = RequestMethod.GET)
     @RequiresPermissions(value = "user:detail")
     @ApiOperation(value = "前台查看代理商申请进展", httpMethod = "GET", notes = "前台查看代理商申请进展")
-    public AjaxResult getAgentApplyByUserId(@ApiParam(value = "用户ID") @PathVariable Long userId) {
+    public AjaxResult getAgentApplyByUserId(@ApiParam(value = "用户ID") @PathVariable String userId) {
+        if (userId == null || userId.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
         Subject subject = SecurityUtils.getSubject();
         String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
-        AgentApplyDto agentApplyDto = agentApplyService.getDtoByUserId(userId);
+        AgentApplyDto agentApplyDto = agentApplyService.getDtoByUserId(Long.valueOf(userId));
         if (agentApplyDto == null) {
 //            AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "不存在的代理商申请");
             return AjaxResult.emptyArray();
         }
-        User userDb = userService.getUserById(userId);
+        User userDb = userService.getUserById(Long.valueOf(userId));
         if (userDb != null) {
             if (!userDb.getUserName().equals(userName)) {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的代理商申请进展");
@@ -204,15 +206,18 @@ public class UserController {
     @RequestMapping(value = {"user/isvApply/{userId}"}, method = RequestMethod.GET)
     @RequiresPermissions(value = "user:detail")
     @ApiOperation(value = "前台查看ISV申请进展", httpMethod = "GET", notes = "前台查看ISV申请进展")
-    public AjaxResult getIsvApplyByUserId(@ApiParam(value = "用户ID") @PathVariable Long userId) {
+    public AjaxResult getIsvApplyByUserId(@ApiParam(value = "用户ID") @PathVariable String userId) {
+        if (userId == null || userId.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
         Subject subject = SecurityUtils.getSubject();
         String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
-        IsvApplyDto isvApplyDto = isvApplyService.getDtoByUserId(userId);
+        IsvApplyDto isvApplyDto = isvApplyService.getDtoByUserId(Long.valueOf(userId));
         if (isvApplyDto == null) {
 //            AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "不存在的ISV申请");
             return AjaxResult.emptyArray();
         }
-        User userDb = userService.getUserById(userId);
+        User userDb = userService.getUserById(Long.valueOf(userId));
         if (userDb != null) {
             if (!userDb.getUserName().equals(userName)) {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的ISV申请进展");
@@ -288,7 +293,7 @@ public class UserController {
             logger.error("{}", e);
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "注销失败");
         }
-        return AjaxResult.success(null, "注销成功");
+        return AjaxResult.success("", "注销成功");
     }
 
     private UserDto objectToDto(User user) {
@@ -298,7 +303,7 @@ public class UserController {
         dto.setPhone(user.getPhone() == null ? "" : user.getPhone());
         dto.setRoleId(user.getUserRoleId() == null ? "" : String.valueOf(user.getUserRoleId()));
         if (user.getUserRoleId() != null) {
-            Role roleDb = shiroService.getById(user.getUserRoleId());
+            Role roleDb = adminShiroService.getById(user.getUserRoleId());
             dto.setRoleName(roleDb.getCnName());
         } else {
             dto.setRoleName("");

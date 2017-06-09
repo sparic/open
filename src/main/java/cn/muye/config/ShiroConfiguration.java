@@ -79,7 +79,7 @@ public class ShiroConfiguration {
     public ShiroFilterFactoryBean getShiroFilterFactoryBean() {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new MShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(getDefaultWebSecurityManager());
-//        shiroFilterFactoryBean.setLoginUrl("/login");
+//        shiroFilterFactoryBean.setLoginUrl("/user");
 //        shiroFilterFactoryBean.setSuccessUrl("/admin");
 //        shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
         filterChainDefinitionMap.put("/all_resource/**", "authc,perms[resource:download]");

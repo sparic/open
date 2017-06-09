@@ -27,8 +27,6 @@ public interface AdminUserMapper {
 
 	void deleteById(Long id);
 
-	void bindUserRole(Long roleId, Long userId);
-
 	User checkAdminLogin(User user);
 
 }

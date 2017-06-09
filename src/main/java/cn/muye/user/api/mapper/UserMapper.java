@@ -17,21 +17,9 @@ public interface UserMapper {
 
 	void save(User user);
 
-	void update(User user);
-
 	User getUserById(Long id);
 
 	User getUserByName(String userName);
-
-	List<User> getUserList(Integer page);
-
-	User getUserInfoByUserPhone(String userPhone);
-
-	void deleteById(Long id);
-
-	void bindUserRole(Long roleId, Long userId);
-
-	User checkAdminLogin(User user);
 
 	User checkCustomerLogin(User user);
 }

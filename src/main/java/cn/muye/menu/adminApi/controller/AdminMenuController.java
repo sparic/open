@@ -45,14 +45,17 @@ public class AdminMenuController {
     @RequestMapping(value = {"admin/menu"}, method = RequestMethod.GET)
     @RequiresPermissions("menu:query")
     @ApiOperation(value = "后台查询菜单列表", httpMethod = "GET", notes = "后台查询菜单列表")
-    public AjaxResult adminGetMenuList(@ApiParam(value = "版本号") @RequestParam(value = "versionId", required = false) Long versionId) {
+    public AjaxResult adminGetMenuList(@ApiParam(value = "版本号") @RequestParam(value = "versionId", required = false) String versionId) {
+        if (versionId == null || versionId.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
         List<Menu> menuList = null;
         if (versionId == null) {
             List<Version> list = adminVersionService.listVersions();
             Version version = list.get(0);
             menuList = adminMenuService.getByVersionId(version.getId());
         } else {
-            menuList = adminMenuService.listMenus(versionId);
+            menuList = adminMenuService.listMenus(Long.valueOf(versionId));
         }
         menuDtoList = Lists.newArrayList();
         if (menuList != null && menuList.size() > 0) {
@@ -60,7 +63,7 @@ public class AdminMenuController {
                 menuDtoList.add(objectToDtoAdmin(menu));
             }
         }
-        Version versionDb = adminVersionService.getById(versionId);
+        Version versionDb = adminVersionService.getById(Long.valueOf(versionId));
         //扔给前端的最上层菜单
         Map map = Maps.newHashMap();
         List<MenuDto> menuDtoNewList = Lists.newArrayList();
@@ -188,9 +191,12 @@ public class AdminMenuController {
     @RequestMapping(value = {"admin/menu/{id}"}, method = RequestMethod.GET)
     @RequiresPermissions("menu:query")
     @ApiOperation(value = "后台获取单个菜单详情", httpMethod = "GET", notes = "后台获取单个菜单详情")
-    public AjaxResult getMenuAdmin(@ApiParam(value = "菜单ID") @PathVariable Long id) {
+    public AjaxResult getMenuAdmin(@ApiParam(value = "菜单ID") @PathVariable String id) {
+        if (id == null || id.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
         try {
-            Menu menu = adminMenuService.getById(id);
+            Menu menu = adminMenuService.getById(Long.valueOf(id));
             return AjaxResult.success(objectToDtoAdmin(menu), "查询成功");
         } catch (Exception e) {
             LOGGER.error("{}", e);
@@ -227,13 +233,16 @@ public class AdminMenuController {
     @RequestMapping(value = "admin/menu/{id}", method = RequestMethod.DELETE)
     @RequiresPermissions("menu:delete")
     @ApiOperation(value = "后台删除菜单", httpMethod = "DELETE", notes = "后台删除菜单")
-    public AjaxResult deleteMenuAdmin(@ApiParam(value = "菜单ID") @PathVariable Long id) {
-        List<Menu> childrenMenu = adminMenuService.listMenusByParentId(id);
+    public AjaxResult deleteMenuAdmin(@ApiParam(value = "菜单ID") @PathVariable String id) {
+        if (id == null || id.trim().length() == 0) {
+            return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
+        }
+        List<Menu> childrenMenu = adminMenuService.listMenusByParentId(Long.valueOf(id));
         if (childrenMenu != null && childrenMenu.size() > 0) {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能删除有子菜单的父菜单");
         } else {
-            adminMenuService.deleteById(id);
-            return AjaxResult.success(null, "删除成功");
+            adminMenuService.deleteById(Long.valueOf(id));
+            return AjaxResult.success("", "删除成功");
         }
     }
 

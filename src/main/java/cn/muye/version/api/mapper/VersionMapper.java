@@ -12,11 +12,5 @@ public interface VersionMapper {
 
     List<Version> listVersions();
 
-    void saveVersion(Version version);
-
     Version getById(Map map);
-
-    void updateVersion(Version versionDb);
-
-    void deleteById(Long id);
 }

@@ -16,8 +16,6 @@ public interface AdminAgentApplyMapper {
 
     List<AgentApplyDto> list(Integer page, @Param("map") Map map);
 
-    void save(AgentApply agentApply);
-
     void update(AgentApply agentApply);
 
     /**
@@ -27,7 +25,4 @@ public interface AdminAgentApplyMapper {
      */
     AgentApplyDto getByIdWithUser(Long id);
 
-    AgentApplyDto getDtoByUserId(Long userId);
-
-    AgentApply getByUserId(Long userId);
 }

@@ -60,18 +60,6 @@
         where agent.ID = #{id}
     </select>
 
-    <select id="getByUserId" resultMap="agentApplyResult">
-        select agent.ID,
-                agent.USER_ID,
-                agent.URL,
-                agent.DESCRIPTION,
-                agent.CREATE_TIME,
-                agent.UPDATE_TIME,
-                agent.STATUS
-        from D_AGENT_APPLY agent
-        where agent.USER_ID = #{userId}
-    </select>
-
     <select id="getByIdWithUser" resultMap="agentApplyUserResult">
         select agent.ID,
                 IFNULL(agent.USER_ID,'') as USER_ID,
@@ -86,35 +74,6 @@
          from D_AGENT_APPLY agent inner join D_USER user on agent.USER_ID = user.ID
           where agent.ID = #{id}
     </select>
-
-    <select id="getDtoByUserId" resultMap="agentApplyUserResult">
-        select agent.ID,
-                IFNULL(agent.USER_ID,'') as USER_ID,
-                IFNULL(agent.DESCRIPTION,'') as DESCRIPTION,
-                IFNULL(agent.STATUS,'') as STATUS
---                 IFNULL(date_format(agent.CREATE_TIME, '%Y-%m-%d'),'') as CREATE_TIME,
---                 IFNULL(date_format(agent.UPDATE_TIME, '%Y-%m-%d'),'') as UPDATE_TIME,
---                 IFNULL(user.USER_NAME,'') as USER_NAME,
---                 IFNULL(user.PHONE,'') as PHONE,
---                 IFNULL(user.EMAIL_ADDRESS,'') as EMAIL_ADDRESS
-         from D_AGENT_APPLY agent where agent.USER_ID = #{userId}
-    </select>
-
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
-      insert into D_AGENT_APPLY(
-                USER_ID,
-                URL,
-                DESCRIPTION,
-                CREATE_TIME,
-                STATUS)
-            values (
-                #{userId},
-                #{url},
-                #{description},
-                #{createTime},
-                #{status}
-                )
-    </insert>
 
     <update id="update">
         update D_AGENT_APPLY

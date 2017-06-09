@@ -21,12 +21,6 @@ public class IsvApplyService {
     @Autowired
     private IsvApplyMapper isvApplyMapper;
 
-    @Autowired
-    private MailUtil mailUtil;
-
-    @Autowired
-    private UserService userService;
-
     private static final int STATUS_SUBMIT = 0; //已提交
     private static final int STATUS_AUDITING = 1; //待审核
     private static final int STATUS_SUCCESS = 2; //成功
@@ -36,10 +30,6 @@ public class IsvApplyService {
         return isvApplyMapper.getById(id);
     }
 
-    public List<IsvApplyDto> list(Integer page, Integer status) {
-        return isvApplyMapper.list(page, status);
-    }
-
     public void save(IsvApply isvApply) {
         isvApplyMapper.save(isvApply);
     }
@@ -47,10 +37,6 @@ public class IsvApplyService {
     public String update(IsvApply isvApply) {
         isvApplyMapper.update(isvApply);
         return null;
-    }
-
-    public IsvApplyDto getByIdWithUser(Long id) {
-        return isvApplyMapper.getByIdWithUser(id);
     }
 
     public IsvApplyDto getDtoByUserId(Long userId) {
