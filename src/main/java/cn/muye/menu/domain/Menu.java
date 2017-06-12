@@ -29,6 +29,8 @@ public class Menu {
 
     private String url;
 
+    private Integer sort;
+
     public Long getId() {
         return id;
     }
@@ -115,5 +117,13 @@ public class Menu {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

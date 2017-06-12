@@ -105,20 +105,21 @@ public class CooperationController {
         } else {
             AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不存在的用户");
         }
+        List<Map> result = Lists.newArrayList();
         if (isvApplyDb != null) {
             isvApplyDb.setUrl(isvApply.getUrl());
             isvApplyDb.setUpdateTime(new Date());
             isvApplyDb.setDescription(isvApply.getDescription());
             isvApplyDb.setStatus(ApplyStatusType.SUBMIT.getValue());
             isvApplyService.update(isvApplyDb);
-            List<Map> result = Lists.newArrayList();
             result = assembleIsvApplyResult(result, isvApplyDb);
             return AjaxResult.success(result, "提交成功");
         } else {
             isvApply.setCreateTime(new Date());
             isvApply.setStatus(ApplyStatusType.SUBMIT.getValue());
             isvApplyService.save(isvApply);
-            return AjaxResult.success(isvApply, "申请成功");
+            assembleIsvApplyResult(result, isvApply);
+            return AjaxResult.success(result, "申请成功");
         }
     }
 
