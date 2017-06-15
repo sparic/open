@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.appauth.adminApi.mapper.AdminAppAuthMapper">
+
+    <resultMap id="appAuthResult" type="cn.muye.appauth.domain.AppAuth">
+        <result property="id" column="ID"/>
+        <result property="appId" column="APP_ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="snCodeArr" column="SN_CODE_ARR"/>
+        <result property="userId" column="USER_ID"/>
+    </resultMap>
+
+    <select id="list" resultMap="appAuthResult">
+        select * from D_APP_AUTH
+    </select>
+
+</mapper>

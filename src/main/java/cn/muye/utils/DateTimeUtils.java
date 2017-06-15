@@ -382,6 +382,16 @@ public class DateTimeUtils {
         return now.getTime();
     }
 
+    /**
+     * 获取距离现在N月后/前的时间
+     */
+    public static Date getInternalTimeByMonth(Date d, int months) {
+        Calendar now = Calendar.getInstance(TimeZone.getDefault());
+        now.setTime(d);
+        now.add(Calendar.MONTH, months);
+        return now.getTime();
+    }
+
     /**	返回yyyyMMddHHmmss格式的字符串	*/
     public static String toShortDateTime(Date dateTime) {
         if(dateTime == null){

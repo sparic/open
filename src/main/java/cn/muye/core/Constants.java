@@ -31,5 +31,7 @@ public class Constants {
 
     public final static String SHIRO_SALT = "sdk1234"; //走代理商申请更新接口
 
+    public final static int APP_AUTH_SN_LIMIT = 10;
 
+    public final static String AES_KEY = "12345678abcdefgh";
 }

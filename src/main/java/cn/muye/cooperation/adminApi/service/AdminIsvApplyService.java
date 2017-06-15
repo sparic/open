@@ -1,5 +1,7 @@
 package cn.muye.cooperation.adminApi.service;
 
+import cn.muye.appauth.api.service.AppAuthService;
+import cn.muye.appauth.domain.AppAuth;
 import cn.muye.cooperation.domain.IsvApply;
 import cn.muye.cooperation.dto.IsvApplyDto;
 import cn.muye.cooperation.adminApi.mapper.AdminIsvApplyMapper;
@@ -10,16 +12,14 @@ import cn.muye.mail.domain.Mail;
 import cn.muye.mail.service.MailService;
 import cn.muye.user.domain.User;
 import cn.muye.user.adminApi.service.AdminUserService;
-import cn.muye.utils.MailUtil;
+import cn.muye.utils.DateTimeUtils;
+import cn.muye.utils.StringUtil;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Ray.Fu on 2017/5/12.
@@ -36,6 +36,9 @@ public class AdminIsvApplyService {
 
     @Autowired
     private AdminUserService adminUserService;
+
+    @Autowired
+    private AppAuthService appAuthService;
 
     private static final int STATUS_SUBMIT = 0; //已提交
     private static final int STATUS_AUDITING = 1; //待审核
@@ -68,6 +71,8 @@ public class AdminIsvApplyService {
                         //审核通过要更改用户等级为具体Level
                         userDb.setLevel(isvApply.getLevel());
                         adminUserService.updateAndBindRole(userDb);
+                        //保存app授权信息
+                        saveAppId(userDb);
                     }
                     break;
                 case STATUS_FAILED :
@@ -82,6 +87,22 @@ public class AdminIsvApplyService {
             return msg;
         }
         return null;
+    }
+
+    private void saveAppId(User user) {
+        //配置一个8位数的APPID
+        String appId = StringUtil.getStringRandom(8);
+        AppAuth appAuthDb = appAuthService.getByAppId(appId);
+        while (appAuthDb != null) {
+            appId = StringUtil.getStringRandom(8);
+            appAuthDb = appAuthService.getByAppId(appId);
+        }
+        AppAuth appAuth = new AppAuth();
+        appAuth.setAppId(appId);
+        appAuth.setStartTime(new Date());
+        appAuth.setEndTime(DateTimeUtils.getInternalTimeByMonth(new Date(), 6));
+        appAuth.setUserId(user.getId());
+        appAuthService.save(appAuth);
     }
 
     private void createMailInfo(IsvApplyDto isvApplyDto, User userDb) {

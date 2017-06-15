@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.appauth.api.mapper.AppAuthMapper">
+
+    <resultMap id="appAuthResult" type="cn.muye.appauth.domain.AppAuth">
+        <result property="id" column="ID"/>
+        <result property="appId" column="APP_ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="snCodeArr" column="SN_CODE_ARR"/>
+        <result property="userId" column="USER_ID"/>
+    </resultMap>
+
+    <update id="update">
+        update D_APP_AUTH
+        set APP_ID = #{appId}, END_TIME = #{endTime}, SN_CODE_ARR = #{snCodeArr}
+        where ID = #{id}
+    </update>
+
+    <select id="getByAppId" resultMap="appAuthResult">
+        select * from D_APP_AUTH where APP_ID= #{appId}
+    </select>
+
+
+    <select id="getByUserId" resultMap="appAuthResult">
+        select * from D_APP_AUTH where USER_ID= #{userId}
+    </select>
+
+</mapper>
