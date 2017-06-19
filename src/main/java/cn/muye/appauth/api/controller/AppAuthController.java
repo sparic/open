@@ -13,7 +13,6 @@ import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 
 /**
@@ -49,7 +48,7 @@ public class AppAuthController {
                 int count = arr.length;
                 //如果已经达到了上限，则返回错误
                 Boolean flag = Arrays.asList(arr).contains(snCode);
-                Boolean ifExpired = appAuthDb.getEndTime().getTime() < System.currentTimeMillis();
+                Boolean ifExpired = DateTimeUtils.getInternalDateByDay(appAuthDb.getEndTime(), 1).getTime() < System.currentTimeMillis();
                 if (ifExpired) {
                     return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_EXPIRED, "授权已到期"));
                 } else {
@@ -58,6 +57,7 @@ public class AppAuthController {
                     } else if (count == Constants.APP_AUTH_SN_LIMIT && flag) {
                         AuthDto4App dto = new AuthDto4App();
                         dto.setAppId(appId);
+                        dto.setSnCode(snCode);
                         dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
                         return aesEncode(AjaxResult4App.success(dto, "查询成功"));
                     } else if (count < Constants.APP_AUTH_SN_LIMIT && flag) { //否则新增一条sn
@@ -65,6 +65,7 @@ public class AppAuthController {
                         appAuthService.update(appAuthDb);
                         AuthDto4App dto = new AuthDto4App();
                         dto.setAppId(appId);
+                        dto.setSnCode(snCode);
                         dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
                         return aesEncode(AjaxResult4App.success(dto, "新增成功"));
                     }
@@ -75,6 +76,49 @@ public class AppAuthController {
         }
         return null;
     }
+
+    /* 自己测试用
+    @RequestMapping(value = "appAuth", method = RequestMethod.GET)
+    public AjaxResult4App getAuthInfoByAppId(@RequestParam(value = "appId") String appId, @RequestParam(value = "snCode") String snCode) {
+        if (appId == null || snCode == null) {
+            return AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_PARAM, "参数有误");
+        } else {
+            AppAuth appAuthDb = appAuthService.getByAppId(appId);
+            if (appAuthDb != null) {
+                String snCodeStr = appAuthDb.getSnCodeArr();
+                //获取已绑定的数量
+                String[] arr = snCodeStr.split(",");
+                int count = arr.length;
+                //如果已经达到了上限，则返回错误
+                Boolean flag = Arrays.asList(arr).contains(snCode);
+                Boolean ifExpired = DateTimeUtils.getInternalDateByDay(appAuthDb.getEndTime(), 1).getTime() < System.currentTimeMillis();
+                if (ifExpired) {
+                    return AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_EXPIRED, "授权已到期");
+                } else {
+                    if (count == Constants.APP_AUTH_SN_LIMIT && !flag) {
+                        return AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_LIMIT, "授权机器已达上限");
+                    } else if (count == Constants.APP_AUTH_SN_LIMIT && flag) {
+                        AuthDto4App dto = new AuthDto4App();
+                        dto.setAppId(appId);
+                        dto.setSnCode(snCode);
+                        dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
+                        return AjaxResult4App.success(dto, "查询成功");
+                    } else if (count < Constants.APP_AUTH_SN_LIMIT && flag) { //否则新增一条sn
+                        appAuthDb.setSnCodeArr(snCodeStr + "," + snCode);
+                        appAuthService.update(appAuthDb);
+                        AuthDto4App dto = new AuthDto4App();
+                        dto.setAppId(appId);
+                        dto.setSnCode(snCode);
+                        dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
+                        return AjaxResult4App.success(dto, "新增成功");
+                    }
+                }
+            } else {
+                return AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_NOT_EXIST, "AppId不存在");
+            }
+        }
+        return null;
+    }*/
 
     private static byte[] aesEncode(AjaxResult4App ajaxResult4App) {
         String result = JSON.toJSONString(ajaxResult4App);

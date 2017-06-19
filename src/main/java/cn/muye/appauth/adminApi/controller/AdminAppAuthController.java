@@ -3,7 +3,6 @@ package cn.muye.appauth.adminApi.controller;
 import cn.muye.appauth.adminApi.service.AdminAppAuthService;
 import cn.muye.appauth.domain.AppAuth;
 import cn.muye.appauth.dto.AppAuthDto;
-import cn.muye.cooperation.dto.AgentApplyDto;
 import cn.muye.core.AjaxResult;
 import cn.muye.utils.DateTimeUtils;
 import com.github.pagehelper.PageHelper;
@@ -27,6 +26,7 @@ public class AdminAppAuthController {
     private AdminAppAuthService adminAppAuthService;
 
     @RequestMapping(value = {"admin/appAuth"}, method = RequestMethod.GET)
+    @RequiresPermissions("appAuth:query")
     @ApiOperation(value = "app授权列表", httpMethod = "GET", notes = "app授权列表")
     public AjaxResult listAppAuth(@ApiParam(value = "页号") @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                   @ApiParam(value = "每页记录数") @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {

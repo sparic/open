@@ -11,6 +11,8 @@ public class AuthDto4App {
 
     private String endTime;
 
+    private String snCode;
+
     public String getAppId() {
         return appId;
     }
@@ -25,5 +27,13 @@ public class AuthDto4App {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getSnCode() {
+        return snCode;
+    }
+
+    public void setSnCode(String snCode) {
+        this.snCode = snCode;
     }
 }
