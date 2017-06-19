@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
@@ -60,41 +59,44 @@ public class AppAuthController {
                 if (appAuthDb != null) {
                     String snCodeStr = appAuthDb.getSnCodeArr();
                     //获取已绑定的数量
-                    String[] arr = snCodeStr.split(",");
-                    int count = arr.length;
+                    int count = 0;
+                    String[] arr = new String[]{};
+                    if (snCodeStr != null) {
+                        arr = snCodeStr.split(",");
+                        count = arr.length;
+                    }
                     //如果已经达到了上限，则返回错误
                     Boolean flag = Arrays.asList(arr).contains(snCode);
                     Boolean ifExpired = DateTimeUtils.getInternalDateByDay(appAuthDb.getEndTime(), 1).getTime() < System.currentTimeMillis();
                     if (ifExpired) {
                         return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_EXPIRED, "授权已到期"));
+                    }
+                    if (flag) {
+                        AuthDto4App dto = new AuthDto4App();
+                        dto.setAppId(appId);
+                        dto.setSnCode(snCode);
+                        dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
+                        return aesEncode(AjaxResult4App.success(dto, "查询成功"));
+                    }
+                    if (count >= Constants.APP_AUTH_SN_LIMIT) {
+                        return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_LIMIT, "授权机器已达上限"));
                     } else {
-                        if (count == Constants.APP_AUTH_SN_LIMIT && !flag) {
-                            return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_LIMIT, "授权机器已达上限"));
-                        } else if (count == Constants.APP_AUTH_SN_LIMIT && flag) {
-                            AuthDto4App dto = new AuthDto4App();
-                            dto.setAppId(appId);
-                            dto.setSnCode(snCode);
-                            dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
-                            return aesEncode(AjaxResult4App.success(dto, "查询成功"));
-                        } else if (count < Constants.APP_AUTH_SN_LIMIT && flag) { //否则新增一条sn
-                            appAuthDb.setSnCodeArr(snCodeStr + "," + snCode);
-                            appAuthService.update(appAuthDb);
-                            AuthDto4App dto = new AuthDto4App();
-                            dto.setAppId(appId);
-                            dto.setSnCode(snCode);
-                            dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
-                            return aesEncode(AjaxResult4App.success(dto, "新增成功"));
-                        }
+                        appAuthDb.setSnCodeArr(snCodeStr + "," + snCode);
+                        appAuthService.update(appAuthDb);
+                        AuthDto4App dto = new AuthDto4App();
+                        dto.setAppId(appId);
+                        dto.setSnCode(snCode);
+                        dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
+                        return aesEncode(AjaxResult4App.success(dto, "新增成功"));
                     }
                 } else {
                     return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_NOT_EXIST, "AppId不存在"));
                 }
             }
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             LOGGER.error("编码错误", e.getMessage());
             return null;
         }
-        return null;
     }
 
     /* 自己测试用
