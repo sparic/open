@@ -15,7 +15,9 @@ public class AppAuthDto {
 
     private String endTime; //授权到期时间
 
-    private Long userId; //用户ID
+    private String snCodeArr; //已授权的SN码
+
+    private String userName; //用户名
 
     private Integer snCount; //sn数量
 
@@ -51,12 +53,12 @@ public class AppAuthDto {
         this.endTime = endTime;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Integer getSnCount() {
@@ -65,5 +67,13 @@ public class AppAuthDto {
 
     public void setSnCount(Integer snCount) {
         this.snCount = snCount;
+    }
+
+    public String getSnCodeArr() {
+        return snCodeArr;
+    }
+
+    public void setSnCodeArr(String snCodeArr) {
+        this.snCodeArr = snCodeArr;
     }
 }

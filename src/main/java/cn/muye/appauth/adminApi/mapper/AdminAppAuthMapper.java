@@ -1,6 +1,7 @@
 package cn.muye.appauth.adminApi.mapper;
 
 import cn.muye.appauth.domain.AppAuth;
+import cn.muye.appauth.dto.AppAuthDto;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ import java.util.List;
  */
 public interface AdminAppAuthMapper {
 
-    List<AppAuth> list();
+    List<AppAuthDto> list();
 }

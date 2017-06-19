@@ -11,8 +11,25 @@
         <result property="userId" column="USER_ID"/>
     </resultMap>
 
-    <select id="list" resultMap="appAuthResult">
-        select * from D_APP_AUTH
+    <resultMap id="appAuthDtoResult" type="cn.muye.appauth.dto.AppAuthDto">
+        <result property="id" column="ID"/>
+        <result property="appId" column="APP_ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="snCodeArr" column="SN_CODE_ARR"/>
+        <result property="userName" column="USER_NAME"/>
+    </resultMap>
+
+    <select id="list" resultMap="appAuthDtoResult">
+        select
+            auth.ID as ID,
+            auth.APP_ID as APP_ID,
+            auth.START_TIME as START_TIME,
+            auth.END_TIME as END_TIME,
+            auth.SN_CODE_ARR as SN_CODE_ARR,
+            user.USER_NAME as USER_NAME
+        from D_APP_AUTH auth left join D_USER user on auth.USER_ID = user.ID
+        order by ID desc
     </select>
 
 </mapper>
