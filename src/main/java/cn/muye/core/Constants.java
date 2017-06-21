@@ -33,5 +33,5 @@ public class Constants {
 
     public final static int APP_AUTH_SN_LIMIT = 10;
 
-    public final static String AES_KEY = "12345678abcdefgh";
+    public final static String AES_KEY = "trOmVF7Uaqd4h9AN";
 }
