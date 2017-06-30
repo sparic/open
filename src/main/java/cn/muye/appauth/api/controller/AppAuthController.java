@@ -11,6 +11,7 @@ import cn.muye.user.api.service.UserService;
 import cn.muye.user.domain.User;
 import cn.muye.utils.AES;
 import cn.muye.utils.DateTimeUtils;
+import cn.muye.utils.StringUtil;
 import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class AppAuthController {
     @RequestMapping(value = "appAuth", method = RequestMethod.GET)
     public byte[] getAuthInfoByAppId(@RequestParam(value = "appId") String appId, @RequestParam(value = "snCode") String snCode) {
         try {
-            if (appId == null || snCode == null) {
+            if (StringUtil.isNullOrEmpty(appId) || StringUtil.isNullOrEmpty(snCode)) {
                 return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_PARAM, "参数有误"));
             } else {
                 AppAuth appAuthDb = appAuthService.getByAppId(appId);
@@ -78,7 +79,7 @@ public class AppAuthController {
                         dto.setEndTime(DateTimeUtils.getDateString(appAuthDb.getEndTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
                         return aesEncode(AjaxResult4App.success(dto, "查询成功"));
                     }
-                    if (count >= Constants.APP_AUTH_SN_LIMIT) {
+                    if (count >= appAuthDb.getAuthLimit()) {
                         return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_LIMIT, "授权机器已达上限"));
                     } else {
                         appAuthDb.setSnCodeArr(snCodeStr + "," + snCode);

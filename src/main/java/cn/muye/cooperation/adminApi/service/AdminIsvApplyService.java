@@ -100,8 +100,10 @@ public class AdminIsvApplyService {
         AppAuth appAuth = new AppAuth();
         appAuth.setAppId(appId);
         appAuth.setStartTime(new Date());
-        appAuth.setEndTime(DateTimeUtils.getInternalTimeByMonth(new Date(), 6));
+        appAuth.setEndTime(DateTimeUtils.getInternalTimeByMonth(new Date(), Constants.APP_AUTH_VALID_PERIOD));
         appAuth.setUserId(user.getId());
+        appAuth.setValidityPeriod(Constants.APP_AUTH_VALID_PERIOD);
+        appAuth.setAuthLimit(Constants.APP_AUTH_SN_LIMIT);
         appAuthService.save(appAuth);
     }
 

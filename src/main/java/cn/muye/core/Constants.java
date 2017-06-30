@@ -31,7 +31,9 @@ public class Constants {
 
     public final static String SHIRO_SALT = "sdk1234"; //走代理商申请更新接口
 
-    public final static int APP_AUTH_SN_LIMIT = 10;
+    public final static int APP_AUTH_SN_LIMIT = 10; //最大APP授权数量
+
+    public final static int APP_AUTH_VALID_PERIOD = 6; //授权有效时间(月)
 
     public final static String AES_KEY = "trOmVF7Uaqd4h9AN";
 }

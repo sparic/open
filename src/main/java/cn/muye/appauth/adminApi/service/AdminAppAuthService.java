@@ -23,4 +23,12 @@ public class AdminAppAuthService {
         List<AppAuthDto> list = adminAppAuthMapper.list();
         return list;
     }
+
+    public AppAuth getById(AppAuth appAuth) {
+        return adminAppAuthMapper.getById(appAuth);
+    }
+
+    public void update(AppAuth appAuthDb) {
+        adminAppAuthMapper.update(appAuthDb);
+    }
 }

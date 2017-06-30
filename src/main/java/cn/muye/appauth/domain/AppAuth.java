@@ -1,5 +1,6 @@
 package cn.muye.appauth.domain;
 
+import java.beans.Transient;
 import java.util.Date;
 
 /**
@@ -17,7 +18,11 @@ public class AppAuth {
 
     private String snCodeArr; //绑定的SN码
 
+    private Integer authLimit; //授权数量上限
+
     private Long userId; //用户ID
+
+    private Integer validityPeriod; //有效期(月)
 
     public Long getId() {
         return id;
@@ -65,5 +70,21 @@ public class AppAuth {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Integer getAuthLimit() {
+        return authLimit;
+    }
+
+    public void setAuthLimit(Integer authLimit) {
+        this.authLimit = authLimit;
+    }
+
+    public Integer getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(Integer validityPeriod) {
+        this.validityPeriod = validityPeriod;
     }
 }

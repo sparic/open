@@ -11,4 +11,8 @@ import java.util.List;
 public interface AdminAppAuthMapper {
 
     List<AppAuthDto> list();
+
+    AppAuth getById(AppAuth appAuth);
+
+    void update(AppAuth appAuthDb);
 }

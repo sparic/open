@@ -21,6 +21,10 @@ public class AppAuthDto {
 
     private Integer snCount; //sn数量
 
+    private Integer authLimit; //授权数量上限
+
+    private Integer validityPeriod; //有效期(月)
+
     public Long getId() {
         return id;
     }
@@ -75,5 +79,21 @@ public class AppAuthDto {
 
     public void setSnCodeArr(String snCodeArr) {
         this.snCodeArr = snCodeArr;
+    }
+
+    public Integer getAuthLimit() {
+        return authLimit;
+    }
+
+    public void setAuthLimit(Integer authLimit) {
+        this.authLimit = authLimit;
+    }
+
+    public Integer getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(Integer validityPeriod) {
+        this.validityPeriod = validityPeriod;
     }
 }
