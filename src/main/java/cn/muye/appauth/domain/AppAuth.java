@@ -22,7 +22,7 @@ public class AppAuth {
 
     private Long userId; //用户ID
 
-    private Integer validityPeriod; //有效期(月)
+    private Integer extraPeriod; //续费有效期(月)
 
     public Long getId() {
         return id;
@@ -80,11 +80,11 @@ public class AppAuth {
         this.authLimit = authLimit;
     }
 
-    public Integer getValidityPeriod() {
-        return validityPeriod;
+    public Integer getExtraPeriod() {
+        return extraPeriod;
     }
 
-    public void setValidityPeriod(Integer validityPeriod) {
-        this.validityPeriod = validityPeriod;
+    public void setExtraPeriod(Integer extraPeriod) {
+        this.extraPeriod = extraPeriod;
     }
 }

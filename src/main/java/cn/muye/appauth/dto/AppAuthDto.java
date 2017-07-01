@@ -23,8 +23,6 @@ public class AppAuthDto {
 
     private Integer authLimit; //授权数量上限
 
-    private Integer validityPeriod; //有效期(月)
-
     public Long getId() {
         return id;
     }
@@ -89,11 +87,4 @@ public class AppAuthDto {
         this.authLimit = authLimit;
     }
 
-    public Integer getValidityPeriod() {
-        return validityPeriod;
-    }
-
-    public void setValidityPeriod(Integer validityPeriod) {
-        this.validityPeriod = validityPeriod;
-    }
 }

@@ -56,14 +56,13 @@ public class AdminAppAuthController {
     @RequiresPermissions("appAuth:update")
     @ApiOperation(value = "app授权修改", httpMethod = "POST", notes = "app授权修改")
     public AjaxResult update(@RequestBody AppAuth appAuth) {
-        if (appAuth != null && (appAuth.getId() == null || appAuth.getAuthLimit() == null || appAuth.getValidityPeriod() == null)) {
+        if (appAuth != null && (appAuth.getId() == null || appAuth.getAuthLimit() == null || appAuth.getExtraPeriod() == null)) {
             return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
         }
         AppAuth appAuthDb = adminAppAuthService.getById(appAuth);
         if (appAuthDb != null) {
             appAuthDb.setAuthLimit(appAuth.getAuthLimit());
-            appAuthDb.setValidityPeriod(appAuth.getValidityPeriod());
-            appAuthDb.setEndTime(DateTimeUtils.getInternalTimeByMonth(appAuthDb.getStartTime(), appAuthDb.getValidityPeriod()));
+            appAuthDb.setEndTime(DateTimeUtils.getInternalTimeByMonth(appAuthDb.getEndTime(), appAuth.getExtraPeriod()));
             adminAppAuthService.update(appAuthDb);
             return AjaxResult.success(objectToDto(appAuthDb), "修改成功");
         } else {
@@ -88,7 +87,6 @@ public class AdminAppAuthController {
         appAuthDto.setStartTime(DateTimeUtils.getDateString(appAuth.getStartTime(), DateTimeUtils.DEFAULT_DATE_FORMAT_PATTERN_SHORT));
         User userDb = userService.getUserById(appAuth.getUserId());
         appAuthDto.setUserName(userDb.getUserName());
-        appAuthDto.setValidityPeriod(appAuth.getValidityPeriod());
         return appAuthDto;
     }
 }

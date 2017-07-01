@@ -10,7 +10,6 @@
         <result property="snCodeArr" column="SN_CODE_ARR"/>
         <result property="userId" column="USER_ID"/>
         <result property="authLimit" column="AUTH_LIMIT"/>
-        <result property="validityPeriod" column="VALIDITY_PERIOD"/>
     </resultMap>
 
     <resultMap id="appAuthDtoResult" type="cn.muye.appauth.dto.AppAuthDto">
@@ -21,7 +20,6 @@
         <result property="snCodeArr" column="SN_CODE_ARR"/>
         <result property="userName" column="USER_NAME"/>
         <result property="authLimit" column="AUTH_LIMIT"/>
-        <result property="validityPeriod" column="VALIDITY_PERIOD"/>
     </resultMap>
 
     <select id="list" resultMap="appAuthDtoResult">
@@ -32,7 +30,6 @@
             auth.END_TIME as END_TIME,
             auth.SN_CODE_ARR as SN_CODE_ARR,
             auth.AUTH_LIMIT,
-            auth.VALIDITY_PERIOD,
             user.USER_NAME as USER_NAME
         from D_APP_AUTH auth left join D_USER user on auth.USER_ID = user.ID
         order by ID desc
@@ -46,13 +43,12 @@
             auth.END_TIME as END_TIME,
             auth.SN_CODE_ARR as SN_CODE_ARR,
             auth.USER_ID,
-            auth.AUTH_LIMIT,
-            auth.VALIDITY_PERIOD
+            auth.AUTH_LIMIT
         from D_APP_AUTH auth
         where auth.ID = #{id}
     </select>
 
     <update id="update">
-        update D_APP_AUTH set AUTH_LIMIT= #{authLimit},VALIDITY_PERIOD= #{validityPeriod},END_TIME= #{endTime} where ID= #{id}
+        update D_APP_AUTH set AUTH_LIMIT= #{authLimit},EXTRA_PERIOD= #{extraPeriod},END_TIME= #{endTime} where ID= #{id}
     </update>
 </mapper>

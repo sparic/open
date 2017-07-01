@@ -9,7 +9,6 @@
         <result property="endTime" column="END_TIME"/>
         <result property="snCodeArr" column="SN_CODE_ARR"/>
         <result property="authLimit" column="AUTH_LIMIT"/>
-        <result property="validityPeriod" column="VALIDITY_PERIOD"/>
         <result property="userId" column="USER_ID"/>
     </resultMap>
 
