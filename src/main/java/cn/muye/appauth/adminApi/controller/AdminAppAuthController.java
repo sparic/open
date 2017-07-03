@@ -16,6 +16,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,7 +63,15 @@ public class AdminAppAuthController {
         AppAuth appAuthDb = adminAppAuthService.getById(appAuth);
         if (appAuthDb != null) {
             appAuthDb.setAuthLimit(appAuth.getAuthLimit());
-            appAuthDb.setEndTime(DateTimeUtils.getInternalTimeByMonth(appAuthDb.getEndTime(), appAuth.getExtraPeriod()));
+            long currentTimeMillSecond = new Date().getTime();
+            long endTimeMilSecond = appAuthDb.getEndTime().getTime();
+            Date extraDateFrom = null;
+            if (currentTimeMillSecond <= endTimeMilSecond) {
+                extraDateFrom = appAuthDb.getEndTime();
+            } else {
+                extraDateFrom = new Date();
+            }
+            appAuthDb.setEndTime(DateTimeUtils.getInternalTimeByMonth(extraDateFrom, appAuth.getExtraPeriod()));
             adminAppAuthService.update(appAuthDb);
             return AjaxResult.success(objectToDto(appAuthDb), "修改成功");
         } else {
