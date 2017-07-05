@@ -20,13 +20,13 @@ public class UserDto {
 
     private String company;
 
-    private String roleId;
+    private String roleId; //角色ID（1.超级管理员ID 2.普通用户ID(只区分两种，普通用户可以是代理商也可以是ISV)）
 
-    private String roleName;
+    private String roleName; //角色ID（1.超级管理员 2.普通用户(只区分两种，普通用户可以是代理商也可以是ISV)）
 
-    private String level;
+    private String level;//用户等级(1. 金牌ISV，2. 白金ISV，3. 钻石ISV)
 
-    private String levelName;
+    private String levelName; //用户等级名称(1. 金牌ISV，2. 白金ISV，3. 钻石ISV)
 
     private Boolean activated;
 

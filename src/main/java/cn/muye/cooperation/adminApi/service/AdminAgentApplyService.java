@@ -92,7 +92,7 @@ public class AdminAgentApplyService {
         String linkAddress = null;
         if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.SUCCESS.getValue())) {
             subject = "代理商资格认证" + ApplyStatusType.SUCCESS.getName();
-            linkAddress = customProperties.getRootAddress() + "user";
+            linkAddress = customProperties.getRootAddress() + "/login";
             context = agentApplyDto.getUserName() + ",你好! \t 恭喜贵公司获得木爷机器人代理商资格 \t 您可以点击以下链接进行登录: \t " + linkAddress;
         } else if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.FAILED.getValue())) {
             subject = "代理商资格认证" + ApplyStatusType.FAILED.getName();

@@ -89,7 +89,9 @@ public class AdminUserController {
                 userDb.setLevel(user.getLevel());
                 userDb.setEmailAddress(user.getEmailAddress());
                 userDb.setUserName(user.getUserName());
-                userDb.setActivated(user.getActivated());
+                if (user.getActivated() != null) {
+                    userDb.setActivated(user.getActivated());
+                }
                 adminUserService.updateAndBindRole(userDb); //更新用户绑定角色
                 return AjaxResult.success(objectToDtoAdmin(userDb), "修改成功");
             } else {

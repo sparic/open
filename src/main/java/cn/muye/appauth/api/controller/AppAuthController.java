@@ -52,6 +52,7 @@ public class AppAuthController {
 
     @RequestMapping(value = "appAuth", method = RequestMethod.GET)
     public byte[] getAuthInfoByAppId(@RequestParam(value = "appId") String appId, @RequestParam(value = "snCode") String snCode) {
+        LOGGER.info("appId: " + appId);
         try {
             if (StringUtil.isNullOrEmpty(appId) || StringUtil.isNullOrEmpty(snCode)) {
                 return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_PARAM, "参数有误"));
@@ -62,7 +63,7 @@ public class AppAuthController {
                     //获取已绑定的数量
                     int count = 0;
                     String[] arr = new String[]{};
-                    if (snCodeStr != null) {
+                    if (!StringUtil.isNullOrEmpty(snCodeStr)) {
                         arr = snCodeStr.split(",");
                         count = arr.length;
                     }
@@ -82,7 +83,7 @@ public class AppAuthController {
                     if (count >= appAuthDb.getAuthLimit()) {
                         return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_LIMIT, "授权机器已达上限"));
                     } else {
-                        appAuthDb.setSnCodeArr(snCodeStr + "," + snCode);
+                        appAuthDb.setSnCodeArr(!StringUtil.isNullOrEmpty(snCodeStr) ? snCodeStr + "," + snCode : snCode);
                         appAuthService.update(appAuthDb);
                         AuthDto4App dto = new AuthDto4App();
                         dto.setAppId(appId);

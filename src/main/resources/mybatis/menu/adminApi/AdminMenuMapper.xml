@@ -28,6 +28,11 @@
         select ID,PARENT_ID,NAME,ORIGIN_ID,CREATE_TIME,UPDATE_TIME,VERSION_ID,CONTENT,URL,IS_VALID,SORT from D_MENU where ID = #{id} and IS_VALID = 1
     </select>
 
+    <select id="getByVersionId" resultMap="menuResult">
+        select ID,PARENT_ID,NAME,ORIGIN_ID,CREATE_TIME,UPDATE_TIME,VERSION_ID,CONTENT,URL,IS_VALID,SORT from D_MENU where VERSION_ID = #{versionId} and IS_VALID = 1
+        ORDER BY ID DESC
+    </select>
+
     <select id="listMenusByParentId" resultMap="menuResult">
         select ID,PARENT_ID,NAME,ORIGIN_ID,CREATE_TIME,UPDATE_TIME,VERSION_ID,CONTENT,URL,IS_VALID,SORT from D_MENU where PARENT_ID = #{id} and IS_VALID = 1
         ORDER BY ID ASC

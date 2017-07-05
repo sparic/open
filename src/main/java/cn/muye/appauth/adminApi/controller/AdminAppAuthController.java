@@ -57,7 +57,7 @@ public class AdminAppAuthController {
     @RequiresPermissions("appAuth:update")
     @ApiOperation(value = "app授权修改", httpMethod = "POST", notes = "app授权修改")
     public AjaxResult update(@RequestBody AppAuth appAuth) {
-        if (appAuth != null && (appAuth.getId() == null || appAuth.getAuthLimit() == null || appAuth.getExtraPeriod() == null)) {
+        if (appAuth != null && (appAuth.getId() == null || appAuth.getAuthLimit() == null || appAuth.getExtraPeriod() == null || appAuth.getExtraPeriod() < 0)) {
             return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
         }
         AppAuth appAuthDb = adminAppAuthService.getById(appAuth);

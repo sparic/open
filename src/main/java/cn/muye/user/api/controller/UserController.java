@@ -183,6 +183,7 @@ public class UserController {
         if (userId == null || userId.trim().length() == 0) {
             return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
         }
+        User userDb = userService.getUserById(Long.valueOf(userId));
         Subject subject = SecurityUtils.getSubject();
         String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
         AgentApplyDto agentApplyDto = agentApplyService.getDtoByUserId(Long.valueOf(userId));
@@ -190,7 +191,6 @@ public class UserController {
 //            AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "不存在的代理商申请");
             return AjaxResult.emptyArray();
         }
-        User userDb = userService.getUserById(Long.valueOf(userId));
         if (userDb != null) {
             if (!userDb.getUserName().equals(userName)) {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的代理商申请进展");
@@ -210,6 +210,10 @@ public class UserController {
         if (userId == null || userId.trim().length() == 0) {
             return AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "参数有误");
         }
+        User userDb = userService.getUserById(Long.valueOf(userId));
+        if (userDb != null && userDb.getLevel() == null && userDb.getUserRoleId().equals(Constants.CUSTOMER_ROLE_ID)) {
+            return AjaxResult.success(new ArrayList<>(), "查询成功");
+        }
         Subject subject = SecurityUtils.getSubject();
         String userName = subject.getPrincipal() != null ? subject.getPrincipal().toString() : null;
         IsvApplyDto isvApplyDto = isvApplyService.getDtoByUserId(Long.valueOf(userId));
@@ -217,7 +221,6 @@ public class UserController {
 //            AjaxResult.failed(AjaxResult.CODE_PARAM_MISTAKE_FAILED, "不存在的ISV申请");
             return AjaxResult.emptyArray();
         }
-        User userDb = userService.getUserById(Long.valueOf(userId));
         if (userDb != null) {
             if (!userDb.getUserName().equals(userName)) {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您无权查看他人的ISV申请进展");
