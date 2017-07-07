@@ -36,7 +36,7 @@
     <select id="checkCustomerLogin" resultMap="userResult">
         select
         <include refid="Base_Column_List"/>
-        from D_USER u where u.USER_NAME = #{userName} and u.PASSWORD = #{password} and u.IS_ADMIN_USER = 0 and u.ACTIVATED = 1
+        from D_USER u where u.USER_NAME = #{userName} and u.PASSWORD = #{password} and u.IS_ADMIN_USER = 0
     </select>
 
     <select id="getUserByName" resultMap="userResult">

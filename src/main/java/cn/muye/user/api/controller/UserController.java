@@ -126,7 +126,11 @@ public class UserController {
             user.setPassword(MD5Util.getMD5String(user.getPassword()));
             User userDb = userService.checkCustomerLogin(user);
             if (userDb != null) {
-                return doLogin(user.getUserName(), user.getPassword());
+                if (userDb.getActivated()) {
+                    return doLogin(user.getUserName(), user.getPassword());
+                } else {
+                    return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "您的账户被禁用，请联系客服");
+                }
             } else {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户名或密码错误");
             }
