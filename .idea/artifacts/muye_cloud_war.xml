@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="muye-cloud:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="devCenter-1.0.war">
+      <element id="artifact" artifact-name="muye-cloud:war exploded" />
+    </root>
+  </artifact>
+</component>

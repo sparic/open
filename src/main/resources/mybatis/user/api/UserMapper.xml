@@ -23,7 +23,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER
+      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER,ACTIVATED
     </sql>
 
     <select id="getUserById" resultMap="userResult">

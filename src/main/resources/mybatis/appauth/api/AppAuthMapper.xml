@@ -19,8 +19,8 @@
     </update>
 
     <insert id="save">
-        insert D_APP_AUTH(APP_ID,START_TIME,END_TIME,USER_ID)
-        values (#{appId},#{startTime},#{endTime},#{userId})
+        insert D_APP_AUTH(APP_ID,START_TIME,END_TIME,USER_ID,AUTH_LIMIT)
+        values (#{appId},#{startTime},#{endTime},#{userId},#{authLimit})
     </insert>
 
     <select id="getByAppId" resultMap="appAuthResult">
