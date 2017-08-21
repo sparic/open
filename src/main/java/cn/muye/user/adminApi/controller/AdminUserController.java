@@ -85,6 +85,9 @@ public class AdminUserController {
         }
         if (user.getId() != null && user.getId() >= 1) {
             if (userDb != null) {
+                if (!userDb.getLevel().equals(user.getLevel())) {
+                    return AjaxResult.success(objectToDtoAdmin(userDb), "不能直接修改用户等级");
+                }
                 userDb.setPhone(user.getPhone());
                 userDb.setLevel(user.getLevel());
                 userDb.setEmailAddress(user.getEmailAddress());

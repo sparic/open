@@ -32,7 +32,7 @@ public class User implements Serializable {
 
 	private Boolean registered = false;
 
-	private Boolean activated = false;  //账号是否无效
+	private Boolean activated = true;  //账号是否无效
 
 	private Date lastVisit;  //最新登录时间
 

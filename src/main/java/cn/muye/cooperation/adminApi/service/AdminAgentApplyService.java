@@ -10,13 +10,10 @@ import cn.muye.mail.domain.Mail;
 import cn.muye.mail.service.MailService;
 import cn.muye.user.domain.User;
 import cn.muye.user.adminApi.service.AdminUserService;
-import cn.muye.utils.MailUtil;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -89,10 +86,10 @@ public class AdminAgentApplyService {
     private void createMailInfo(AgentApplyDto agentApplyDto) {
         String subject = null;
         String context = null;
-        String linkAddress = null;
+        String linkAddress;
         if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.SUCCESS.getValue())) {
             subject = "代理商资格认证" + ApplyStatusType.SUCCESS.getName();
-            linkAddress = customProperties.getRootAddress() + "/login";
+            linkAddress = customProperties.getRootAddress() + "login";
             context = agentApplyDto.getUserName() + ",你好! \t 恭喜贵公司获得木爷机器人代理商资格 \t 您可以点击以下链接进行登录: \t " + linkAddress;
         } else if (Integer.valueOf(agentApplyDto.getStatus()).equals(ApplyStatusType.FAILED.getValue())) {
             subject = "代理商资格认证" + ApplyStatusType.FAILED.getName();

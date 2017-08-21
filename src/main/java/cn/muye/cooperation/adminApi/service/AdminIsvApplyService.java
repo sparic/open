@@ -2,6 +2,7 @@ package cn.muye.cooperation.adminApi.service;
 
 import cn.muye.appauth.api.service.AppAuthService;
 import cn.muye.appauth.domain.AppAuth;
+import cn.muye.config.CustomProperties;
 import cn.muye.cooperation.domain.IsvApply;
 import cn.muye.cooperation.dto.IsvApplyDto;
 import cn.muye.cooperation.adminApi.mapper.AdminIsvApplyMapper;
@@ -39,6 +40,9 @@ public class AdminIsvApplyService {
 
     @Autowired
     private AppAuthService appAuthService;
+
+    @Autowired
+    private CustomProperties customProperties;
 
     private static final int STATUS_SUBMIT = 0; //已提交
     private static final int STATUS_AUDITING = 1; //待审核
@@ -110,6 +114,7 @@ public class AdminIsvApplyService {
         String subject = null;
         String context = null;
         String levelName = null;
+        String linkAddress;
         if (Integer.valueOf(isvApplyDto.getStatus()).equals(ApplyStatusType.FAILED.getValue())) {
             levelName = "ISV";
         } else {
@@ -119,10 +124,12 @@ public class AdminIsvApplyService {
         }
         if (Integer.valueOf(isvApplyDto.getStatus()).equals(ApplyStatusType.SUCCESS.getValue())) {
             subject = "ISV资格认证" + ApplyStatusType.SUCCESS.getName();
-            context = isvApplyDto.getUserName() + ",你好! \t 恭喜贵公司获得木爷机器人"+ levelName +"资格认证";
+            linkAddress = customProperties.getRootAddress() + "login";
+            context = isvApplyDto.getUserName() + ",你好! \t 恭喜贵公司获得木爷机器人"+ levelName +"资格认证 \t 您可以点击以下链接进行登录: \t " + linkAddress;
         } else if (Integer.valueOf(isvApplyDto.getStatus()).equals(ApplyStatusType.FAILED.getValue())) {
             subject = "ISV资格认证" + ApplyStatusType.FAILED.getName();
-            context = isvApplyDto.getUserName()+ ",你好! \t很抱歉贵公司未通过木爷机器人"+ levelName +"资格认证 \t 原因:" + isvApplyDto.getDescription();
+            linkAddress = customProperties.getRootAddress() + "account/pending";
+            context = isvApplyDto.getUserName()+ ",你好! \t很抱歉贵公司未通过木爷机器人"+ levelName +"资格认证 \t 原因:" + isvApplyDto.getDescription() + "\t 您可以点击以下链接重新认证: \t " + linkAddress;
         }
         //创建邮件任务
         Mail mail = new Mail();

@@ -13,6 +13,7 @@ import cn.muye.user.domain.User;
 import cn.muye.user.dto.UserDto;
 import cn.muye.user.api.service.UserService;
 import cn.muye.utils.MD5Util;
+import cn.muye.utils.StringUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +87,7 @@ public class UserController {
     @RequestMapping(value = "user", method = RequestMethod.POST)
     @ApiOperation(value = "添加/更新用户", httpMethod = "POST", notes = "添加/更新用户")
     public AjaxResult addUser(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
-        if (null == user || user != null && (user.getUserName() == null || user.getPassword() == null || user.getEmailAddress() == null || user.getPhone() == null || user.getUrl() == null)) {
+        if (null == user || user != null && (StringUtil.isNullOrEmpty(user.getUserName()) || StringUtil.isNullOrEmpty(user.getPassword()) || StringUtil.isNullOrEmpty(user.getEmailAddress()) || StringUtil.isNullOrEmpty(user.getPhone()) || StringUtil.isNullOrEmpty(user.getUrl()))) {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, user, "用户信息为空或信息不全");
         }
         try {

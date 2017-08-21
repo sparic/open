@@ -54,6 +54,7 @@ public class AppAuthController {
     @RequestMapping(value = "appAuth", method = RequestMethod.GET)
     public byte[] getAuthInfoByAppId(@RequestParam(value = "appId") String appId, @RequestParam(value = "snCode") String snCode) {
         LOGGER.info("appId: " + appId);
+        LOGGER.info("snCode: " + snCode);
         try {
             if (StringUtil.isNullOrEmpty(appId) || StringUtil.isNullOrEmpty(snCode)) {
                 return aesEncode(AjaxResult4App.failed(AjaxResult4App.CODE_ERROR_PARAM, "参数有误"));
@@ -97,7 +98,7 @@ public class AppAuthController {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("编码错误", e.getMessage());
+            LOGGER.error("编码错误", e);
             return null;
         }
     }

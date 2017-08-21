@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.resource.mapper.ApiPackageMapper">
+
+    <resultMap id="apiPackageResult" type="cn.muye.resource.domain.ApiPackage">
+        <result property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="type" column="TYPE"/>
+        <result property="url" column="URL"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
+    </resultMap>
+
+    <select id="list" resultMap="apiPackageResult">
+            SELECT
+            ID,
+            NAME,
+            TYPE,
+            URL,
+            DESCRIPTION,
+            CREATE_TIME
+        FROM
+            D_API_PACKAGE
+        WHERE ID= (SELECT max(ID) FROM D_API_PACKAGE where type =1)
+    UNION ALL
+        SELECT
+            ID,
+            NAME,
+            TYPE,
+            URL,
+            DESCRIPTION,
+            CREATE_TIME
+        FROM
+            D_API_PACKAGE
+        WHERE ID= (SELECT max(ID) FROM D_API_PACKAGE where type =2)
+      </select>
+
+    <!--<select id="getById" resultMap="resourceResult">-->
+        <!--select ID,-->
+                <!--NAME,-->
+                <!--DESCRIPTION,-->
+                <!--SOURCE_NAME,-->
+                <!--EXTENSION_NAME,-->
+                <!--SIZE,-->
+                <!--PATH,-->
+                <!--CREATE_TIME,-->
+                <!--UPDATE_TIME-->
+         <!--from D_RESOURCE where ID = #{id}-->
+         <!--ORDER BY ID DESC-->
+  <!--</select>-->
+
+    <insert id="saveApiPackage" useGeneratedKeys="true" keyProperty="id">
+        insert into D_API_PACKAGE(
+          NAME,TYPE,URL,DESCRIPTION,CREATE_TIME,UPDATE_TIME
+        ) values (
+          #{name},
+          #{type},
+          #{url},
+          #{description},
+          #{createTime},
+          #{updateTime}
+        )
+  </insert>
+
+    <!--<delete id="deActivateById">-->
+    <!--delete from FILE where ID = #{id}-->
+    <!--</delete>-->
+
+</mapper>

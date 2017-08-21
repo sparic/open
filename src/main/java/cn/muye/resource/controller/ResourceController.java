@@ -2,16 +2,17 @@ package cn.muye.resource.controller;
 
 import cn.muye.core.AjaxResult;
 import cn.muye.config.CustomProperties;
+import cn.muye.resource.domain.ApiPackage;
 import cn.muye.resource.dto.ResourceDto;
 import cn.muye.resource.domain.Resource;
+import cn.muye.resource.service.ApiPackageService;
 import cn.muye.resource.service.ResourceService;
 import cn.muye.utils.DateTimeUtils;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
+import cn.muye.utils.FileUtils;
+import cn.muye.utils.StringUtil;
+import cn.muye.utils.ZipUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by Ray.Fu on 2017/4/27.
@@ -38,6 +41,9 @@ public class ResourceController {
 
     @Autowired
     private CustomProperties customProperties;
+
+    @Autowired
+    private ApiPackageService apiPackageService;
 
     /**
      * 获取所有文件列表
@@ -79,9 +85,32 @@ public class ResourceController {
         if (!supportFileTypes.contains(extensionName)) {
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能上传" + extensionName + "类型文件");
         }
-        String newFileName = uploadFile(file, request);
+        String newFileName = FileUtils.uploadFile(file, customProperties.getPushDirs(), request);
         return addFileInfo(file, newFileName);
     }
+
+    /**
+     * 打包压缩下载文件
+     */
+//    @RequestMapping(value = "/downLoadZipFile", method = RequestMethod.GET)
+//    @ApiOperation(value = "下载压缩文件", httpMethod = "GET", notes = "下载压缩文件")
+//    @RequiresPermissions("isvApply:download")
+//    public void downLoadZipFile(@ApiParam(value = "三种类型:人机交互开放平台=>human_machine_interaction\n" +
+//            "业务应用接入开放平台=>business_app_access\n" +
+//            "SDK开放平台=>sdk_api") @RequestParam(value = "fileType", required = false) String fileType, HttpServletResponse response) throws IOException{
+//        if (customProperties.getSupportBusinessTypes().contains(fileType)) {
+//            ZipOutputStream out = new ZipOutputStream(response.getOutputStream());
+//            try {
+//                ZipUtils.fileToZip(customProperties.getSourceFilePath() + File.separator + fileType, customProperties.getZipFilePath() + File.separator + fileType, fileType + ".zip");
+//                cn.muye.utils.FileUtils.deleteDir(new File(customProperties.getSourceFilePath() + File.separator + fileType), "zip");
+//                response.sendRedirect(customProperties.getZipFileUrl() + File.separator + fileType + File.separator+ fileType + ".zip");
+//            } catch (Exception e) {
+//                LOGGER.error("下载失败，原因：{}", e);
+//            }finally{
+//                out.close();
+//            }
+//        }
+//    }
 
     /**
      * 后台上传文件
@@ -93,38 +122,8 @@ public class ResourceController {
     @RequiresPermissions("resource:upload")
     @ApiOperation(value = "上传文件", httpMethod = "POST", notes = "上传文件")
     public AjaxResult uploadAndPostFile(@ApiParam(value = "文件") @RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) {
-        String fileName = file.getOriginalFilename();
-        String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-        List<String> sdkSupportedTypes = customProperties.getSdkSupportedTypes();
-        if (!sdkSupportedTypes.contains(extensionName)) {
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "不能上传" + extensionName + "类型文件");
-        }
-        String newFileName = uploadFile(file, request);
+        String newFileName = FileUtils.uploadFile(file, customProperties.getPushDirs(), request);
         return addFileInfo(file, newFileName);
-    }
-
-    private String uploadFile(MultipartFile file, HttpServletRequest request) {
-        String newFileName = null;
-        try {
-            File dest = FileUtils.getFile(customProperties.getPushDirs() + File.separator);
-            LOGGER.info("createResource dest.path ={} ", dest.getPath());
-            dest.mkdirs();
-            String originalFileName = file.getOriginalFilename();
-            String extensionName = originalFileName.substring(originalFileName.lastIndexOf(".") + 1, originalFileName.length());
-            Random random = new Random();
-            int randomNum = (int) (random.nextDouble() * (99999 - 10000 + 1)) + 10000;
-            newFileName = DateTimeUtils.toShortDateTime(new Date()) + randomNum + "." + extensionName;
-            dest = FileUtils.getFile(dest.getPath() + File.separator + newFileName);
-            LOGGER.info("createResource dest.path with fileName ={} ", dest.getPath());
-            if (!dest.exists()) {
-                dest.createNewFile();
-            }
-            file.transferTo(dest);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-        }
-        return newFileName;
     }
 
     private AjaxResult addFileInfo(MultipartFile sourceFile, String newFileName) {

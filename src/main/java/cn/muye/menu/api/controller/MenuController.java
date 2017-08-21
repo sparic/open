@@ -3,6 +3,8 @@ package cn.muye.menu.api.controller;
 import cn.muye.core.AjaxResult;
 import cn.muye.menu.dto.MenuDto;
 import cn.muye.menu.domain.Menu;
+import cn.muye.resource.domain.ApiPackage;
+import cn.muye.resource.service.ApiPackageService;
 import cn.muye.version.domain.Version;
 import cn.muye.menu.api.service.MenuService;
 import cn.muye.version.api.service.VersionService;
@@ -33,6 +35,9 @@ public class MenuController {
     private VersionService versionService;
 
     private static List<MenuDto> menuDtoList;
+
+    @Autowired
+    private ApiPackageService apiPackageService;
 
     /**
      * 前台查询菜单列表接口
@@ -71,8 +76,10 @@ public class MenuController {
                 }
             }
         }
+        List<ApiPackage> apiPackageList = apiPackageService.list();
         map.put("menuList", menuDtoNewList);
         map.put("version", versionDb);
+        map.put("apiPackageList", apiPackageList);
         return AjaxResult.success(map, "查询成功");
     }
 
