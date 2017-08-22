@@ -22,9 +22,6 @@ import java.util.Date;
 public class ApiPackageController {
 
     @Autowired
-    private CustomProperties customProperties;
-
-    @Autowired
     private ApiPackageService apiPackageService;
 
     /**
@@ -41,19 +38,4 @@ public class ApiPackageController {
         return AjaxResult.success(apiPackage, "保存成功");
     }
 
-    /**
-     * 上传 1-人机交互平台 2-业务应用平台两种文件
-     * @param file
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = {"apiPackage/upload"}, method = RequestMethod.POST)
-    @RequiresPermissions("apiPackage:upload")
-    @ApiOperation(value = "上传人机交互平台和业务应用平台文件", httpMethod = "POST", notes = "上传人机交互平台和业务应用平台文件")
-    public AjaxResult uploadApiPackage(@ApiParam(value = "文件") @RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) {
-        String newFileName = FileUtils.uploadFile(file, customProperties.getPushDirs(), request);
-        ApiPackage apiPackage = new ApiPackage();
-        apiPackage.setUrl(customProperties.getPushHttp() + newFileName);
-        return AjaxResult.success(apiPackage, "上传成功");
-    }
 }
