@@ -14,11 +14,13 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +31,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.config.annotation.*;
+
+import javax.servlet.MultipartConfigElement;
 import javax.sql.DataSource;
 import java.util.*;
 
@@ -40,6 +44,9 @@ import java.util.*;
 public class Application extends WebMvcConfigurerAdapter {
 
     private static Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
+    @Value("${file.upload.path}")
+    private String FILE_UPLOAD_PATH;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -100,6 +107,17 @@ public class Application extends WebMvcConfigurerAdapter {
     @Bean
     public PlatformTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
+    }
+
+    /**
+     * 修改上传文件的永久路径
+     * @return
+     */
+    @Bean
+    MultipartConfigElement multipartConfigElement(){
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setLocation(FILE_UPLOAD_PATH);
+        return factory.createMultipartConfig();
     }
 
     /**
