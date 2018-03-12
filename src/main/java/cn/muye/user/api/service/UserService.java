@@ -6,13 +6,11 @@ import cn.muye.core.enums.ApplyStatusType;
 import cn.muye.shiro.service.AdminShiroService;
 import cn.muye.user.domain.User;
 import cn.muye.user.api.mapper.UserMapper;
-import cn.muye.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,5 +61,13 @@ public class UserService {
 
 	public User checkCustomerLogin(User user) {
 		return userMapper.checkCustomerLogin(user);
+	}
+
+	public User getByCompany(String company) {
+		return userMapper.getByCompany(company);
+	}
+
+	public User getByEmail(String emailAddress) {
+		return userMapper.getByEmail(emailAddress);
 	}
 }

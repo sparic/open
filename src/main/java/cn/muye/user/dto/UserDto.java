@@ -30,6 +30,15 @@ public class UserDto {
 
     private Boolean activated;
 
+    //销售负责人
+    private String salesMan;
+
+    //类别(1-诺亚，2-人形)
+    private Integer type;
+
+    //业务主键(时间戳md5)
+    private String bizId;
+
     public Long getId() {
         return id;
     }
@@ -116,5 +125,29 @@ public class UserDto {
 
     public void setActivated(Boolean activated) {
         this.activated = activated;
+    }
+
+    public String getSalesMan() {
+        return salesMan;
+    }
+
+    public void setSalesMan(String salesMan) {
+        this.salesMan = salesMan;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getBizId() {
+        return bizId;
+    }
+
+    public void setBizId(String bizId) {
+        this.bizId = bizId;
     }
 }

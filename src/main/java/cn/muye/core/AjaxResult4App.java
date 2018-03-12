@@ -9,7 +9,7 @@ public class AjaxResult4App {
     public static final int CODE_ERROR_LIMIT = 1; //授权机器已达上限
     public static final int CODE_ERROR_NOT_EXIST = 2; //AppId不存在
     public static final int CODE_ERROR_EXPIRED = 3; //到期错误
-    public static final int CODE_ERROR_PARAM= 4; //到期错误
+    public static final int CODE_ERROR_PARAM= 4; //参数出错
 
     private int code;
     private String message;

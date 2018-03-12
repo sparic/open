@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.employee.api.mapper.EmployeeMapper">
+
+    <resultMap id="employeeResult" type="cn.muye.employee.domain.Employee">
+        <result property="id" column="ID"/>
+        <result property="userBizId" column="USER_BIZ_ID"/>
+        <result property="companyName" column="COMPANY_NAME"/>
+        <result property="name" column="NAME"/>
+        <result property="phone" column="PHONE"/>
+        <result property="email" column="EMAIL"/>
+        <result property="position" column="POSITION"/>
+        <result property="type" column="TYPE"/>
+        <result property="isValid" column="IS_VALID"/>
+    </resultMap>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO D_EMPLOYEE (
+          USER_BIZ_ID,
+          NAME,
+          COMPANY_NAME,
+          PHONE,
+          EMAIL,
+          POSITION,
+          TYPE,
+          IS_VALID
+        )
+        VALUES (
+          #{userBizId},
+          #{name},
+          #{companyName},
+          #{phone},
+          #{email},
+          #{position},
+          #{type},
+          #{isValid}
+        )
+    </insert>
+
+    <select id="findByEmail" parameterType="java.util.Map" resultMap="employeeResult">
+        select *
+          from
+        D_EMPLOYEE
+        <where>
+            <if test="email != null">
+                EMAIL= #{email}
+            </if>
+        </where>
+
+    </select>
+</mapper>

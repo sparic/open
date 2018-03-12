@@ -20,16 +20,25 @@
         <result property="company" column="COMPANY"/>
         <result property="level" column="LEVEL"/>
         <result property="isAdminUser" column="IS_ADMIN_USER"/>
+        <result property="bizId" column="BIZ_ID"/>
+        <result property="salesMan" column="SALES_MAN"/>
+        <result property="type" column="TYPE"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER,ACTIVATED
+        ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER,ACTIVATED, BIZ_ID, SALES_MAN, TYPE
     </sql>
 
     <select id="getUserById" resultMap="userResult">
         select
         <include refid="Base_Column_List"/>
         from D_USER u where u.ID = #{id}
+    </select>
+
+    <select id="getByEmail" resultMap="userResult">
+        select
+        <include refid="Base_Column_List"/>
+        from D_USER u where u.EMAIL_ADDRESS = #{emailAddress}
     </select>
 
     <!-- 管理后台用户查询 -->
@@ -45,6 +54,18 @@
         from D_USER u where u.USER_NAME = #{userName}
     </select>
 
+    <select id="getByCompany" resultMap="userResult">
+        select
+        <include refid="Base_Column_List"/>
+        from D_USER u where u.COMPANY = #{company}
+    </select>
+
+    <select id="getByBizId" resultMap="userResult">
+        select
+        <include refid="Base_Column_List"/>
+        from D_USER u where u.BIZ_ID = #{bizId} AND u.ACTIVATED=1
+    </select>
+
     <select id="getUserList" resultMap="userResult">
         select
         <include refid="Base_Column_List"/>
@@ -53,29 +74,35 @@
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into D_USER(
-            USER_NAME,
-            PASSWORD,
-            SEX,
-            EMAIL_ADDRESS,
-            ACTIVATED,
-            LAST_VISIT,
-            COMPANY,
-            PHONE,
-            USER_ROLE_ID,
-            LEVEL
+        USER_NAME,
+        PASSWORD,
+        SEX,
+        EMAIL_ADDRESS,
+        ACTIVATED,
+        LAST_VISIT,
+        COMPANY,
+        PHONE,
+        USER_ROLE_ID,
+        LEVEL,
+        BIZ_ID,
+        SALES_MAN,
+        TYPE
         ) values (
-            #{userName},
-            #{password},
-            #{sex},
-            #{emailAddress},
-            #{activated},
-            #{lastVisit},
-            #{company},
-            #{phone},
-            #{userRoleId},
-            #{level}
+        #{userName},
+        #{password},
+        #{sex},
+        #{emailAddress},
+        #{activated},
+        #{lastVisit},
+        #{company},
+        #{phone},
+        #{userRoleId},
+        #{level},
+        #{bizId},
+        #{salesMan},
+        #{type}
         )
-  </insert>
+    </insert>
 
     <update id="update">
         update D_USER SET
@@ -87,7 +114,10 @@
             COMPANY = #{company},
             PHONE = #{phone},
             USER_ROLE_ID = #{userRoleId},
-            LEVEL= #{level}
+            LEVEL= #{level},
+            BIZ_ID= #{bizId},
+            SALES_MAN= #{salesMan},
+            TYPE= #{type}
         WHERE
           ID = #{id}
     </update>

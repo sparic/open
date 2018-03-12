@@ -8,22 +8,20 @@
         <result property="password" column="PASSWORD"/>
         <result property="emailAddress" column="EMAIL_ADDRESS"/>
         <result property="sex" column="SEX"/>
-        <!--<result property="passwordChangeRequired" column="PASSWORD_CHANGE_REQUIRED"/>-->
-        <!--<result property="receiveEmail" column="RECEIVE_EMAIL"/>-->
-        <!--<result property="registered" column="REGISTERED"/>-->
         <result property="activated" column="ACTIVATED"/>
         <result property="lastVisit" column="LAST_VISIT"/>
         <result property="userRoleId" column="USER_ROLE_ID"/>
-        <!--<result property="appKey" column="APP_KEY"/>-->
-        <!--<result property="appSecret" column="APP_SECRET"/>-->
         <result property="phone" column="PHONE"/>
         <result property="company" column="COMPANY"/>
         <result property="level" column="LEVEL"/>
         <result property="isAdminUser" column="IS_ADMIN_USER"/>
+        <result property="bizId" column="BIZ_ID"/>
+        <result property="salesMan" column="SALES_MAN"/>
+        <result property="type" column="TYPE"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER,ACTIVATED
+      ID, USER_NAME, PASSWORD, EMAIL_ADDRESS, SEX, LAST_VISIT, COMPANY, PHONE,USER_ROLE_ID,LEVEL,IS_ADMIN_USER,ACTIVATED,BIZ_ID, SALES_MAN, TYPE
     </sql>
 
     <select id="getUserById" resultMap="userResult">
@@ -45,6 +43,18 @@
         from D_USER u where u.USER_NAME = #{userName}
     </select>
 
+    <select id="getByCompany" resultMap="userResult">
+        select
+        <include refid="Base_Column_List"/>
+        from D_USER u where u.COMPANY = #{company}
+    </select>
+
+    <select id="getByEmail" resultMap="userResult">
+        select
+        <include refid="Base_Column_List"/>
+        from D_USER u where u.EMAIL_ADDRESS = #{emailAddress}
+    </select>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into D_USER(
             USER_NAME,
@@ -55,7 +65,10 @@
             LAST_VISIT,
             COMPANY,
             PHONE,
-            USER_ROLE_ID
+            USER_ROLE_ID,
+            BIZ_ID,
+            SALES_MAN,
+            TYPE
         ) values (
             #{userName},
             #{password},
@@ -65,7 +78,10 @@
             #{lastVisit},
             #{company},
             #{phone},
-            #{userRoleId}
+            #{userRoleId},
+            #{bizId},
+            #{salesMan},
+            #{type}
         )
   </insert>
 </mapper>

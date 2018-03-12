@@ -27,10 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import org.thymeleaf.util.StringUtils;
+
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,6 +62,8 @@ public class UserController {
     private static final Integer STATUS_SUCCESS = 2; //成功
     private static final Integer STATUS_FAILED = 3; //失败
 
+    private static final Boolean ACTIVATED = true;
+
     /**
      * 较验用户名
      * @param userName
@@ -85,28 +86,40 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "user", method = RequestMethod.POST)
-    @ApiOperation(value = "添加/更新用户", httpMethod = "POST", notes = "添加/更新用户")
+    @ApiOperation(value = "添加用户", httpMethod = "POST", notes = "添加用户")
     public AjaxResult addUser(@ApiParam(value = "用户对象（userType：角色ID）") @RequestBody User user) {
-        if (null == user || user != null && (StringUtil.isNullOrEmpty(user.getUserName()) || StringUtil.isNullOrEmpty(user.getPassword()) || StringUtil.isNullOrEmpty(user.getEmailAddress()) || StringUtil.isNullOrEmpty(user.getPhone()) || StringUtil.isNullOrEmpty(user.getUrl()))) {
-            return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, user, "用户信息为空或信息不全");
-        }
         try {
+            if (null == user || user != null && (StringUtil.isNullOrEmpty(user.getUserName()) ||
+                    StringUtil.isNullOrEmpty(user.getPassword()) || StringUtil.isNullOrEmpty(user.getEmailAddress()) ||
+                    StringUtil.isNullOrEmpty(user.getPhone()) || StringUtil.isNullOrEmpty(user.getUrl()) ) ||
+                    StringUtils.isEmpty(user.getCompany())) {
+                return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, user, "用户信息为空或信息不全");
+            }
             if (user.getId() == null) {
                 User sameNameUser = userService.getUserByName(user.getUserName());
+                User sameCompanyUser = userService.getByCompany(user.getCompany());
+                User sameEmailUser = userService.getByEmail(user.getEmailAddress());
                 if (sameNameUser != null && sameNameUser.getUserName().equals(user.getUserName())) {
                     return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "用户名已存在");
+                }
+                if (sameCompanyUser != null && sameCompanyUser.getCompany().equals(user.getCompany())) {
+                    return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "公司名已存在");
+                }
+                if (sameEmailUser != null && sameEmailUser.getEmailAddress().equals(user.getEmailAddress())) {
+                    return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, "邮箱已存在");
                 }
                 user.setUserRoleId(Constants.CUSTOMER_ROLE_ID);
                 user.setLevel(null);
                 user.setPassword(MD5Util.getMD5String(user.getPassword()));
-                user.setActivated(true);
+                user.setActivated(ACTIVATED);
+                user.setBizId(MD5Util.getMD5String(String.valueOf(new Date().getTime())));
                 userService.saveAndApplyAgent(user); //添加用户 绑定角色
                 return AjaxResult.success(objectToDto(user), "添加成功");
             } else {
                 return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, user, "您无权修改");
             }
         } catch (Exception e) {
-            logger.error("{}", e);
+            logger.error("UserController addUser Error ==>{}", e);
             return AjaxResult.failed(AjaxResult.CODE_ERROR_FAILED, user, "添加失败");
         } finally {
         }

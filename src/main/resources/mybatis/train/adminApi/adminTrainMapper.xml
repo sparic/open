@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.muye.train.adminApi.mapper.AdminTrainMapper">
+
+    <resultMap id="trainResult" type="cn.muye.train.domain.Train">
+        <result property="id" column="ID"/>
+        <result property="topic" column="TOPIC"/>
+        <result property="time" column="TIME"/>
+        <result property="teacher" column="TEACHER"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="location" column="LOCATION"/>
+        <result property="webexUrl" column="WEBEX_URL"/>
+        <result property="status" column="STATUS"/>
+        <result property="employeeIds" column="EMPLOYEE_IDS"/>
+        <result property="mailSubject" column="MAIL_SUBJECT"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, TOPIC, TIME, TEACHER, DESCRIPTION, LOCATION, WEBEX_URL, STATUS, EMPLOYEE_IDS, MAIL_SUBJECT, CREATE_TIME
+    </sql>
+
+    <select id="list" parameterType="java.util.Map" resultMap="trainResult">
+        select
+        <include refid="Base_Column_List"/>
+          from D_TRAIN
+        <where>
+            <if test="teacher != null and teacher != ''">
+                and TEACHER = #{teacher}
+            </if>
+        </where>
+        ORDER BY ID ASC
+    </select>
+
+    <select id="getById" resultMap="trainResult">
+        select
+        <include refid="Base_Column_List"/>
+        from D_TRAIN
+        where
+          ID=#{id}
+        ORDER BY ID ASC
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into D_TRAIN (
+            TOPIC,
+            TIME,
+            TEACHER,
+            DESCRIPTION,
+            LOCATION,
+            WEBEX_URL,
+            STATUS,
+            EMPLOYEE_IDS,
+            MAIL_SUBJECT,
+            CREATE_TIME
+        ) values (
+            #{topic},
+            #{time},
+            #{teacher},
+            #{description},
+            #{location},
+            #{webexUrl},
+            #{status},
+            #{employeeIds},
+            #{mailSubject},
+            #{createTime}
+        )
+    </insert>
+
+    <update id="update">
+        update
+            D_TRAIN
+        set
+            TOPIC = #{topic},
+            TIME = #{time},
+            TEACHER = #{teacher},
+            DESCRIPTION = #{description},
+            LOCATION = #{location},
+            WEBEX_URL = #{webexUrl},
+            STATUS = #{status},
+            EMPLOYEE_IDS = #{employeeIds},
+            MAIL_SUBJECT = #{mailSubject}
+        where ID = #{id}
+    </update>
+
+</mapper>

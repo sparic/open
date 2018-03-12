@@ -15,11 +15,17 @@ import java.util.List;
  */
 public interface UserMapper {
 
-	void save(User user);
+	int save(User user);
 
 	User getUserById(Long id);
 
 	User getUserByName(String userName);
 
 	User checkCustomerLogin(User user);
+
+	User getByBizId(String bizId);
+
+    User getByCompany(String company);
+
+	User getByEmail(String emailAddress);
 }

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
-import java.util.Date;
+
 import java.util.Properties;
 
 /**
@@ -34,7 +34,7 @@ public class MailUtil {
         email.setHost(Constants.MAIL_HOST);
         email.setUsername(Constants.MAIL_SENDER_ACCOUNT);
         email.setPassword(Constants.MAIL_SENDER_PSW);//授权码
-        email.setPort(Constants.MAIL_HOST_PORT);
+        email.setPort(Constants.MAIL_HOST_PORT_465);
         Properties properties = new Properties();
         properties.put(Constants.MAIL_AUTH, true);
         properties.put(Constants.MAIL_SSL, true);

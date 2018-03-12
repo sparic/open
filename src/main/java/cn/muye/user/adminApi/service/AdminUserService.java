@@ -1,8 +1,5 @@
 package cn.muye.user.adminApi.service;
 
-import cn.muye.cooperation.domain.AgentApply;
-import cn.muye.cooperation.adminApi.service.AdminAgentApplyService;
-import cn.muye.core.enums.ApplyStatusType;
 import cn.muye.shiro.service.AdminShiroService;
 import cn.muye.user.domain.User;
 import cn.muye.user.adminApi.mapper.AdminUserMapper;
@@ -10,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,7 +42,7 @@ public class AdminUserService {
 		adminShiroService.bindUserRole(user.getUserRoleId(), user.getId());
 	}
 
-	public User getUserByName(String userName) {
+	public User getByName(String userName) {
 		return adminUserMapper.getUserByName(userName);
 	}
 
@@ -62,4 +58,19 @@ public class AdminUserService {
 		return adminUserMapper.checkAdminLogin(user);
 	}
 
+	public int updateUser(User user) {
+		return adminUserMapper.update(user);
+	}
+
+	public User getByBizId(String bizId) {
+		return adminUserMapper.getByBizId(bizId);
+	}
+
+	public User getByCompany(String company) {
+		return adminUserMapper.getByCompany(company);
+	}
+
+	public User getByEmail(String emailAddress) {
+		return adminUserMapper.getByEmail(emailAddress);
+	}
 }

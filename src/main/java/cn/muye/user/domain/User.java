@@ -1,5 +1,7 @@
 package cn.muye.user.domain;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -32,7 +34,7 @@ public class User implements Serializable {
 
 	private Boolean registered = false;
 
-	private Boolean activated = true;  //账号是否无效
+	private Boolean activated;  //账号是否无效
 
 	private Date lastVisit;  //最新登录时间
 
@@ -44,15 +46,25 @@ public class User implements Serializable {
 
 	private String phone;
 
-	private String company;
+	@ApiModelProperty(value = "公司名称")
+	private String company; //公司名称
 
 	private Integer level; //用户等级(1. 金牌ISV，2. 白金ISV，3. 钻石ISV)
 
 	private String url; //申请代理商文件的url返回
 
-	private String description;
+	private String description; //描述
 
-	private Boolean isAdminUser;
+	private Boolean isAdminUser; //是否为管理员
+
+	@ApiModelProperty(value = "业务主键(时间戳md5)")
+	private String bizId; //业务主键(时间戳md5)
+
+	@ApiModelProperty(value = "销售负责人")
+	private String salesMan; //销售负责人
+
+	@ApiModelProperty(value = "类别(1-诺亚，2-人形)")
+	private Integer type; //类别(1-诺亚，2-人形)
 
 	public Long getId() {
 		return id;
@@ -204,5 +216,29 @@ public class User implements Serializable {
 
 	public void setIsAdminUser(Boolean isAdminUser) {
 		this.isAdminUser = isAdminUser;
+	}
+
+	public String getBizId() {
+		return bizId;
+	}
+
+	public void setBizId(String bizId) {
+		this.bizId = bizId;
+	}
+
+	public String getSalesMan() {
+		return salesMan;
+	}
+
+	public void setSalesMan(String salesMan) {
+		this.salesMan = salesMan;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 }

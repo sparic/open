@@ -3,6 +3,7 @@ package cn.muye.user.adminApi.mapper;
 import cn.muye.user.domain.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +18,7 @@ public interface AdminUserMapper {
 
 	void save(User user);
 
-	void update(User user);
+	int update(User user);
 
 	User getUserById(Long id);
 
@@ -29,4 +30,9 @@ public interface AdminUserMapper {
 
 	User checkAdminLogin(User user);
 
+	User getByBizId(String bizId);
+
+    User getByCompany(String company);
+
+	User getByEmail(String emailAddress);
 }

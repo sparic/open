@@ -1,6 +1,5 @@
 package cn.muye.core;
 
-import java.io.File;
 
 /**
  * Created by Administrator on 2016/12/7.
@@ -9,8 +8,10 @@ public class Constants {
 
     public final static String MAIL_HOST = "smtp.exmail.qq.com";
     public final static String MAIL_SENDER_ACCOUNT = "cloudmanager@mrobot.cn";
-    public final static String MAIL_SENDER_PSW = "Cloud161230";
-    public final static int MAIL_HOST_PORT = 465;
+//    public final static String MAIL_SENDER_PSW = "Cloud161230"; //邮箱密码
+    public final static String MAIL_SENDER_PSW = "QcH8G3bBkP3kBzUA"; //客户端专用密码【腾讯企业邮箱安全升级后需要用此密码登录】
+    public final static int MAIL_HOST_PORT_465 = 465;
+    public final static int MAIL_HOST_PORT_587 = 587;
     public final static String MAIL_AUTH = "mail.smtp.auth";
     public final static String MAIL_SSL = "mail.smtp.ssl.enable";
     public final static String MAIL_SOCKET_CLASS = "mail.smtp.socketFactory.class";
@@ -36,4 +37,13 @@ public class Constants {
     public final static int APP_AUTH_VALID_PERIOD = 6; //授权有效时间(月)
 
     public final static String AES_KEY = "trOmVF7Uaqd4h9AN";
+
+    public final static int VALID = 1; //有效
+    public final static int NOT_VALID = 0; //无效
+
+    public static final String EXPORT_DIR_NAME = "export"; //资源文件夹/导出
+    public static final String EMPLOYEE_DIR_NAME = "employee"; //资源文件夹/导出/员工
+
+    public static final Integer MAIL_STATUS_SEND = 1; //邮件状态：已发送
+    public static final Integer MAIL_STATUS_NOT_SEND = 0; //邮件状态：未发送
 }
